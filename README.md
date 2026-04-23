@@ -96,7 +96,7 @@ Depending on what you want to do, jump to:
 
 ## Common
 
-1. Download the latest release zip file named `ai-dlc-rules-v<release-number>.zip` from the [Releases page](../../releases/latest) to a folder **outside** your project directory (e.g., `~/Downloads`).
+1. Download the latest release zip file named `ai-dlc-rules-enhanced-v<release-number>.zip` from the [Releases page](../../releases/latest) to a folder **outside** your project directory (e.g., `~/Downloads`).
 2. Extract the zip. It contains an `aidlc-rules/` folder with two subdirectories:
    - `aws-aidlc-rules/` — the core AI-DLC workflow rules
    - `aws-aidlc-rule-details/` — detailed rules conditionally referenced by the core rules

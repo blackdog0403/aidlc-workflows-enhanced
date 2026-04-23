@@ -151,7 +151,7 @@ git diff upstream/v0.1.8 -- aidlc-rules/aws-aidlc-rules aidlc-rules/aws-aidlc-ru
 
 ### 3. Release assets
 
-Each release attaches `ai-dlc-rules-v<version>.zip`. Unzip upstream's `v0.1.8` and this fork's
+Each release attaches `ai-dlc-rules-enhanced-v<version>.zip`. Unzip upstream's `ai-dlc-rules-v0.1.8.zip` and this fork's
 `v0.1.9` side-by-side and run `diff -r` on the two `aidlc-rules/` trees.
 
 ---
