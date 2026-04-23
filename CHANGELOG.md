@@ -2,36 +2,65 @@
 
 All notable changes to this project will be documented in this file.
 
+> This repository is an experimental fork of [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows),
+> maintained as a personal R&D playground. Version numbers here evolve independently
+> of upstream tags; they are not official AWS releases.
+
 ## [0.1.9] - 2026-04-23
 
-### Bug Fixes
-
-- resolve markdownlint violations in fork docs
-- format tables and relax MD060 for emoji/wide-unicode rows
-- point rules_repo at this fork instead of upstream
-- make detect-changes return explicit false instead of defaulting to true
-
-### CI/CD
-
-- retrigger CodeBuild to re-run evaluator (rerun #1)
-- skip CodeBuild for non-rule commits via per-commit diff
-- skip CodeBuild on non-rule push/tag events (#3)
-
-### Documentation
-
-- add fork rationale, comparison, and file-level change index
-- add EVALUATOR-REDESIGN proposal for k-sample gate
-- reorganize fork-only docs under docs/enhanced/ and add model-capability proposal
+First release of this fork. Extends upstream AI-DLC **v0.1.8** with patterns from
+Anthropic's Harness Engineering corpus (Engineering & Research blog posts published
+through 2026-04-22) and adds two new layers (Host Capability, Project Mode) that
+keep AI-DLC's decision-quality spine intact while absorbing HE's execution-quality
+patterns.
 
 ### Features
 
-- adopt AI-DLC Optimized rule set (April 2026 revision)
-- restore Quality Bar and Anti-Pattern in question-format-guide
+- adopt AI-DLC Optimized rule set (April 2026 revision) — adds Host Capability Layer, Project Mode Layer, multi-agent patterns, automated feedback loops, context/cost optimization, and entropy management
+- add `common/agent-capabilities.md` — capability matrix and detection protocol for Claude Code / Kiro / Amazon Q / Cursor / Cline / Copilot
+- add `common/project-mode.md` — Prototyping / Production / Hybrid gate-density selection for Greenfield projects
+- add `common/automated-feedback-loops.md` — L1–L4 auto-fix loop inside AI-DLC's L5 approval gate
+- add `common/boundary-based-security.md` — Auto Mode and AGENTS.md vulnerability guidance
+- add `common/context-optimization.md` — Knowledge Pyramid + Tool Search
+- add `construction/multi-agent-patterns.md` — capability-branched 3-path Generator/Evaluator patterns
+- add `operations/entropy-management.md` — Gardener / AutoDream / Compounding Engineering
+- add `extensions/cost-optimization/` — Model Routing, Effort Level, Programmatic Tool Calling
+- restore Quality Bar and Anti-Pattern sections in `common/question-format-guide.md` — five-point quality bar plus Yes/No/Maybe filler anti-pattern, re-added after the initial trim proved too aggressive for weaker models
+- add `docs/enhanced/COMPARISON.md`, `docs/enhanced/OPTIMIZATION_NOTES.md`, and `docs/enhanced/FORK-CHANGES.md` — rationale, design invariants, and file-level change index for the optimized rule set
+- add `docs/enhanced/proposals/EVALUATOR-REDESIGN.md` — draft proposal for a k-sample distribution-based gate, replacing the current single-run snapshot comparison
+- add `docs/enhanced/proposals/MODEL-CAPABILITY-LAYER.md` — draft proposal for a model capability axis (anthropic-native / openai-style / other) complementary to the host capability layer
 
-### Miscellaneous
+### Changes
 
-- retarget CI workflows and CODEOWNERS to this fork
-- adopt plain SemVer (drop -enhanced.N pre-release suffix) (#4)
+- rewrite `construction/multi-agent-patterns.md` with three implementation paths per pattern (full-multi-agent / subagent-only / single-agent)
+- update `aws-aidlc-rules/core-workflow.md` to load capability and mode files at workflow start
+- update `construction/code-generation.md` with Step 13.5 (L1–L4 feedback + auto-fix) and mode-aware gates
+- update `inception/workspace-detection.md` with Step 0 host-agent detection
+- update `inception/requirements-analysis.md` Step 5.1 with Project Mode question
+- update `inception/workflow-planning.md` to read Project Mode + Capability Profile
+- update `construction/build-and-test.md` — L1–L3 hook wiring on capable hosts; final human gate retained in all modes
+- update `common/welcome-message.md` with Host-Aware and Mode-Aware bullets
+- trim `common/error-handling.md` (373 → ~170 lines, no semantic loss)
+- trim `common/workflow-changes.md` (285 → ~95 lines, no semantic loss)
+- trim `common/question-format-guide.md` (332 → ~150 lines, preserves Quality Bar and Anti-Pattern blocks)
+
+### Documentation
+
+- restructure README: move Table of Contents above the Design Rationale, split the About note into identity / motivation / pointers, add "Coverage at a glance" mini-table with link to full 23-row map, record HE corpus cut-off (2026-04-22) alongside upstream v0.1.8 baseline
+- fix broken links in fork-only docs — replace references to private internal notes (`harness-engineering_EN.md`, `HE_Perspective_on_AIDLC_EN.md`, `AIDLC_Perspective_on_HE_EN.md`) with public URLs where available or mark as "internal working note" otherwise
+- relocate fork-authored docs under `docs/enhanced/` (and `docs/enhanced/proposals/` for design proposals) so upstream-origin docs stay clean and syncable
+- remove the just-released Opus 4.7 row from `docs/enhanced/COMPARISON.md` §9 (stale risk — model shipped days before this release)
+
+### CI/CD
+
+- retarget workflows to this fork: replace hardcoded `awslabs/aidlc-workflows` references with `${{ github.repository }}` in `release-pr.yml`, and with fork path in `codebuild.yml` fallback, `pull_request_template.md`, and `ISSUE_TEMPLATE/feature_request.yml`
+- switch CODEOWNERS from `@awslabs/aidlc-*` teams to `@blackdog0403` and mark the repo as an experimental fork
+- fix evaluator config — point `rules_repo` in `scripts/aidlc-evaluator/config/default.yaml` at this fork instead of upstream so PR evaluation can clone the fork's branches
+- skip CodeBuild on non-rule `push` / tag events via `paths-ignore` in `codebuild.yml` — docs-only pushes to main no longer trigger the 18-minute evaluator run (#3)
+
+### Infrastructure
+
+- bump `aidlc-rules/VERSION` to `0.1.9` — first release of this fork; versioning evolves independently of upstream tags (#4)
 
 ## [0.1.8] - 2026-04-22
 
