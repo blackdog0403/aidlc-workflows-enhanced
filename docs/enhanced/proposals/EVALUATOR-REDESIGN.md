@@ -169,7 +169,7 @@ contract_pass_rate:
   n: 5
 ```
 
-Baseline regeneration: only on **release tag** (e.g. `v0.1.9-enhanced.0`).
+Baseline regeneration: only on **release tag** (e.g. `v0.1.9`).
 PRs read the baseline, they never rewrite it.
 
 ### 3.6 pass@k (reliability metric)

@@ -4,7 +4,7 @@
 > [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) **v0.1.8**.
 > Use this to audit, review, or cherry-pick changes without opening each file.
 
-**This release:** `0.1.9-enhanced.0`
+**This release:** `0.1.9`
 **Upstream baseline:** `v0.1.8`
 **Author:** Kwangyoung Kim (<blackdog0403@gmail.com>)
 
@@ -101,10 +101,10 @@ Not loaded by agents — but relevant when re-releasing from a fork.
 | `.github/pull_request_template.md`           | Contributing + LICENSE URLs → this fork                                        |
 | `.github/ISSUE_TEMPLATE/feature_request.yml` | RFC template URL → this fork                                                   |
 | `.github/CODEOWNERS`                         | `@awslabs/aidlc-*` teams → `@blackdog0403`; header notes experimental fork     |
-| `aidlc-rules/VERSION`                        | `0.1.8` → `0.1.9-enhanced.0`                                                   |
-| `CHANGELOG.md`                               | Added `[0.1.9-enhanced.0]` section + fork preamble                             |
+| `aidlc-rules/VERSION`                        | `0.1.8` → `0.1.9`                                                              |
+| `CHANGELOG.md`                               | Added `[0.1.9]` section + fork preamble                                        |
 
-See [`CHANGELOG.md`](../../CHANGELOG.md#019-enhanced0---2026-04-22) for the authoritative release record.
+See [`CHANGELOG.md`](../../CHANGELOG.md#019---2026-04-22) for the authoritative release record.
 
 ---
 
@@ -152,7 +152,7 @@ git diff upstream/v0.1.8 -- aidlc-rules/aws-aidlc-rules aidlc-rules/aws-aidlc-ru
 ### 3. Release assets
 
 Each release attaches `ai-dlc-rules-v<version>.zip`. Unzip upstream's `v0.1.8` and this fork's
-`v0.1.9-enhanced.0` side-by-side and run `diff -r` on the two `aidlc-rules/` trees.
+`v0.1.9` side-by-side and run `diff -r` on the two `aidlc-rules/` trees.
 
 ---
 
