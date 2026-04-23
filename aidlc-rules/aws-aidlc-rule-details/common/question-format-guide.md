@@ -101,11 +101,51 @@ E) Other (please describe after [Answer]: tag below)
 [Answer]:
 ```
 
+## Question Quality Bar
+
+Every question must satisfy all five:
+
+- **Specific** — one topic per question; no compound questions.
+- **Comprehensive** — the set of questions covers every decision the phase needs.
+- **Concise** — no nested conditionals or multi-part prompts inside one question.
+- **Practical** — options are realistic choices the user can actually pick (not abstractions).
+- **Mutually exclusive** — options don't overlap; any two answers imply different downstream actions.
+
+## Anti-Pattern — MUST avoid
+
+Option padding is the #1 failure mode. Never add filler options just to reach A/B/C/D.
+
+```markdown
+# BAD — filler options, non-specific, not mutually exclusive
+## Question
+What database will you use?
+
+A) Yes
+B) No
+C) Maybe
+```
+
+```markdown
+# GOOD — specific, mutually exclusive, practical
+## Question
+What database technology will be used?
+
+A) Relational (PostgreSQL, MySQL)
+B) NoSQL Document (MongoDB, DynamoDB)
+C) NoSQL Key-Value (Redis, Memcached)
+D) Graph Database (Neo4j, Neptune)
+E) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+```
+
+If you cannot produce at least two *meaningful* options, the topic is not ready to be a question — refine the topic or ask a different one.
+
 ## Quick Reference
 
 - ✅ Create question files; never chat questions
 - ✅ Multiple choice, Other is MANDATORY last option
-- ✅ Only meaningful options — no filler
+- ✅ Only meaningful options — no filler (see Anti-Pattern above)
 - ✅ `[Answer]:` tags; wait for completion
 - ✅ Validate for contradictions; resolve before proceeding
 - ❌ Never assume on ambiguous answers

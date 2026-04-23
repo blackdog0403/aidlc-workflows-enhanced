@@ -89,7 +89,7 @@ Summary of changes introduced in the April 2026 revision and the design invarian
 |-----------------------------------|-----------|------------|------------------------------------------------------------------------------------------------------------------------------|
 | `common/error-handling.md`        | 373 lines | ~170 lines | Collapsed near-duplicate per-stage blocks into a table; kept all error → action mappings.                                    |
 | `common/workflow-changes.md`      | 285 lines | ~95 lines  | Replaced the 8 change-type sections with a universal protocol + 8-row pattern table.                                         |
-| `common/question-format-guide.md` | 332 lines | ~120 lines | Removed redundant examples; kept the single canonical template, validation responses, and the contradiction-detection block. |
+| `common/question-format-guide.md` | 332 lines | ~150 lines | Removed redundant examples; kept the single canonical template, validation responses, and the contradiction-detection block. Re-added an explicit Quality Bar (5-point) and Anti-Pattern (Yes/No/Maybe filler) block after initial trimming proved too aggressive for weaker models. |
 
 Total rule corpus: **6650 → 5949 lines** (~11% reduction) while **adding** two new rule files and the capability-aware paths.
 
