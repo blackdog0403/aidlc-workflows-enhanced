@@ -1,6 +1,11 @@
 # Build and Test
 
-**Purpose**: Build all units and execute comprehensive testing strategy
+**Purpose**: Build all units and execute comprehensive testing strategy.
+
+## Capability and Mode Awareness
+
+- Load `common/agent-capabilities.md` — on `full-multi-agent` hosts, test execution can be wired to `PostToolUse` hooks so L1–L3 runs without a model turn. On other profiles, run the tests as an in-prompt step and log the turn cost.
+- Load `common/project-mode.md` — the **final human gate at the end of this stage is retained in ALL modes** (Prototyping, Production, Hybrid). This is the load-bearing AI-DLC invariant that Harness Engineering's "fix cost < wait cost" logic does **not** override.
 
 ## Prerequisites
 - Code Generation must be complete for all units

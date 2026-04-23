@@ -4,6 +4,14 @@
 
 **Always Execute**: This phase always runs after understanding requirements and scope
 
+## Mode and Capability Awareness
+
+Before generating the plan, read `aidlc-state.md` for:
+- **Project Mode** (Prototyping / Production / Hybrid) — governs how many gates the plan inherits and which per-unit design stages execute by default (see `common/project-mode.md` §5).
+- **Host Capability Profile** (full-multi-agent / subagent-only / single-agent) — governs whether the plan can use worktree parallel execution, Generator/Evaluator orchestration, or sequential fallbacks (see `common/agent-capabilities.md` §3).
+
+**Surface to user in Step 9** when (a) 5+ independent units are identified and the host is not `full-multi-agent` (user is leaving parallelism on the table), or (b) Production mode + single-agent host (every gate is manual).
+
 ## Step 1: Load All Prior Context
 
 ### 1.1 Load Reverse Engineering Artifacts (if brownfield)

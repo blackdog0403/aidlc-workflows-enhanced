@@ -90,9 +90,13 @@ Analyze whatever the user has provided:
 
 **When in doubt, ask questions** - incomplete requirements lead to poor implementations.
 
-### Step 5.1: Extension Opt-In Prompts
+### Step 5.1: Extension Opt-In Prompts + Project Mode Selection
 
-**MANDATORY**: Scan all loaded `*.opt-in.md` files (loaded at workflow start from `extensions/` subdirectories) for an `## Opt-In Prompt` section. For each extension that declares one, include that question in the clarifying questions file created in Step 6. Present each opt-in question in the same language as the user's conversation.
+**Part A — Project Mode (Greenfield only)**: If the project is Greenfield (per `aidlc-state.md` workspace detection), load `common/project-mode.md` and append its **Project Mode Selection** question block (A/B/C/X) to the clarifying questions file created in Step 6. **Skip this for Brownfield** — Brownfield auto-selects Production and must record that in `aidlc-state.md` without asking.
+
+After receiving the Project Mode answer, write it to `aidlc-state.md` under `## Project Mode` with the decided timestamp and rationale (see `common/project-mode.md` §3.1).
+
+**Part B — Extensions**: Scan all loaded `*.opt-in.md` files (loaded at workflow start from `extensions/` subdirectories) for an `## Opt-In Prompt` section. For each extension that declares one, include that question in the clarifying questions file. Present each opt-in question in the same language as the user's conversation.
 
 After receiving answers:
 1. Record each extension's enablement status in `aidlc-docs/aidlc-state.md` under `## Extension Configuration`:

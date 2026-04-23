@@ -5,6 +5,20 @@
 **The workflow adapts to the work, not the other way around.**
 
 The AI model intelligently assesses what stages are needed based on:
+
+## Harness Engineering Enhancements
+**These additional rules strengthen AI-DLC with patterns from Harness Engineering.**
+Load when relevant — not all at once (see context-optimization.md for loading strategy):
+
+- `common/agent-capabilities.md` — Host agent capability detection + fallback rules (load at workflow start, BEFORE any multi-agent/parallel rule)
+- `common/project-mode.md` — Prototyping vs Production vs Hybrid mode selection (load at workflow start; asked once in Requirements Analysis for Greenfield)
+- `common/context-optimization.md` — Knowledge Pyramid, Context Budget, Prompt Caching (load at workflow start)
+- `common/automated-feedback-loops.md` — L1-L5 layered verification for Code Generation and Build & Test (load at Construction)
+- `common/boundary-based-security.md` — Boundary-based security replacing per-action approvals (load at Construction)
+- `construction/multi-agent-patterns.md` — Generator/Evaluator, parallel execution, Architect-Implementer — **capability-branched**; works on any host, degrades gracefully (load at Construction)
+- `operations/entropy-management.md` — Gardener Agent, trace-based detection, progressive deletability (load at Operations)
+- `extensions/cost-optimization/` — Model routing, token optimization, response format control (opt-in extension)
+
 1. User's stated intent and clarity
 2. Existing codebase state (if any)
 3. Complexity and scope of change
@@ -24,7 +38,16 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 - Load `common/session-continuity.md` for session resumption guidance
 - Load `common/content-validation.md` for content validation requirements
 - Load `common/question-format-guide.md` for question formatting rules
+- Load `common/agent-capabilities.md` — **detect host agent profile before any multi-agent decision** and record in `aidlc-state.md`
+- Load `common/project-mode.md` — Project Mode selection (Greenfield only; Brownfield auto-defaults to Production)
 - Reference these throughout the workflow execution
+
+**Capability- and Mode-Aware Branching**:
+- All gates, parallelism, and multi-agent patterns branch on two dimensions recorded in `aidlc-state.md`:
+  - **Host Agent Profile**: `full-multi-agent` | `subagent-only` | `single-agent` (per `common/agent-capabilities.md`)
+  - **Project Mode**: `Prototyping` | `Production` | `Hybrid` (per `common/project-mode.md`)
+- **Effective automation = min(mode_cap, host_cap)**. A Prototyping project on a single-agent host still skips per-unit human gates but runs sequentially.
+- Rule files that depend on multi-agent, worktree, hooks, or sandboxing **MUST** declare their required capability at the top and reference `common/agent-capabilities.md` §3 for fallback.
 
 ## MANDATORY: Extensions Loading (Context-Optimized)
 **CRITICAL**: At workflow start, scan the `extensions/` directory recursively but load ONLY lightweight opt-in files — NOT full rule files. Full rule files are loaded on-demand after the user opts in.
@@ -75,6 +98,18 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 4. Do NOT load this file in subsequent interactions to save context space
 
 # Adaptive Software Development Workflow
+
+## Project Mode × Gate Behavior (Summary)
+
+The "Wait for Explicit Approval — DO NOT PROCEED" instructions below are the **Production-mode defaults**. They are modulated by the Project Mode recorded in `aidlc-state.md`:
+
+| Mode | Inception stages | Construction per-unit design (Functional / NFR / Infra) | Code Gen Part 2 per-unit gate | Build & Test final gate |
+|---|---|---|---|---|
+| **Production** | Each stage gates individually (as written below) | CONDITIONAL per existing logic | **L5 human gate required** | Required |
+| **Prototyping** | Gates collapse into **one "approve Inception package"** gate after Units Generation | **Skipped by default** unless flagged | **No human gate**; L1–L4 auto-fix loop + escalate to human only on L4 failure after 2 retries | Required (non-negotiable) |
+| **Hybrid** | Inception = Production | Construction = Prototyping | No per-unit gate | Required |
+
+Brownfield auto-selects Production. For Greenfield, the mode question is asked at Requirements Analysis Step 5.1 (see `common/project-mode.md`).
 
 ---
 
@@ -395,14 +430,17 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 1. **Part 1 - Planning**: Create detailed code generation plan with explicit steps
 2. **Part 2 - Generation**: Execute approved plan to generate code, tests, and artifacts
 
+**Multi-Agent Branching**: Before Part 2, load `construction/multi-agent-patterns.md` and select the path matching the `Host Agent Profile` and `Project Mode` recorded in `aidlc-state.md`. Run the Generator/Evaluator pattern at a minimum whenever the host allows it and the mode enables it (`full-multi-agent` hosts: always; other hosts: whenever multi-agent is enabled in `aidlc-state.md`).
+
 **Execution**:
 1. **MANDATORY**: Log any user input during this stage in audit.md
 2. Load all steps from `construction/code-generation.md`
-3. **PART 1 - Planning**: Create code generation plan with checkboxes, get user approval
-4. **PART 2 - Generation**: Execute approved plan to generate code for this unit
-5. **MANDATORY**: Present standardized 2-option completion message as defined in code-generation.md - DO NOT use emergent behavior
-6. **Wait for Explicit Approval**: User must choose between "Request Changes" or "Continue to Next Stage" - DO NOT PROCEED until user confirms
-7. **MANDATORY**: Log user's response in audit.md with complete raw input
+3. **PART 1 - Planning**: Create code generation plan with checkboxes, get user approval (Part 1 approval is required in ALL modes — this is a high-stakes contract)
+4. **PART 2 - Generation**: Execute approved plan through the capability-matched multi-agent path; run L1–L4 automated feedback; auto-fix up to 2 rounds per `common/automated-feedback-loops.md`
+5. **Mode-dependent gate**:
+   - **Production** → Present standardized 2-option completion message and **Wait for Explicit Approval** (L5 per-unit human gate). DO NOT PROCEED until user confirms.
+   - **Prototyping / Hybrid** → Skip the per-unit human gate. Proceed to the next unit automatically if L1–L4 passed. **Escalate to human only if L4 fails after 2 auto-fix rounds** — write `aidlc-docs/construction/{unit-name}/escalation.md` and present the standardized escalation message.
+6. **MANDATORY**: Log user's response (or the auto-proceed decision) in audit.md with complete raw input
 
 ---
 
@@ -433,18 +471,29 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 
 ---
 
-## Operations (PLACEHOLDER)
+## Operations (Post-Construction Health & Entropy Management)
 
-**Status**: This stage is currently a placeholder for future expansion.
+**Purpose**: Ensure codebase health after Construction, manage entropy, evolve harness rules.
 
-The Operations stage will eventually include:
-- Deployment planning and execution
-- Monitoring and observability setup
+**Execution**:
+1. **MANDATORY**: Load `operations/operations.md` and `operations/entropy-management.md`
+2. Run Gardener scan: doc-code drift, architecture violations, dead code, style consistency, test coverage, dependency health
+3. Generate Health Report at `aidlc-docs/operations/health-report.md`
+4. Analyze execution traces from Construction: categorize failures, propose rule improvements
+5. Apply Feedback Encoding Ladder: escalate repeated issues to stronger enforcement level
+6. Update `aidlc-state.md` with health score and findings
+7. **MANDATORY**: Log in audit.md
+8. Present Health Report to user for review
+
+**Skip IF**:
+- User explicitly requests to skip Operations
+- Project is a one-off prototype with no maintenance expected
+
+**Future Scope** (planned for later versions):
+- CI/CD pipeline integration
+- Production monitoring and alerting setup
 - Incident response procedures
-- Maintenance and support workflows
-- Production readiness checklists
-
-**Current State**: All build and test activities are handled in the CONSTRUCTION phase.
+- Automated rollback procedures
 
 ## Key Principles
 
