@@ -12,8 +12,11 @@ on:
       - reopened
       - synchronize
       - unlabeled
-    paths:
-      - 'aidlc-rules/**'
+    # No `paths:` here — GitHub applies a PR-level filter based on the full PR diff,
+    # which means once any commit in the PR touches aidlc-rules/** every subsequent
+    # commit (docs, CI, empty) also triggers the workflow. Per-commit filtering is
+    # done by the `detect-changes` job below so that non-rules commits are skipped
+    # without wasting a CodeBuild run.
   push:
     branches:
       - main
@@ -31,6 +34,37 @@ env:
 permissions: {}
 
 jobs:
+  # Per-commit change detection. PRs that don't touch aidlc-rules/** skip the
+  # expensive CodeBuild step entirely. Push events (to main or tags) always run.
+  detect-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      rules_changed: ${{ steps.filter.outputs.rules || 'true' }}
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
+      - name: Detect rule changes
+        id: filter
+        if: github.event_name == 'pull_request'
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        with:
+          filters: |
+            rules:
+              - 'aidlc-rules/**'
+      - name: Summary
+        run: |
+          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "Non-PR event (${{ github.event_name }}) — CodeBuild will run."
+          elif [[ "${{ steps.filter.outputs.rules }}" == "true" ]]; then
+            echo "PR touches aidlc-rules/** — CodeBuild will run."
+          else
+            echo "PR does not touch aidlc-rules/** — CodeBuild will be skipped."
+          fi
+
   label-reminder:
     if: >-
       github.event_name == 'pull_request'
@@ -107,13 +141,17 @@ jobs:
           fi
 
   build:
-    # Fork PRs are skipped because they cannot access the repository secrets
-    # or OIDC credentials needed for AWS CodeBuild.
+    # Skipped when:
+    #  - PR has no 'rules' label (maintainer gate — intentional)
+    #  - PR is from a fork (secrets / OIDC not available)
+    #  - PR does not actually modify aidlc-rules/** (per-commit filter)
+    needs: detect-changes
     if: >-
       (github.event_name != 'pull_request'
       || contains(github.event.pull_request.labels.*.name, 'rules'))
       && (github.event_name != 'pull_request'
       || github.event.pull_request.head.repo.full_name == github.repository)
+      && needs.detect-changes.outputs.rules_changed == 'true'
     environment: codebuild
 
     permissions:
