@@ -126,15 +126,15 @@ Total rule corpus: **6650 → 5949 lines** (~11% reduction) while **adding** two
 
 ## References
 
-1. [harness-engineering_EN.md](../Retail_AIDLC_Recording/harness-engineering_EN.md)
-2. [HE_Perspective_on_AIDLC_EN.md](../Retail_AIDLC_Recording/HE_Perspective_on_AIDLC_EN.md)
-3. [AIDLC_Perspective_on_HE_EN.md](../Retail_AIDLC_Recording/AIDLC_Perspective_on_HE_EN.md)
-4. [AWS_AI-DLC_Whitepaper_KO.md](../Retail_AIDLC_Recording/AWS_AI-DLC_Whitepaper_KO.md)
+1. `harness-engineering_EN.md` — internal working note, not included in this repo
+2. `HE_Perspective_on_AIDLC_EN.md` — internal working note, not included in this repo
+3. `AIDLC_Perspective_on_HE_EN.md` — internal working note, not included in this repo
+4. [AWS AI-DLC Whitepaper](https://prod.d13rzhkk8cj2z0.amplifyapp.com/) (Method Definition Paper)
 5. Anthropic, [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) (2026-03-24)
 6. Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
 
 ---
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>) + Claude Code
-**Source:** [harness-engineering_EN.md](../Retail_AIDLC_Recording/harness-engineering_EN.md) + [AWS_AI-DLC_Whitepaper_KO.md](../Retail_AIDLC_Recording/AWS_AI-DLC_Whitepaper_KO.md) + Anthropic Engineering Blogs
+**Source:** internal working notes + [AWS AI-DLC Whitepaper](https://prod.d13rzhkk8cj2z0.amplifyapp.com/) + Anthropic Engineering Blogs
 **Last updated:** April 2026

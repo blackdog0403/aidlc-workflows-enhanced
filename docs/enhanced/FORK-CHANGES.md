@@ -12,7 +12,7 @@
 > **Design principle.** The `aidlc-rules/` tree (what agents actually load) is changed **in place**,
 > but all fork metadata — this file, `COMPARISON.md`, `OPTIMIZATION_NOTES.md`, `CHANGELOG.md` —
 > lives **outside** the rule tree so agents do not parse it as a rule. See the repo root
-> [`README.md`](../README.md#why-this-fork-exists--design-rationale) for the why.
+> [`README.md`](../../README.md#why-this-fork-exists--design-rationale) for the why.
 
 ## Quick Navigation
 
@@ -104,7 +104,7 @@ Not loaded by agents — but relevant when re-releasing from a fork.
 | `aidlc-rules/VERSION`                        | `0.1.8` → `0.1.9-enhanced.0`                                                   |
 | `CHANGELOG.md`                               | Added `[0.1.9-enhanced.0]` section + fork preamble                             |
 
-See [`CHANGELOG.md`](../CHANGELOG.md#019-enhanced0---2026-04-22) for the authoritative release record.
+See [`CHANGELOG.md`](../../CHANGELOG.md#019-enhanced0---2026-04-22) for the authoritative release record.
 
 ---
 
@@ -127,9 +127,7 @@ Three ways to audit this fork's changes:
 
 ### 1. On GitHub (easiest)
 
-Once this repo is marked as a fork of `awslabs/aidlc-workflows` in its settings, the repo landing
-page will show **"This branch is N commits ahead of awslabs/aidlc-workflows:main"**. Click
-**Contribute → Compare** to see the full diff.
+Once this repo is marked as a fork of `awslabs/aidlc-workflows` in its settings, the repo landingpage will show **"This branch is N commits ahead of awslabs/aidlc-workflows:main"**. Click **Contribute → Compare** to see the full diff.
 
 Alternative: manual compare URL:
 <https://github.com/awslabs/aidlc-workflows/compare/v0.1.8...blackdog0403:aidlc-workflows-enhanced:main>

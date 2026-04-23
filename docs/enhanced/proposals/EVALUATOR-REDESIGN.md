@@ -312,8 +312,8 @@ This proposal does not:
 
 ## References
 
-- [`docs/FORK-CHANGES.md`](FORK-CHANGES.md) — file-level change index for this fork
-- [`docs/OPTIMIZATION_NOTES.md`](OPTIMIZATION_NOTES.md) — rule-set change rationale
+- [`docs/enhanced/FORK-CHANGES.md`](../FORK-CHANGES.md) — file-level change index for this fork
+- [`docs/enhanced/OPTIMIZATION_NOTES.md`](../OPTIMIZATION_NOTES.md) — rule-set change rationale
 - [pass@k](https://arxiv.org/abs/2107.03374) — original definition from the HumanEval paper
 - CodeBuild Batch builds — <https://docs.aws.amazon.com/codebuild/latest/userguide/batch-build.html>
 
