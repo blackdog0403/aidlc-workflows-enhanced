@@ -24,9 +24,11 @@ config:
   # STYLE SETTINGS
   # ============================================================
 
-  # Tables must use aligned column style (pipes vertically aligned)
-  MD060:
-    style: "aligned"
+  # Table column style — disabled because several tables include emoji /
+  # CJK / wide Unicode characters where true visual alignment cannot be
+  # achieved with ASCII pipe padding alone. Tables are still formatted
+  # with markdown-table-formatter as a best effort.
+  MD060: false
 
 # Ignore generated/vendored/test fixture files
 ignores:

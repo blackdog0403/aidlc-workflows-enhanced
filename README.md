@@ -26,16 +26,16 @@ Implementation / Verification / Operations runtime. This fork keeps AI-DLC's dec
 intact while selectively absorbing HE's execution-quality patterns, and adds two layers covered by
 neither — host portability and project-purpose gate density.
 
-| Layer | What it adds | File |
-|---|---|---|
-| **Host Capability Layer** | Detects the IDE/CLI and collapses it into three profiles (`full-multi-agent` / `subagent-only` / `single-agent`) that downstream rules branch on. Multi-agent and parallel patterns **degrade gracefully** rather than refusing to run. | [`aws-aidlc-rule-details/common/agent-capabilities.md`](aidlc-rules/aws-aidlc-rule-details/common/agent-capabilities.md) |
-| **Project Mode Layer** | Asks Greenfield projects once — Prototyping / Production / Hybrid — and toggles gate density. Brownfield auto-selects Production. | [`aws-aidlc-rule-details/common/project-mode.md`](aidlc-rules/aws-aidlc-rule-details/common/project-mode.md) |
-| **Automated Feedback (L1–L4)** | L1–L3 deterministic checks + L4 AI review auto-fix loop running **inside** AI-DLC's L5 human approval gate. | [`aws-aidlc-rule-details/common/automated-feedback-loops.md`](aidlc-rules/aws-aidlc-rule-details/common/automated-feedback-loops.md) |
-| **Multi-Agent Patterns** | Generator/Evaluator, 3-agent Planner/Generator/Evaluator, parallel units, Architect-Implementer + Reasoning Sandwich — each with three implementation paths per capability profile. | [`aws-aidlc-rule-details/construction/multi-agent-patterns.md`](aidlc-rules/aws-aidlc-rule-details/construction/multi-agent-patterns.md) |
-| **Context Optimization** | Knowledge Pyramid + Tool Search for 85% token reduction. | [`aws-aidlc-rule-details/common/context-optimization.md`](aidlc-rules/aws-aidlc-rule-details/common/context-optimization.md) |
-| **Boundary-Based Security** | Auto Mode references + AGENTS.md vulnerability guidance. | [`aws-aidlc-rule-details/common/boundary-based-security.md`](aidlc-rules/aws-aidlc-rule-details/common/boundary-based-security.md) |
-| **Entropy Management** | Gardener / AutoDream / Compounding Engineering for ops. | [`aws-aidlc-rule-details/operations/entropy-management.md`](aidlc-rules/aws-aidlc-rule-details/operations/entropy-management.md) |
-| **Cost Optimization extension** | Model Routing, Effort Level, Programmatic Tool Calling. | [`aws-aidlc-rule-details/extensions/cost-optimization/`](aidlc-rules/aws-aidlc-rule-details/extensions/cost-optimization/) |
+| Layer                           | What it adds                                                                                                                                                                                                                            | File                                                                                                                                     |
+|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| **Host Capability Layer**       | Detects the IDE/CLI and collapses it into three profiles (`full-multi-agent` / `subagent-only` / `single-agent`) that downstream rules branch on. Multi-agent and parallel patterns **degrade gracefully** rather than refusing to run. | [`aws-aidlc-rule-details/common/agent-capabilities.md`](aidlc-rules/aws-aidlc-rule-details/common/agent-capabilities.md)                 |
+| **Project Mode Layer**          | Asks Greenfield projects once — Prototyping / Production / Hybrid — and toggles gate density. Brownfield auto-selects Production.                                                                                                       | [`aws-aidlc-rule-details/common/project-mode.md`](aidlc-rules/aws-aidlc-rule-details/common/project-mode.md)                             |
+| **Automated Feedback (L1–L4)**  | L1–L3 deterministic checks + L4 AI review auto-fix loop running **inside** AI-DLC's L5 human approval gate.                                                                                                                             | [`aws-aidlc-rule-details/common/automated-feedback-loops.md`](aidlc-rules/aws-aidlc-rule-details/common/automated-feedback-loops.md)     |
+| **Multi-Agent Patterns**        | Generator/Evaluator, 3-agent Planner/Generator/Evaluator, parallel units, Architect-Implementer + Reasoning Sandwich — each with three implementation paths per capability profile.                                                     | [`aws-aidlc-rule-details/construction/multi-agent-patterns.md`](aidlc-rules/aws-aidlc-rule-details/construction/multi-agent-patterns.md) |
+| **Context Optimization**        | Knowledge Pyramid + Tool Search for 85% token reduction.                                                                                                                                                                                | [`aws-aidlc-rule-details/common/context-optimization.md`](aidlc-rules/aws-aidlc-rule-details/common/context-optimization.md)             |
+| **Boundary-Based Security**     | Auto Mode references + AGENTS.md vulnerability guidance.                                                                                                                                                                                | [`aws-aidlc-rule-details/common/boundary-based-security.md`](aidlc-rules/aws-aidlc-rule-details/common/boundary-based-security.md)       |
+| **Entropy Management**          | Gardener / AutoDream / Compounding Engineering for ops.                                                                                                                                                                                 | [`aws-aidlc-rule-details/operations/entropy-management.md`](aidlc-rules/aws-aidlc-rule-details/operations/entropy-management.md)         |
+| **Cost Optimization extension** | Model Routing, Effort Level, Programmatic Tool Calling.                                                                                                                                                                                 | [`aws-aidlc-rule-details/extensions/cost-optimization/`](aidlc-rules/aws-aidlc-rule-details/extensions/cost-optimization/)               |
 
 **Invariants preserved from upstream AI-DLC:**
 
@@ -49,13 +49,13 @@ neither — host portability and project-purpose gate density.
 
 Depending on what you want to do, jump to:
 
-| I want to… | Read |
-| --- | --- |
-| 🧭 See **every file that differs from upstream** at a glance | **[`docs/FORK-CHANGES.md`](docs/FORK-CHANGES.md)** — start here |
-| 📊 Understand **why** these changes were made (3-party analysis) | [`docs/COMPARISON.md`](docs/COMPARISON.md) |
-| 🔍 Read **file-by-file rationale** and preserved invariants | [`docs/OPTIMIZATION_NOTES.md`](docs/OPTIMIZATION_NOTES.md) |
-| 📜 Check the **release history** | [`CHANGELOG.md`](CHANGELOG.md) |
-| 🔄 **Diff against upstream** locally or on GitHub | [`docs/FORK-CHANGES.md` § How to Diff](docs/FORK-CHANGES.md#how-to-diff-against-upstream) |
+| I want to…                                                       | Read                                                                                      |
+|------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| 🧭 See **every file that differs from upstream** at a glance     | **[`docs/FORK-CHANGES.md`](docs/FORK-CHANGES.md)** — start here                           |
+| 📊 Understand **why** these changes were made (3-party analysis) | [`docs/COMPARISON.md`](docs/COMPARISON.md)                                                |
+| 🔍 Read **file-by-file rationale** and preserved invariants      | [`docs/OPTIMIZATION_NOTES.md`](docs/OPTIMIZATION_NOTES.md)                                |
+| 📜 Check the **release history**                                 | [`CHANGELOG.md`](CHANGELOG.md)                                                            |
+| 🔄 **Diff against upstream** locally or on GitHub                | [`docs/FORK-CHANGES.md` § How to Diff](docs/FORK-CHANGES.md#how-to-diff-against-upstream) |
 
 ### Upstream relationship
 
@@ -617,7 +617,7 @@ Deployment and monitoring (future)
 ## Key Features
 
 | Feature                   | Description                                                                                               |
-| ------------------------- | --------------------------------------------------------------------------------------------------------- |
+|---------------------------|-----------------------------------------------------------------------------------------------------------|
 | **Adaptive Intelligence** | Only executes stages that add value to your specific request                                              |
 | **Context-Aware**         | Analyzes existing codebase and complexity requirements                                                    |
 | **Risk-Based**            | Complex changes get comprehensive treatment, simple changes stay efficient                                |
@@ -697,7 +697,7 @@ These are our core principles to guide our decision making.
 Have one of our supported platforms/tools for Assisted AI Coding installed:
 
 | Platform                      | Installation Link                                                                                                                                               |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Kiro                          | [Install](https://kiro.dev/)                                                                                                                                    |
 | Kiro CLI                      | [Install](https://kiro.dev/cli/)                                                                                                                                |
 | Amazon Q Developer IDE Plugin | [Install](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE.html)                                                                               |
@@ -713,7 +713,7 @@ Have one of our supported platforms/tools for Assisted AI Coding installed:
 ### General Issues
 
 | Problem                      | Solution                                                    |
-| ---------------------------- | ----------------------------------------------------------- |
+|------------------------------|-------------------------------------------------------------|
 | Rules not loading            | Check file exists in the correct location for your platform |
 | File encoding issues         | Ensure files are UTF-8 encoded                              |
 | Rules not applied in session | Start a new chat session after file changes                 |
@@ -852,7 +852,7 @@ The agent will download the latest release, create the correct config file for y
 
 <!-- TODO: Replace this Amplify URL with a permanent/stable URL when available -->
 | Resource                                            | Link                                                                                                                          |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
 | AI-DLC Method Definition Paper                      | [Paper](https://prod.d13rzhkk8cj2z0.amplifyapp.com/)                                                                          |
 | AI-DLC Methodology Blog                             | [AWS Blog](https://aws.amazon.com/blogs/devops/ai-driven-development-life-cycle/)                                             |
 | AI-DLC Open-source Launch Blog                      | [AWS Blog](https://aws.amazon.com/blogs/devops/open-sourcing-adaptive-workflows-for-ai-driven-development-life-cycle-ai-dlc/) |
