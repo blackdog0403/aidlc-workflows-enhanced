@@ -1,6 +1,16 @@
 # Workspace Detection
 
-**Purpose**: Determine workspace state and check for existing AI-DLC projects
+**Purpose**: Determine workspace state, detect host agent capability, and check for existing AI-DLC projects.
+
+## Step 0: Detect Host Agent
+
+Before anything else, execute the detection protocol from `common/agent-capabilities.md` §2:
+1. Path-based detection of the host (claude-code / kiro / amazon-q-dev / cursor / cline / github-copilot / unknown)
+2. Self-report override if the model knows its own host
+3. Collapse to a capability profile: `full-multi-agent` | `subagent-only` | `single-agent`
+4. Write `## Host Agent` block to `aidlc-state.md` (see §2.3 of agent-capabilities.md)
+
+If the host is **unknown**, default to `single-agent` and ask the user at the end of this stage.
 
 ## Step 1: Check for Existing AI-DLC Project
 
@@ -54,6 +64,18 @@ Create `aidlc-docs/aidlc-state.md`:
 - **Start Date**: [ISO timestamp]
 - **Current Stage**: INCEPTION - Workspace Detection
 
+## Host Agent
+- **Detected Host**: [claude-code | cursor | cline | amazon-q-dev | kiro | github-copilot | unknown]
+- **Detection Method**: [self-report | path-based | user-confirmed]
+- **Capability Profile**: [full-multi-agent | subagent-only | single-agent]
+- **Decided At**: [ISO timestamp]
+
+## Project Mode
+[Populated at Requirements Analysis Step 5.1 for Greenfield; auto-set to Production for Brownfield here]
+- **Mode**: [Prototyping | Production | Hybrid]
+- **Decided At**: [ISO timestamp]
+- **Rationale**: [Brief reason]
+
 ## Workspace State
 - **Existing Code**: [Yes/No]
 - **Reverse Engineering Needed**: [Yes/No]
@@ -67,6 +89,8 @@ Create `aidlc-docs/aidlc-state.md`:
 ## Stage Progress
 [Will be populated as workflow progresses]
 ```
+
+**Brownfield Project Mode auto-set**: If Project Type = Brownfield, immediately populate `## Project Mode` with `Production` and rationale "Brownfield project, existing code in service." per `common/project-mode.md` §3.2. The user can still override later.
 
 ## Step 5: Present Completion Message
 

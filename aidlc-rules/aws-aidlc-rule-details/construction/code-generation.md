@@ -7,6 +7,48 @@ This stage generates code for each unit of work through two integrated parts:
 
 **Note**: For brownfield projects, "generate" means modify existing files when appropriate, not create duplicates.
 
+## Harness Engineering Enhancements
+
+### Host Capability Required
+
+This stage uses Generator/Evaluator multi-agent patterns. **Load `common/agent-capabilities.md` and branch behavior on the recorded `Capability Profile`.** Also load `common/project-mode.md` and branch on the recorded `Project Mode`. See `construction/multi-agent-patterns.md` for per-profile implementation paths.
+
+### Evaluator-Optimizer Pattern (from Anthropic)
+
+Code Generation follows Anthropic's **Evaluator-Optimizer workflow**: the context that generates code is never the same context that evaluates it.
+
+> "This workflow is particularly effective when we have clear evaluation criteria, and when iterative refinement provides measurable value."
+> — Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
+
+**Application**: After Part 2 (Generation) creates code, run an evaluation pass:
+1. **L1–L3 deterministic checks first** (per `common/automated-feedback-loops.md`): linter, type checker, tests — zero cost, instant feedback
+2. **L4 AI evaluation** in a fresh context (separate agent on `full-multi-agent` hosts; context reset on `subagent-only` / `single-agent` hosts)
+3. **Auto-fix loop**: iterate max 2 rounds — if L4 still fails, escalate to human (L5)
+4. **L5 human gate applies per Project Mode**:
+   - **Production** → per-unit human approval always required after L1–L4 pass
+   - **Prototyping** → no per-unit human gate; escalate to human only on L4 failure after 2 auto-fix rounds
+   - **Hybrid** → same as Prototyping in Construction (gate preserved at Build & Test)
+
+### Tool Design Principles (from Anthropic)
+
+When generating tools/APIs for the project, follow Anthropic's tool design principles:
+
+> "Put yourself in the model's shoes. Is it obvious how to use this tool based on the description? A good tool definition includes example usage, edge cases, input format requirements, and clear boundaries from other tools."
+> — Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
+
+Applied to code generation:
+- **Agent-Friendly Error Messages**: Generated error messages must include WHAT went wrong + HOW to fix it
+- **Poka-yoke design**: Use absolute paths (not relative), required params (not optional), and strict types
+- **Namespacing**: Namespace tools/functions clearly to define boundaries in functionality
+
+### Context Reset Between Units
+
+Between each unit of code generation, perform a **context reset** (not just compaction):
+- Save current unit state to artifacts
+- Clear context window
+- Start fresh with: `aidlc-state.md` + next unit's design docs + architecture constraints
+- This prevents context anxiety and maintains quality across many units
+
 ## Prerequisites
 - Unit Design Generation must be complete for the unit
 - NFR Implementation (if executed) must be complete for the unit
@@ -122,9 +164,22 @@ This stage generates code for each unit of work through two integrated parts:
 
 ## Step 13: Continue or Complete Generation
 - [ ] If more steps remain, return to Step 10
-- [ ] If all steps complete, proceed to present completion message
+- [ ] If all steps complete, proceed to run L1–L4 feedback loop (Step 13.5)
+
+## Step 13.5: Run L1–L4 Feedback Loop (Evaluator Pass)
+- [ ] Run L1 per-file checks (syntax, forbidden patterns) — see `common/automated-feedback-loops.md`
+- [ ] Run L2 turn-end checks (lint, type-check on changed files)
+- [ ] Run L3 tests (unit tests for this unit)
+- [ ] Run L4 AI review in a **fresh context** per `construction/multi-agent-patterns.md` §1.A / §1.B / §1.C (selected by host profile)
+- [ ] If any of L1–L4 fails → auto-fix and re-run (max 2 rounds)
+- [ ] If still failing after 2 rounds → write `aidlc-docs/construction/{unit-name}/escalation.md` and proceed to Step 14 (present escalation instead of approval)
+- [ ] If all pass → proceed to Step 14 (present completion)
 
 ## Step 14: Present Completion Message
+
+**Mode-dependent behavior**: this step's output depends on the Project Mode recorded in `aidlc-state.md`:
+- **Production** → show the standard "WHAT'S NEXT?" 2-option block below (L5 human gate).
+- **Prototyping / Hybrid** → skip the 2-option block; show a **short auto-proceed notice** and advance to the next unit (or Build & Test if last unit). The user only sees a gate if L4 escalation occurred.
 - Present completion message in this structure:
      1. **Completion Announcement** (mandatory): Always start with this:
 
@@ -157,14 +212,14 @@ This stage generates code for each unit of work through two integrated parts:
 ---
 ```
 
-## Step 15: Wait for Explicit Approval
-- Do not proceed until the user explicitly approves the generated code
-- Approval must be clear and unambiguous
-- If user requests changes, update the code and repeat the approval process
+## Step 15: Wait for Explicit Approval (Production only)
+- **Production mode**: Do not proceed until the user explicitly approves the generated code. If user requests changes, update the code and repeat the approval process.
+- **Prototyping / Hybrid mode**: Skip this gate — the unit is considered complete if L1–L4 passed in Step 13.5. Log the auto-proceed decision in audit.md.
+- **Escalation (any mode)**: If Step 13.5 escalated (L4 failed after 2 rounds), present the escalation to the user and wait for guidance — the workflow halts here until the user responds.
 
-## Step 16: Record Approval and Update Progress
-- Log approval in audit.md with timestamp
-- Record the user's approval response with timestamp
+## Step 16: Record Approval/Auto-Proceed and Update Progress
+- Log the user approval response (Production) OR the auto-proceed decision (Prototyping / Hybrid) in audit.md with timestamp
+- Record the exact outcome
 - Mark Code Generation stage as complete for this unit in aidlc-state.md
 
 ---
