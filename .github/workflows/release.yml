@@ -4,7 +4,7 @@
 # It triggers when a version tag is pushed (by tag-on-merge.yml or manually) and:
 #
 #   1. Creates distribution artifact:
-#      - ai-dlc-rules-vX.X.X.zip (Rules format for Amazon Q, Kiro, etc.)
+#      - ai-dlc-rules-enhanced-vX.Y.Z.zip (Enhanced rules format for Amazon Q, Kiro, etc.)
 #   2. Creates a draft GitHub Release with artifact attached
 #
 # The release is created as a draft so that build artifacts from CodeBuild
@@ -54,7 +54,7 @@ jobs:
         if: steps.version.outputs.skip != 'true'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          zip -r "ai-dlc-rules-v${VERSION}.zip" aidlc-rules/
+          zip -r "ai-dlc-rules-enhanced-v${VERSION}.zip" aidlc-rules/
 
       - name: Create GitHub Release
         if: steps.version.outputs.skip != 'true'
@@ -62,15 +62,15 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           draft: true
-          name: "AI-DLC Workflow v${{ steps.version.outputs.version }}"
+          name: "AI-DLC Enhanced v${{ steps.version.outputs.version }}"
           body: |
-            Release v${{ steps.version.outputs.version }}
-            
+            Release v${{ steps.version.outputs.version }} of **AI-DLC Enhanced** — experimental fork of [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows).
+
             See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.tag }}/CHANGELOG.md) for details.
-            
+
             ## Downloads
-            - **ai-dlc-rules** - Rules format (Amazon Q, Kiro, etc.)
+            - **ai-dlc-rules-enhanced** - Enhanced rules format (Amazon Q, Kiro, Claude Code, Cursor, Cline, Copilot)
           files: |
-            ai-dlc-rules-v${{ steps.version.outputs.version }}.zip
+            ai-dlc-rules-enhanced-v${{ steps.version.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
