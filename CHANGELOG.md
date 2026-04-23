@@ -19,7 +19,7 @@ All notable changes to this project will be documented in this file.
 - add `construction/multi-agent-patterns.md` — capability-branched 3-path Generator/Evaluator patterns
 - add `operations/entropy-management.md` — Gardener / AutoDream / Compounding Engineering
 - add `extensions/cost-optimization/` — Model Routing, Effort Level, Programmatic Tool Calling
-- add `docs/COMPARISON.md`, `docs/OPTIMIZATION_NOTES.md`, and `docs/FORK-CHANGES.md` — rationale, design invariants, and file-level change index for the optimized rule set
+- add `docs/enhanced/COMPARISON.md`, `docs/enhanced/OPTIMIZATION_NOTES.md`, and `docs/enhanced/FORK-CHANGES.md` — rationale, design invariants, and file-level change index for the optimized rule set
 
 ### Changes
 
@@ -182,5 +182,3 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - add Kiro CLI support and multi-platform architecture
-
-
