@@ -42,12 +42,12 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      rules_changed: ${{ steps.filter.outputs.rules || 'true' }}
+      rules_changed: ${{ steps.decide.outputs.rules_changed }}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
-      - name: Detect rule changes
+      - name: Detect rule changes (PR only)
         id: filter
         if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
@@ -55,14 +55,18 @@ jobs:
           filters: |
             rules:
               - 'aidlc-rules/**'
-      - name: Summary
+      - name: Decide rules_changed
+        id: decide
         run: |
           if [[ "${{ github.event_name }}" != "pull_request" ]]; then
             echo "Non-PR event (${{ github.event_name }}) — CodeBuild will run."
+            echo "rules_changed=true" >> "$GITHUB_OUTPUT"
           elif [[ "${{ steps.filter.outputs.rules }}" == "true" ]]; then
             echo "PR touches aidlc-rules/** — CodeBuild will run."
+            echo "rules_changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "PR does not touch aidlc-rules/** — CodeBuild will be skipped."
+            echo "rules_changed=false" >> "$GITHUB_OUTPUT"
           fi
 
   label-reminder:
