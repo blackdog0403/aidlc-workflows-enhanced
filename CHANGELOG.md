@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file.
 
+> This repository is an experimental fork of [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows),
+> maintained as a personal R&D playground. `*-enhanced.*` suffixed versions mark pre-release
+> revisions that extend the upstream AI-DLC rule set; they are not official AWS releases.
+
+## [0.1.9-enhanced.0] - 2026-04-22
+
+### Features
+
+- adopt AI-DLC Optimized rule set (April 2026 revision) — adds Host Capability Layer, Project Mode Layer, multi-agent patterns, automated feedback loops, context/cost optimization, and entropy management
+- add `common/agent-capabilities.md` — capability matrix and detection protocol for Claude Code / Kiro / Amazon Q / Cursor / Cline / Copilot
+- add `common/project-mode.md` — Prototyping / Production / Hybrid gate-density selection for Greenfield projects
+- add `common/automated-feedback-loops.md` — L1–L4 auto-fix loop inside AI-DLC's L5 approval gate
+- add `common/boundary-based-security.md` — Auto Mode and AGENTS.md vulnerability guidance
+- add `common/context-optimization.md` — Knowledge Pyramid + Tool Search
+- add `construction/multi-agent-patterns.md` — capability-branched 3-path Generator/Evaluator patterns
+- add `operations/entropy-management.md` — Gardener / AutoDream / Compounding Engineering
+- add `extensions/cost-optimization/` — Model Routing, Effort Level, Programmatic Tool Calling
+- add `docs/COMPARISON.md`, `docs/OPTIMIZATION_NOTES.md`, and `docs/FORK-CHANGES.md` — rationale, design invariants, and file-level change index for the optimized rule set
+
+### Changes
+
+- rewrite `construction/multi-agent-patterns.md` with three implementation paths per pattern (full-multi-agent / subagent-only / single-agent)
+- update `aws-aidlc-rules/core-workflow.md` to load capability and mode files at workflow start
+- update `construction/code-generation.md` with Step 13.5 (L1–L4 feedback + auto-fix) and mode-aware gates
+- update `inception/workspace-detection.md` with Step 0 host-agent detection
+- update `inception/requirements-analysis.md` Step 5.1 with Project Mode question
+- update `inception/workflow-planning.md` to read Project Mode + Capability Profile
+- update `construction/build-and-test.md` — L1–L3 hook wiring on capable hosts; final human gate retained in all modes
+- update `common/welcome-message.md` with Host-Aware and Mode-Aware bullets
+- trim `common/error-handling.md` (373 → ~170 lines, no semantic loss)
+- trim `common/workflow-changes.md` (285 → ~95 lines, no semantic loss)
+- trim `common/question-format-guide.md` (332 → ~120 lines, no semantic loss)
+
+### CI/CD
+
+- retarget workflows to this fork: replace hardcoded `awslabs/aidlc-workflows` references with `${{ github.repository }}` in `release-pr.yml`, and with fork path in `codebuild.yml` fallback, `pull_request_template.md`, and `ISSUE_TEMPLATE/feature_request.yml`
+- switch CODEOWNERS from `@awslabs/aidlc-*` teams to `@blackdog0403` and mark the repo as an experimental fork
+
+### Infrastructure
+
+- bump `aidlc-rules/VERSION` to `0.1.9-enhanced.0` to distinguish pre-release fork builds from upstream tags
+
+---
+
 ## [0.1.8] - 2026-04-20
 
 ### Bug Fixes
