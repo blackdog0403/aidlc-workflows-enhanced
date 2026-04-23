@@ -203,7 +203,7 @@ jobs:
                     cd "$EVALUATOR_DIR"
                     EVALUATOR_DIR="$(pwd -P)"  # resolve symlinks for consistent paths
                     RULES_REF="${CURRENT_TAG:-$CURRENT_BRANCH}"
-                    PR_NUMBER=$(gh pr view "$CURRENT_BRANCH" --repo "${GITHUB_REPOSITORY:-awslabs/aidlc-workflows}" --json number --jq '.number' 2>/dev/null || echo "")
+                    PR_NUMBER=$(gh pr view "$CURRENT_BRANCH" --repo "${GITHUB_REPOSITORY:-blackdog0403/aidlc-workflows-enhanced}" --json number --jq '.number' 2>/dev/null || echo "")
                     echo "Rules ref: $RULES_REF"
                     if [[ -n "$PR_NUMBER" ]]; then
                       echo "PR number: $PR_NUMBER (will label as pr-$PR_NUMBER in trend report)"

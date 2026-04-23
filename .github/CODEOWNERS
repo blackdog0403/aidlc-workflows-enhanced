@@ -1,21 +1,24 @@
 # [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#about-code-owners)
+#
+# This repository is an experimental fork of https://github.com/awslabs/aidlc-workflows
+# maintained as a personal R&D playground. It is not an official AWS release.
 
 ## Default owners for everything in the repo
 
-*                                      @awslabs/aidlc-admins @awslabs/aidlc-maintainers
+*                                      @blackdog0403
 
-.github/                               @awslabs/aidlc-admins
-.gitignore                             @awslabs/aidlc-admins
-aidlc-rules/                           @awslabs/aidlc-admins @awslabs/aidlc-maintainers @awslabs/aidlc-writers
-assets/                                @awslabs/aidlc-admins @awslabs/aidlc-maintainers @awslabs/aidlc-writers
-CHANGELOG.md                           @awslabs/aidlc-admins
-cliff.toml                             @awslabs/aidlc-admins
-CODE_OF_CONDUCT.md                     @awslabs/aidlc-admins
-CONTRIBUTING.md                        @awslabs/aidlc-admins
-LICENSE                                @awslabs/aidlc-admins
-README.md                              @awslabs/aidlc-admins
-scripts/                               @awslabs/aidlc-admins @awslabs/aidlc-maintainers
+.github/                               @blackdog0403
+.gitignore                             @blackdog0403
+aidlc-rules/                           @blackdog0403
+assets/                                @blackdog0403
+CHANGELOG.md                           @blackdog0403
+cliff.toml                             @blackdog0403
+CODE_OF_CONDUCT.md                     @blackdog0403
+CONTRIBUTING.md                        @blackdog0403
+LICENSE                                @blackdog0403
+README.md                              @blackdog0403
+scripts/                               @blackdog0403
 
 ## Secure the CODEOWNERS file
 
-/.github/CODEOWNERS                    @awslabs/aidlc-admins
+/.github/CODEOWNERS                    @blackdog0403
