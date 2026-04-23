@@ -19,6 +19,19 @@ on:
       - main
     tags:
       - 'v*'
+    # Skip CodeBuild when the push only touches docs / CI / top-level
+    # README. Note: a push that contains both rule changes and docs
+    # still triggers the build, because `paths-ignore` only skips when
+    # ALL changed files match. Tag pushes skip too if the tagged commit
+    # happens to be docs-only, which is acceptable for this fork.
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.github/**'
+      - 'CODE_OF_CONDUCT.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'NOTICE'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
