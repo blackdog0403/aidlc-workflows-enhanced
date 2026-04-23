@@ -91,9 +91,7 @@ Depending on what you want to do, jump to:
 - **Upstream:** [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) (the canonical AI-DLC)
 - **This fork's baseline:** upstream **v0.1.8**
 - **HE corpus cut-off:** Anthropic Engineering & Research blog posts published up to **2026-04-22**
-- **Release tag scheme:**
-  - Upstream releases: `vX.Y.Z` (e.g. `v0.1.8`)
-  - This fork: `vX.Y.Z-enhanced.N` (e.g. `v0.1.9-enhanced.0`) — `-enhanced.N` is a [SemVer pre-release](https://semver.org/#spec-item-9) suffix, making fork versions **sort below** upstream's next stable release and never collide with upstream tags.
+- **Release tag scheme:** `vX.Y.Z` (standard [SemVer](https://semver.org/)). This fork versions independently of upstream — the first release is `v0.1.9`, reusing the next number after upstream's `v0.1.8` baseline without implying any alignment with upstream's future releases. The repository name, README, and CHANGELOG make the fork relationship explicit, so tag collision risk is negligible in practice (this fork publishes its own releases under its own repo).
 - **Syncing from upstream:** see [`docs/enhanced/FORK-CHANGES.md` § How to Diff Against Upstream](docs/enhanced/FORK-CHANGES.md#how-to-diff-against-upstream).
 
 ## Common

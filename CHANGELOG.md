@@ -3,10 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 > This repository is an experimental fork of [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows),
-> maintained as a personal R&D playground. `*-enhanced.*` suffixed versions mark pre-release
-> revisions that extend the upstream AI-DLC rule set; they are not official AWS releases.
+> maintained as a personal R&D playground. Version numbers here evolve independently
+> of upstream tags; they are not official AWS releases.
 
-## [0.1.9-enhanced.0] - 2026-04-22
+## [0.1.9] - 2026-04-22
 
 ### Features
 
@@ -42,7 +42,7 @@ All notable changes to this project will be documented in this file.
 
 ### Infrastructure
 
-- bump `aidlc-rules/VERSION` to `0.1.9-enhanced.0` to distinguish pre-release fork builds from upstream tags
+- bump `aidlc-rules/VERSION` to `0.1.9` — first release of this fork; versioning evolves independently of upstream tags
 
 ---
 
