@@ -2,83 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
-> This repository is an experimental fork of [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows),
-> maintained as a personal R&D playground. Version numbers here evolve independently
-> of upstream tags; they are not official AWS releases.
-
-## [0.1.9] - 2026-04-22
-
-### Features
-
-- adopt AI-DLC Optimized rule set (April 2026 revision) — adds Host Capability Layer, Project Mode Layer, multi-agent patterns, automated feedback loops, context/cost optimization, and entropy management
-- add `common/agent-capabilities.md` — capability matrix and detection protocol for Claude Code / Kiro / Amazon Q / Cursor / Cline / Copilot
-- add `common/project-mode.md` — Prototyping / Production / Hybrid gate-density selection for Greenfield projects
-- add `common/automated-feedback-loops.md` — L1–L4 auto-fix loop inside AI-DLC's L5 approval gate
-- add `common/boundary-based-security.md` — Auto Mode and AGENTS.md vulnerability guidance
-- add `common/context-optimization.md` — Knowledge Pyramid + Tool Search
-- add `construction/multi-agent-patterns.md` — capability-branched 3-path Generator/Evaluator patterns
-- add `operations/entropy-management.md` — Gardener / AutoDream / Compounding Engineering
-- add `extensions/cost-optimization/` — Model Routing, Effort Level, Programmatic Tool Calling
-- add `docs/enhanced/COMPARISON.md`, `docs/enhanced/OPTIMIZATION_NOTES.md`, and `docs/enhanced/FORK-CHANGES.md` — rationale, design invariants, and file-level change index for the optimized rule set
-
-### Changes
-
-- rewrite `construction/multi-agent-patterns.md` with three implementation paths per pattern (full-multi-agent / subagent-only / single-agent)
-- update `aws-aidlc-rules/core-workflow.md` to load capability and mode files at workflow start
-- update `construction/code-generation.md` with Step 13.5 (L1–L4 feedback + auto-fix) and mode-aware gates
-- update `inception/workspace-detection.md` with Step 0 host-agent detection
-- update `inception/requirements-analysis.md` Step 5.1 with Project Mode question
-- update `inception/workflow-planning.md` to read Project Mode + Capability Profile
-- update `construction/build-and-test.md` — L1–L3 hook wiring on capable hosts; final human gate retained in all modes
-- update `common/welcome-message.md` with Host-Aware and Mode-Aware bullets
-- trim `common/error-handling.md` (373 → ~170 lines, no semantic loss)
-- trim `common/workflow-changes.md` (285 → ~95 lines, no semantic loss)
-- trim `common/question-format-guide.md` (332 → ~120 lines, no semantic loss)
-
-### CI/CD
-
-- retarget workflows to this fork: replace hardcoded `awslabs/aidlc-workflows` references with `${{ github.repository }}` in `release-pr.yml`, and with fork path in `codebuild.yml` fallback, `pull_request_template.md`, and `ISSUE_TEMPLATE/feature_request.yml`
-- switch CODEOWNERS from `@awslabs/aidlc-*` teams to `@blackdog0403` and mark the repo as an experimental fork
-
-### Infrastructure
-
-- bump `aidlc-rules/VERSION` to `0.1.9` — first release of this fork; versioning evolves independently of upstream tags
-
----
-
-## [0.1.8] - 2026-04-20
+## [0.1.9] - 2026-04-23
 
 ### Bug Fixes
 
-- restore PR head branch detection lost in #172 merge (#173)
-- Modify tag creation process in tag-on-merge workflow (#174)
-- Update CodeBuild action version and add trigger (#175)
-- forks skip codebuild (#178)
-- present extension opt-in prompts in user's conversation language (#177)
-- Minor updates to README (#192)
+- resolve markdownlint violations in fork docs
+- format tables and relax MD060 for emoji/wide-unicode rows
+- point rules_repo at this fork instead of upstream
+- make detect-changes return explicit false instead of defaulting to true
 
 ### CI/CD
 
-- add markdownlint infrastructure (#159)
+- retrigger CodeBuild to re-run evaluator (rerun #1)
+- skip CodeBuild for non-rule commits via per-commit diff
+- skip CodeBuild on non-rule push/tag events (#3)
+
+### Documentation
+
+- add fork rationale, comparison, and file-level change index
+- add EVALUATOR-REDESIGN proposal for k-sample gate
+- reorganize fork-only docs under docs/enhanced/ and add model-capability proposal
 
 ### Features
 
-- post trend report executive summary as PR comment (#172)
-- add security scanners workflow (#161)
-- agent-driven setup —  drop the manual steps (#109)
+- adopt AI-DLC Optimized rule set (April 2026 revision)
+- restore Quality Bar and Anti-Pattern in question-format-guide
 
 ### Miscellaneous
 
-- bump cryptography in /scripts/aidlc-evaluator (#179)
-- bump pytest in /scripts/aidlc-evaluator (#184)
-- bump pillow in /scripts/aidlc-evaluator (#183)
-- Fix CodeQL action versions in workflow (#191)
-- bump python-multipart in /scripts/aidlc-evaluator (#186)
+- retarget CI workflows and CODEOWNERS to this fork
+- adopt plain SemVer (drop -enhanced.N pre-release suffix) (#4)
 
-## [0.1.7] - 2026-04-02
+## [0.1.8] - 2026-04-22
 
 ### Bug Fixes
 
+- typo in core-workflow.md
+- rename rule and move to bottom of Critical Rules section
+- require actual system time for audit timestamps (#56)
+- correct GitHub Copilot instructions and Kiro CLI rule-details path resolution (#82, #84) (#87)
+- codebuild cache and download fix (#93)
+- correct copy-paste error in error-handling.md (#96)
 - add required environmental github token (#137)
 - Add security extension disclaimer (#134)
 - refactor error handling and PR creation in release workflow (#140)
@@ -89,15 +53,37 @@ All notable changes to this project will be documented in this file.
 - remove report-bundle CodeBuild secondary artifact and add --local-run-dir support (#162)
 - use PR head branch for rules-ref instead of merge ref (#168)
 - write aidlc-rules/VERSION in release PR to trigger CodeBuild (#169)
+- restore PR head branch detection lost in #172 merge (#173)
+- Modify tag creation process in tag-on-merge workflow (#174)
+- Update CodeBuild action version and add trigger (#175)
+- forks skip codebuild (#178)
+- present extension opt-in prompts in user's conversation language (#177)
+- Minor updates to README (#192)
+- explicitly set tag_name in release workflow (#197)
+- address security scanners follow-up items (#180) (#199)
+
+### CI/CD
+
+- add markdownlint infrastructure (#159)
 
 ### Documentation
 
+- update README to direct users to GitHub Releases (#61)
+- add Windows CMD setup instructions and ZIP note (#68)
+- clarify ZIP download location and consolidate notes (#70)
 - add developer's guide for running CodeBuild locally (#94)
 - add working-with-aidlc interaction guide and writing-inputs documents (#121)
 - comprehensive documentation review and remediation (#113)
 
 ### Features
 
+- add Kiro CLI support and multi-platform architecture
+- adding AIDLC skill to work with IDEs such as Claude, OpenCode and others
+- addin
+- add leo file
+- add test automation friendly code generation rules
+- add frontend design coverage in Construction phase
+- add CodeBuild workflow (#92)
 - add code owners (#112)
 - changelog-first release flow with build artifacts on draft releases (#125)
 - add AIDLC Evaluation & Reporting Framework (#115)
@@ -106,79 +92,27 @@ All notable changes to this project will be documented in this file.
 - align CodeBuild workflow with current evaluator CLI and add trend report pipeline  (#147)
 - gate CodeBuild on 'codebuild' label + aidlc-rules paths (#150)
 - auto-label PRs touching aidlc-rules/ with codebuild label (#158)
+- post trend report executive summary as PR comment (#172)
+- add security scanners workflow (#161)
+- agent-driven setup —  drop the manual steps (#109)
+- detect and flag infrastructure failures in trend reports (#202)
 
 ### Miscellaneous
 
+- removing wrong files
+- removing wrong files
+- add templates for github issues (#97)
 - bump pyjwt in /scripts/aidlc-evaluator (#129)
 - bump pillow in /scripts/aidlc-evaluator (#130)
 - bump requests in /scripts/aidlc-evaluator (#146)
 - bump cryptography in /scripts/aidlc-evaluator (#148)
 - bump pygments in /scripts/aidlc-evaluator (#151)
 - bump aiohttp in /scripts/aidlc-evaluator (#163)
+- bump cryptography in /scripts/aidlc-evaluator (#179)
+- bump pytest in /scripts/aidlc-evaluator (#184)
+- bump pillow in /scripts/aidlc-evaluator (#183)
+- Fix CodeQL action versions in workflow (#191)
+- bump python-multipart in /scripts/aidlc-evaluator (#186)
+- bump python-dotenv (#201)
 
-## [0.1.6] - 2026-03-05
 
-### Bug Fixes
-
-- codebuild cache and download fix (#93)
-- correct copy-paste error in error-handling.md (#96)
-
-### Features
-
-- add CodeBuild workflow (#92)
-
-### Miscellaneous
-
-- add templates for github issues (#97)
-
-## [0.1.4] - 2026-02-24
-
-### Bug Fixes
-
-- correct GitHub Copilot instructions and Kiro CLI rule-details path resolution (#82, #84) (#87)
-
-## [0.1.3] - 2026-02-11
-
-### Bug Fixes
-
-- require actual system time for audit timestamps (#56)
-
-### Documentation
-
-- clarify ZIP download location and consolidate notes (#70)
-
-## [0.1.2] - 2026-02-08
-
-### Bug Fixes
-
-- typo in core-workflow.md
-- rename rule and move to bottom of Critical Rules section
-
-### Documentation
-
-- update README to direct users to GitHub Releases (#61)
-- add Windows CMD setup instructions and ZIP note (#68)
-
-### Features
-
-- add test automation friendly code generation rules
-- add frontend design coverage in Construction phase
-
-## [0.1.1] - 2026-01-22
-
-### Features
-
-- adding AIDLC skill to work with IDEs such as Claude, OpenCode and others
-- addin
-- add leo file
-
-### Miscellaneous
-
-- removing wrong files
-- removing wrong files
-
-## [0.1.0] - 2026-01-22
-
-### Features
-
-- add Kiro CLI support and multi-platform architecture
