@@ -1,6 +1,6 @@
 # AI-DLC Optimized Rules — Optimization Notes
 
-> Summary of changes introduced in the April 2026 revision and the design invariants preserved across them.
+Summary of changes introduced in the April 2026 revision and the design invariants preserved across them.
 
 > [!NOTE]
 > **Key Takeaways**
@@ -135,6 +135,6 @@ Total rule corpus: **6650 → 5949 lines** (~11% reduction) while **adding** two
 
 ---
 
-**Author:** Kwangyoung Kim (kwangyou@amazon.com) + Claude Code
+**Author:** Kwangyoung Kim (<kwangyou@amazon.com>) + Claude Code
 **Source:** [harness-engineering_EN.md](../Retail_AIDLC_Recording/harness-engineering_EN.md) + [AWS_AI-DLC_Whitepaper_KO.md](../Retail_AIDLC_Recording/AWS_AI-DLC_Whitepaper_KO.md) + Anthropic Engineering Blogs
 **Last updated:** April 2026

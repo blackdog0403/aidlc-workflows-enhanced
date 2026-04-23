@@ -176,6 +176,6 @@ This file's matrix is a **snapshot**. When a host ships a new capability (e.g., 
 
 ---
 
-> Author: Kwangyoung Kim (kwangyou@amazon.com) + Claude Code
+> Author: Kwangyoung Kim (<kwangyou@amazon.com>) + Claude Code
 > Source: [harness-engineering_EN.md](../../../../harness-engineering_EN.md) + [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips) + host-agent documentation as of 2026-04
 > Last updated: April 2026

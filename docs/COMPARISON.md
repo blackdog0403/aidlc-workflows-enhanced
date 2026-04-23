@@ -2,7 +2,7 @@
 
 > Objective Comparative Analysis across the full scope of AI-native software development.
 
-**Author:** Kwangyoung Kim (blackdog0403@gmail.com)
+**Author:** Kwangyoung Kim (<blackdog0403@gmail.com>)
 **Last updated:** 2026-04-21
 
 > [!NOTE]
@@ -304,21 +304,21 @@ Because these taxonomies are not interchangeable, this section does not score th
 
 ### Harness Engineering
 
-5. [harness-engineering_EN.md](harness-engineering_EN.md)
-6. [HE_Perspective_on_AIDLC_EN.md](HE_Perspective_on_AIDLC_EN.md)
-7. Anthropic, [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) (2026-03-24)
-8. Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
-9. Anthropic, [Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy) (2026-02)
-10. Anthropic, [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) (2025-06-13)
-11. [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips)
-12. LangChain, [Improving Deep Agents with Harness Engineering](https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering) (2026-02-17)
+1. [harness-engineering_EN.md](harness-engineering_EN.md)
+2. [HE_Perspective_on_AIDLC_EN.md](HE_Perspective_on_AIDLC_EN.md)
+3. Anthropic, [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) (2026-03-24)
+4. Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
+5. Anthropic, [Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy) (2026-02)
+6. Anthropic, [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) (2025-06-13)
+7. [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips)
+8. LangChain, [Improving Deep Agents with Harness Engineering](https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering) (2026-02-17)
 
 ### Maturity Frameworks
 
-13. [Salesforce Agentic Maturity Model](https://www.salesforce.com/news/stories/agentic-maturity-model/) (2025-04)
+1. [Salesforce Agentic Maturity Model](https://www.salesforce.com/news/stories/agentic-maturity-model/) (2025-04)
 
 ---
 
-**Author:** Kwangyoung Kim (blackdog0403@gmail.com)
+**Author:** Kwangyoung Kim (<blackdog0403@gmail.com>)
 **Source:** [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) (reference implementation: v0.1.8) + aidlc-rules-optimized (April 2026 revision) + Anthropic Engineering Blogs
 **Last updated:** April 2026

@@ -183,6 +183,6 @@ A user can **de-escalate** too (rare — Production → Prototyping for a featur
 
 ---
 
-> Author: Kwangyoung Kim (kwangyou@amazon.com) + Claude Code
+> Author: Kwangyoung Kim (<kwangyou@amazon.com>) + Claude Code
 > Source: [harness-engineering_EN.md](../../../../harness-engineering_EN.md) + [AWS_AI-DLC_Whitepaper_KO.md](../../../../AWS_AI-DLC_Whitepaper_KO.md) + [HE_Perspective_on_AIDLC_EN.md](../../../../HE_Perspective_on_AIDLC_EN.md)
 > Last updated: April 2026

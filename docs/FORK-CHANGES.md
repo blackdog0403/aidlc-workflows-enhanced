@@ -6,7 +6,7 @@
 
 **This release:** `0.1.9-enhanced.0`
 **Upstream baseline:** `v0.1.8`
-**Author:** Kwangyoung Kim (blackdog0403@gmail.com)
+**Author:** Kwangyoung Kim (<blackdog0403@gmail.com>)
 
 > [!NOTE]
 > **Design principle.** The `aidlc-rules/` tree (what agents actually load) is changed **in place**,
