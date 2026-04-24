@@ -111,6 +111,8 @@ Evaluate risk level:
 
 ## Step 3: Phase Determination
 
+> **MANDATORY precedence:** Before applying any `Execute IF` / `Skip IF` condition in §3.1–§3.6 below, consult `common/project-mode.md §2` for mode-based overrides. If that matrix marks a stage as **EXECUTE (ALWAYS)** for the current Project Mode, execute the stage regardless of what the conditions below would otherwise recommend. The conditions below apply only to stages the matrix marks as **Conditional** for the current mode.
+
 ### 3.1 User Stories - Already Executed or Skip?
 **Already executed**: Move to next determination
 **Not executed - Execute IF**:

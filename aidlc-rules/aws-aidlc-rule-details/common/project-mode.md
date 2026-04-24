@@ -24,20 +24,39 @@ The two frameworks push in opposite directions here:
 
 ---
 
-## 2. The Two Modes
+## 2. Mode-Based Stage Execution — MANDATORY OVERRIDE
 
-| Dimension | Prototyping Mode | Production Mode |
-|---|---|---|
-| Inception gates (Requirements / Stories / Workflow Planning) | **Present, abbreviated** — approve once, don't re-ask per refinement | **Full** — every stage ends in explicit approval |
-| User Stories stage | Conditional, lean toward SKIP for solo prototypes | Conditional, lean toward EXECUTE |
-| Application Design | Skip unless architecturally complex | Execute |
-| NFR Requirements / NFR Design / Infrastructure Design | Skip by default | Execute per unit |
-| Code Generation feedback levels | **L1–L4 automated + Auto Mode (if host supports)**; no human gate per unit | **L1–L3 automated + L4 AI review + L5 human gate per unit** |
-| Generator/Evaluator multi-agent | Enabled if host supports | Enabled if host supports + **always** for `full-multi-agent` hosts |
-| Boundary-Based Security (Construction) | Full — Tier 1+2 auto-approved, Tier 3 prompted | Full — same, plus pre-approved commands list published upfront |
-| Build and Test final gate | **Present** — this is the one non-negotiable human gate | **Present** |
-| Operations (Gardener / Health Report) | Optional post-hoc | Required after every Construction cycle |
-| Extensions (security baseline, property-based testing) | Opt-in, default OFF | Opt-in, default ON for security baseline |
+This section is a **mandatory override rule**, not a reference table. Agents MUST consult this table before applying any stage-specific `SKIP IF` / `Execute IF` conditions from individual stage rule files (e.g., `inception/workflow-planning.md §3.x`).
+
+### 2.1 Precedence
+
+1. This table (`project-mode.md §2.2`) is evaluated **first**.
+2. If this table marks a stage as **EXECUTE (ALWAYS)** for the current Project Mode, the stage MUST execute regardless of any `SKIP IF` condition in its own rule file.
+3. Only when this table marks a stage as **Conditional** do the stage's own `SKIP IF` / `Execute IF` rules take effect.
+
+### 2.2 Mode-Based Stage Matrix
+
+| Stage / Dimension | Prototyping Mode | Production Mode | Hybrid Mode |
+|---|---|---|---|
+| Inception gates (Requirements / Stories / Workflow Planning) | **Present, abbreviated** — approve once, don't re-ask per refinement | **EXECUTE (ALWAYS)** — every stage ends in explicit approval | **EXECUTE (ALWAYS)** for Inception |
+| User Stories stage | Conditional (lean toward SKIP for solo prototypes) | **EXECUTE (ALWAYS)** | **EXECUTE (ALWAYS)** |
+| Application Design | Conditional (SKIP unless architecturally complex) | **EXECUTE (ALWAYS)** | **EXECUTE (ALWAYS)** |
+| Units Generation | Conditional | **EXECUTE (ALWAYS)** | **EXECUTE (ALWAYS)** |
+| NFR Requirements / NFR Design / Infrastructure Design | Conditional (SKIP by default) | **EXECUTE (ALWAYS) per unit** | Conditional per unit (Prototyping-style) |
+| Code Generation feedback levels | L1–L4 automated + Auto Mode (if host supports); no human gate per unit | L1–L3 automated + L4 AI review + **L5 human gate per unit (ALWAYS)** | L1–L4 automated; no per-unit human gate |
+| Generator/Evaluator multi-agent | Enabled if host supports | Enabled if host supports; **ALWAYS for `full-multi-agent` hosts** | Enabled if host supports |
+| Boundary-Based Security (Construction) | Full — Tier 1+2 auto-approved, Tier 3 prompted | Full — same, plus pre-approved commands list published upfront | Same as Prototyping |
+| Build and Test final gate | **EXECUTE (ALWAYS)** — non-negotiable human gate | **EXECUTE (ALWAYS)** | **EXECUTE (ALWAYS)** |
+| Operations (Gardener / Health Report) | Optional post-hoc | **EXECUTE (ALWAYS)** after every Construction cycle | **EXECUTE (ALWAYS)** |
+| Extensions (security baseline, property-based testing) | Opt-in, default OFF | Opt-in, default ON for security baseline | Opt-in, default ON for security baseline |
+
+### 2.3 Why this override exists
+
+Stage rule files (e.g., `workflow-planning.md §3.2 Application Design – Skip IF`) describe **stage-intrinsic** skip conditions: "skip when the stage's own work is trivially unnecessary for the current change." These conditions are written assuming a generic AI-DLC invocation without a user-declared quality bar.
+
+Project Mode is a **user-declared quality bar**. When the user chooses Production, the contract is *"every AI-DLC stage runs, regardless of whether stage-intrinsic conditions would otherwise permit a skip."* Letting stage-intrinsic conditions silently override that contract caused observable regressions (see `docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md` §3.6 lineage) — agents would legitimately argue "the tech environment fully specifies the design, so Application Design can skip," which is correct by the stage's own rules but wrong by Production's contract.
+
+The MANDATORY override keyword resolves that conflict deterministically in favor of the user-declared quality bar.
 
 ### 2.1 What stays the same in both modes
 
