@@ -1,30 +1,12 @@
 # Benchmark-Driven Rule Improvements
 
-> Three rule-level improvements surfaced by the Enhanced vs Upstream
-> benchmark run (see `docs/benchmark/AIDLC-Rules-Comparison.md`). At
-> draft time Enhanced scored 69/71 on the shared 71-assertion rubric,
-> two points behind the Claude Code skill-native variant (71/71); both
-> visible gaps lived in the `detect` skill. A third observation
-> concerned the `gate` skill, which was passing only via model
-> synthesis rather than explicit guidance — fragile under weaker
-> models or different context budgets.
+> Three rule-level improvements surfaced by the Enhanced vs Upstream benchmark run (see `docs/benchmark/AIDLC-Rules-Comparison.md`). At draft time Enhanced scored 69/71 on the shared 71-assertion rubric, two points behind the Claude Code skill-native variant (71/71); both visible gaps lived in the `detect` skill. A third observation concerned the `gate` skill, which was passing only via model synthesis rather than explicit guidance — fragile under weaker models or different context budgets.
 >
-> **Post-landing reality (see §6 for the fragility data and §7 for
-> the updated per-skill picture):**
+> **Post-landing reality (see §6 for the fragility data and §7 for the updated per-skill picture):**
 >
-> - The first automated measurement after A/B/C landed scored
->   **68/71**. Two unexpected drops (`nfr/tech-stack` and
->   `reverse/8-artifact-types`) were traced to the Gate Output
->   Contract's original placement at the top of `build-and-test.md`
->   indirectly shortening earlier-stage artefacts.
-> - The contract was **relocated inside the same file** to between
->   Step 8 and Step 9, with an explicit "applies only to Step 9"
->   scope guard (see §3.6). A re-measurement recovered both
->   assertions, lifting Enhanced to **70/71 (98.6%)** — two points
->   above Upstream, one point below Native.
-> - The single remaining failure (`detect/slash-command`) is
->   Proposal C's explicitly-documented host-portability gap. It is
->   not closable without breaking portability.
+> - The first automated measurement after A/B/C landed scored **68/71**. Two unexpected drops (`nfr/tech-stack` and `reverse/8-artifact-types`) were traced to the Gate Output Contract's original placement at the top of `build-and-test.md` indirectly shortening earlier-stage artefacts.
+> - The contract was **relocated inside the same file** to between Step 8 and Step 9, with an explicit "applies only to Step 9" scope guard (see §3.6). A re-measurement recovered both assertions, lifting Enhanced to **70/71 (98.6%)** — two points above Upstream, one point below Native.
+> - The single remaining failure (`detect/slash-command`) is Proposal C's explicitly-documented host-portability gap. It is not closable without breaking portability.
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>)
 **Status:** Implemented (A + B + C landed 2026-04-23, §3.6 adjustment 2026-04-24)
@@ -213,15 +195,7 @@ subjective/objective boundary and was observed to cost ~2 rubric
 points against upstream variants that did so.
 ```
 
-> **Placement note (added after post-landing measurement — see §3.6):**
-> The final landed placement of this contract is **between Step 8
-> (Update State Tracking) and Step 9 (Present Results to User)**, not
-> at the top of the rule file. The contract body is also prefixed with
-> an explicit "applies only to Step 9; Steps 2–7 unaffected" guard.
-> This scoping was necessary because placing the contract before Step 1
-> caused upstream instruction templates (`build-instructions.md`,
-> `unit-test-instructions.md`, etc.) to be generated more tersely than
-> the templates prescribe.
+> **Placement note (added after post-landing measurement — see §3.6):** The final landed placement of this contract is **between Step 8 (Update State Tracking) and Step 9 (Present Results to User)**, not at the top of the rule file. The contract body is also prefixed with an explicit "applies only to Step 9; Steps 2–7 unaffected" guard. This scoping was necessary because placing the contract before Step 1 caused upstream instruction templates (`build-instructions.md`, `unit-test-instructions.md`, etc.) to be generated more tersely than the templates prescribe.
 
 ### 3.3 Why not just let the synthesis happen
 
@@ -259,11 +233,7 @@ This should ideally be validated against two models before merging.
 
 ### 3.6 Post-landing adjustment — contract scoped to Step 9
 
-After A/B/C landed in PR #8, a full 14-stage evaluation run via
-`scripts/aidlc-evaluator/` reported that although the `gate` rubric
-assertions were indeed recovered (as expected), **qualitative
-completeness of the build/test instruction files dropped** relative to
-the pre-landing golden:
+After A/B/C landed in PR #8, a full 14-stage evaluation run via `scripts/aidlc-evaluator/` reported that although the `gate` rubric assertions were indeed recovered (as expected), **qualitative completeness of the build/test instruction files dropped** relative to the pre-landing golden:
 
 | Document | completeness (golden vs PR #8) |
 |---|---|
@@ -272,38 +242,19 @@ the pre-landing golden:
 | `build-and-test/unit-test-instructions.md` | 0.65 — missing test-count breakdown, Windows/asyncio fallback |
 | `build-and-test/build-and-test-summary.md` | 0.65 — missing several reference sections |
 
-Upstream templates for these files were not touched by this fork;
-Steps 2–7 of `build-and-test.md` remain byte-identical to
-`awslabs/aidlc-workflows` v0.1.8. The regression traced to
-**indirect influence of the Gate Output Contract on earlier steps**:
-when the contract sat at the top of the rule file (between Prerequisites
-and Step 1), the agent read it first and let its Phase-1 / Phase-2
-framing implicitly truncate the detail level of Steps 2–7 artefacts
-("gate will summarize anyway, keep this brief").
+Upstream templates for these files were not touched by this fork; Steps 2–7 of `build-and-test.md` remain byte-identical to `awslabs/aidlc-workflows` v0.1.8. The regression traced to **indirect influence of the Gate Output Contract on earlier steps**: when the contract sat at the top of the rule file (between Prerequisites and Step 1), the agent read it first and let its Phase-1 / Phase-2 framing implicitly truncate the detail level of Steps 2–7 artefacts ("gate will summarize anyway, keep this brief").
 
 **Fix applied:**
 
-1. Moved the `## Gate Output Contract` section from the top of
-   `build-and-test.md` to between **Step 8 (Update State Tracking)** and
-   **Step 9 (Present Results to User)**. The agent now reaches the
-   contract only after producing all instruction files.
-2. Prefixed the contract body with an explicit scope guard:
-   *"Applies only to Step 9. Steps 2–7 (generating the individual
-   instruction files …) are unaffected and should remain as detailed
-   and reference-complete as the stage templates prescribe."*
+1. Moved the `## Gate Output Contract` section from the top of `build-and-test.md` to between **Step 8 (Update State Tracking)** and **Step 9 (Present Results to User)**. The agent now reaches the contract only after producing all instruction files.
+2. Prefixed the contract body with an explicit scope guard: *"Applies only to Step 9. Steps 2–7 (generating the individual instruction files …) are unaffected and should remain as detailed and reference-complete as the stage templates prescribe."*
 
 Re-validation:
 
-- `docs/benchmark/runners/run_gate_benchmark.py --models haiku
-  --trials 2` after the move confirms `gate` still scores **5/5** with
-  zero variance — Proposal B's core benefit is retained.
-- Full 14-stage re-measurement via `scripts/aidlc-evaluator/` is the
-  next step to confirm the completeness scores recover.
+- `docs/benchmark/runners/run_gate_benchmark.py --models haiku --trials 2` after the move confirms `gate` still scores **5/5** with zero variance — Proposal B's core benefit is retained.
+- Full 14-stage re-measurement via `scripts/aidlc-evaluator/` is the next step to confirm the completeness scores recover.
 
-**Lesson:** rule-level output contracts can indirectly affect stages
-earlier in the same rule file by coloring the agent's attention.
-Scope contracts as narrowly as possible, and make the scope guard
-explicit in the contract body itself.
+**Lesson:** rule-level output contracts can indirectly affect stages earlier in the same rule file by coloring the agent's attention. Scope contracts as narrowly as possible, and make the scope guard explicit in the contract body itself.
 
 ---
 
@@ -499,20 +450,9 @@ Final per-skill picture (post §3.6 adjustment):
 3. **§3.6 adjustment recovered an unexpected +2** — the first post-A/B/C measurement lost `nfr/tech-stack` and `reverse/8-artifacts` because the contract was shortening upstream instruction templates. Relocating it fixed both without touching upstream templates.
 4. **70/71 is the current reproducible floor.** Enhanced is +2 over Upstream on the same rubric, with all deltas mapped 1:1 to design commitments.
 
-The single remaining failure (`detect/slash-command`) maps 1:1 to
-Proposal C (documented in `common/agent-capabilities.md §7`). The
-benchmark therefore confirms design intent and does not surface any
-closable gap that has not already been closed.
+The single remaining failure (`detect/slash-command`) maps 1:1 to Proposal C (documented in `common/agent-capabilities.md §7`). The benchmark therefore confirms design intent and does not surface any closable gap that has not already been closed.
 
-**How §3.6 was discovered — qualitative evaluator cross-check.** A
-separate quality-level evaluation via `scripts/aidlc-evaluator/`
-(Bedrock-backed, `opus-4-6`) flagged the problem first: while the
-rubric assertions looked acceptable, several `construction/build-and-test/*`
-instruction documents scored 0.35–0.65 on completeness vs the golden
-reference. That led to the §3.6 analysis. The broader workflow —
-measure via rubric, cross-check via evaluator, analyze before
-patching — is written up in
-[`docs/enhanced/EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md).
+**How §3.6 was discovered — qualitative evaluator cross-check.** A separate quality-level evaluation via `scripts/aidlc-evaluator/` (Bedrock-backed, `opus-4-6`) flagged the problem first: while the rubric assertions looked acceptable, several `construction/build-and-test/*` instruction documents scored 0.35–0.65 on completeness vs the golden reference. That led to the §3.6 analysis. The broader workflow — measure via rubric, cross-check via evaluator, analyze before patching — is written up in [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md).
 
 ---
 
