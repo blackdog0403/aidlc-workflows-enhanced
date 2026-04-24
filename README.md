@@ -868,6 +868,8 @@ The agent will download the latest release, create the correct config file for y
 | Claude Code Documentation                           | [GitHub](https://github.com/anthropics/claude-code)                                                                           |
 | GitHub Copilot Documentation                        | [Docs](https://docs.github.com/en/copilot)                                                                                    |
 | Working with AI-DLC (interaction patterns and tips) | [docs/WORKING-WITH-AIDLC.md](docs/WORKING-WITH-AIDLC.md)                                                                      |
+| Benchmark — Enhanced vs Upstream (69/71 vs 68/71)   | [docs/benchmark/README.md](docs/benchmark/README.md)                                                                          |
+| AI-DLC Rules Comparison Report                      | [docs/benchmark/AIDLC-Rules-Comparison.md](docs/benchmark/AIDLC-Rules-Comparison.md)                                          |
 | Contributing Guidelines                             | [CONTRIBUTING.md](CONTRIBUTING.md)                                                                                            |
 | Code of Conduct                                     | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)                                                                                      |
 
