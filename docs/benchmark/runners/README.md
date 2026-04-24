@@ -1,7 +1,7 @@
 # Gate-stage B-validation runner
 
 Python benchmark runner that tests whether **Proposal B** in
-`docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md` is
+`docs/enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md` is
 data-justified. The current `gate` score of 5/5 may be Opus 4.7
 synthesizing a 2-phase structure from adjacent rules, not something any
 single rule file prescribes. If weaker models (Haiku 4.5, Sonnet 4.6)
@@ -113,5 +113,5 @@ on.
 ## Next step after a run
 
 Paste the relevant `summary.json` excerpt into
-`docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md §6` as the
+`docs/enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md §6` as the
 gating evidence for Proposal B's disposition.
