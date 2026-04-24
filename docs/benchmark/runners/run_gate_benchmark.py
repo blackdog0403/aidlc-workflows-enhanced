@@ -411,7 +411,7 @@ def main() -> None:
     print(f" Proposal B justified?  {verdict}")
     print(f" Rationale: {d['rationale']}")
     print("=" * 70)
-    print(f"Artefacts written to: {Path(summary['matrix'] and args.output_dir).resolve()}")
+    print(f"Artefacts written to: {Path(args.output_dir).resolve()}")
 
 
 if __name__ == "__main__":
