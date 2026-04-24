@@ -9,7 +9,7 @@
 
 ## 1. Why a playbook
 
-Rule-file changes are small-diff, high-leverage edits: two lines can shift a 14-stage generation pipeline's output by 30% on some axes. The corresponding risk is that the same two lines can quietly regress a different axis nobody was measuring. This fork has already seen one such case (see [`docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) §3.6 — a Gate Output Contract placed at the top of a rule file inadvertently shortened unrelated instruction files generated earlier in the same stage).
+Rule-file changes are small-diff, high-leverage edits: two lines can shift a 14-stage generation pipeline's output by 30% on some axes. The corresponding risk is that the same two lines can quietly regress a different axis nobody was measuring. This fork has already seen one such case (see [`docs/enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) §3.6 — a Gate Output Contract placed at the top of a rule file inadvertently shortened unrelated instruction files generated earlier in the same stage).
 
 The only reliable defense is **measure → analyze → fix → re-measure** as a standard loop, not an ad-hoc investigation.
 
@@ -129,7 +129,7 @@ If both axes are clean, commit. If they disagree, iterate Step 2 with a narrower
 
 ### Example A — Proposal B fragility measurement
 
-See [`proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) §6.
+See [`landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) §6.
 
 - **Hypothesis:** Opus 4.7 scores 5/5 on the `gate` stage because it synthesizes a 2-phase output structure the rule file doesn't prescribe. Weaker models will regress.
 - **Measurement (Step 3):** gate fragility runner, 3 models × 2 rule states (pre/post explicit Gate Output Contract) × 3 trials = 18 runs.
@@ -138,7 +138,7 @@ See [`proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](proposals/BENCHMARK-DRIV
 
 ### Example B — Gate Output Contract side effect
 
-See [`proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) §3.6.
+See [`landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) §3.6.
 
 - **Step 4 result** after Proposal B landed: rubric 68/71, same as the pre-PR baseline (the shape of the per-assertion failures shifted but the total held).
 - **Step 5 result:** evaluator flagged four `build-and-test/*` instruction files with completeness 0.35–0.65.

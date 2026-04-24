@@ -54,11 +54,11 @@ This section is a **mandatory override rule**, not a reference table. Agents MUS
 
 Stage rule files (e.g., `workflow-planning.md §3.2 Application Design – Skip IF`) describe **stage-intrinsic** skip conditions: "skip when the stage's own work is trivially unnecessary for the current change." These conditions are written assuming a generic AI-DLC invocation without a user-declared quality bar.
 
-Project Mode is a **user-declared quality bar**. When the user chooses Production, the contract is *"every AI-DLC stage runs, regardless of whether stage-intrinsic conditions would otherwise permit a skip."* Letting stage-intrinsic conditions silently override that contract caused observable regressions (see `docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md` §3.6 lineage) — agents would legitimately argue "the tech environment fully specifies the design, so Application Design can skip," which is correct by the stage's own rules but wrong by Production's contract.
+Project Mode is a **user-declared quality bar**. When the user chooses Production, the contract is *"every AI-DLC stage runs, regardless of whether stage-intrinsic conditions would otherwise permit a skip."* Letting stage-intrinsic conditions silently override that contract caused observable regressions (see `docs/enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md` §3.6 lineage) — agents would legitimately argue "the tech environment fully specifies the design, so Application Design can skip," which is correct by the stage's own rules but wrong by Production's contract.
 
 The MANDATORY override keyword resolves that conflict deterministically in favor of the user-declared quality bar.
 
-### 2.1 What stays the same in both modes
+### 2.4 What stays the same across all modes
 
 - **Audit trail** (`audit.md`) — mandatory, verbatim user input capture.
 - **Question file format** — A/B/C/D/E with `[Answer]:` tag.
@@ -66,7 +66,7 @@ The MANDATORY override keyword resolves that conflict deterministically in favor
 - **State persistence** — `aidlc-state.md` tracks mode, host agent profile, progress.
 - **Final Build-and-Test gate** — human approval always required before declaring a unit complete.
 
-### 2.2 What changes by mode
+### 2.5 What changes by mode
 
 Only the **frequency** and **depth** of human approval and the **aggressiveness** of automated feedback change. The underlying artifacts produced per stage do not change (per `common/depth-levels.md`).
 

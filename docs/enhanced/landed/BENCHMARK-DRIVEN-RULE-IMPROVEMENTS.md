@@ -9,7 +9,7 @@
 > - The single remaining failure (`detect/slash-command`) is Proposal C's explicitly-documented host-portability gap. It is not closable without breaking portability.
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>)
-**Status:** Implemented (A + B + C landed 2026-04-23, §3.6 adjustment 2026-04-24)
+**Status:** Implemented (A + B + C landed 2026-04-23; §3.6 adjustment 2026-04-24; §3.7 Project Mode mandatory override landed 2026-04-24)
 **Last updated:** 2026-04-24
 
 ---
@@ -256,6 +256,25 @@ Re-validation:
 
 **Lesson:** rule-level output contracts can indirectly affect stages earlier in the same rule file by coloring the agent's attention. Scope contracts as narrowly as possible, and make the scope guard explicit in the contract body itself.
 
+### 3.7 Post-landing adjustment — Project Mode as mandatory override (PR #9)
+
+After §3.6 landed and the Gate Output Contract stopped shortening earlier-stage artefacts, a subsequent evaluator run on `main` surfaced a different regression: the agent was **skipping Application Design** entirely. The evaluator's execution-plan note on that run read "candidate uses Prototyping mode as skip rationale" — the simulator had chosen Prototyping, and `workflow-planning.md §3.2`'s stage-intrinsic Skip IF conditions ("no new components, pure implementation changes") are legitimately met when `tech-env.md` already fully specifies the component layout.
+
+The silent skip collapsed four `inception/application-design/*` documents from the output and dragged qualitative overall from ~0.80 to 0.71.
+
+**Root cause:** `project-mode.md §2` described the Mode × Stage relationship as a reference table, which left precedence ambiguous relative to the stage-specific Skip IF rules in `workflow-planning.md §3.x`. Agents correctly followed the more specific conditions, producing a stage-skipping outcome that contradicted the user-declared quality bar.
+
+**Fix applied (landed as PR #9):**
+
+1. `common/project-mode.md §2` rewritten as a **MANDATORY OVERRIDE** rule. New §2.1 states explicit precedence (this table is evaluated first; EXECUTE (ALWAYS) cells override stage-specific Skip IF). New §2.2 is the Mode × Stage matrix with EXECUTE (ALWAYS) markers for User Stories / Application Design / Units Generation / NFR* / Operations under Production mode. New §2.3 records the rationale.
+2. `inception/workflow-planning.md §3` gets a one-line blockquote pointing agents to `project-mode.md §2` before applying §3.1–§3.6 conditions. Upstream content otherwise untouched.
+
+**Re-validation:**
+
+- Full 14-stage evaluator run on PR #9 : qualitative overall **0.818** (highest of any run so far — higher than the pre-regression 0.802), `unit_tests_passed: 220`, all four `application-design/*` documents present in output. Execution-plan note returns to "Nearly identical execution plans" (agent marks Application Design EXECUTE, matching the golden reference).
+
+**Lesson:** stage-intrinsic SKIP conditions and user-declared quality bars are in different conceptual layers. The former describe "is this stage's work trivially unnecessary for the current change?"; the latter declare "I want every AI-DLC stage run regardless of the above." Silent precedence between them must not exist. Make the higher-layer rule explicit ("MANDATORY OVERRIDE") and route it through a pointer in the lower-layer rule so agents cannot miss it.
+
 ---
 
 ## 4. Proposal C — Document the slash-command next-step escape hatch
@@ -414,11 +433,9 @@ contract.
 
 ### 6.4 Conclusion
 
-The data exceed the §3.5 acceptance bar for Proposal B:
-every tested model improves by **exactly 3.0 points pre → post**,
-every post-B trial scores a full **5 / 5**, variance is zero, and
-the disk implementation replicates the runtime simulation exactly.
-B is shipped.
+The data exceed the §3.5 acceptance bar for Proposal B: every tested model improves by **exactly 3.0 points pre → post**, every post-B trial scores a full **5 / 5**, variance is zero, and the disk implementation replicates the runtime simulation exactly. B is shipped.
+
+Post-landing, two follow-up adjustments (§3.6 contract scoping, §3.7 Project Mode as mandatory override) further strengthened the evidence — see §7 and §7.1 for the combined rubric + qualitative timeline.
 
 ---
 
@@ -453,6 +470,19 @@ Final per-skill picture (post §3.6 adjustment):
 The single remaining failure (`detect/slash-command`) maps 1:1 to Proposal C (documented in `common/agent-capabilities.md §7`). The benchmark therefore confirms design intent and does not surface any closable gap that has not already been closed.
 
 **How §3.6 was discovered — qualitative evaluator cross-check.** A separate quality-level evaluation via `scripts/aidlc-evaluator/` (Bedrock-backed, `opus-4-6`) flagged the problem first: while the rubric assertions looked acceptable, several `construction/build-and-test/*` instruction documents scored 0.35–0.65 on completeness vs the golden reference. That led to the §3.6 analysis. The broader workflow — measure via rubric, cross-check via evaluator, analyze before patching — is written up in [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md).
+
+### 7.1 Qualitative-axis measurement timeline (via `scripts/aidlc-evaluator/`)
+
+The evaluator tracks a different signal than the 71-assertion rubric: per-document intent / design / completeness scoring against a golden reference. Progression across the same commits:
+
+| Date | Run | Qualitative overall | Unit tests | application-design docs present | Notes |
+|---|---|---|---|---|---|
+| 2026-04-23 | PR #8, first automated | 0.802 | 169 | yes (4/4) | Rubric 68/71 (before §3.6). Treated as the baseline. |
+| 2026-04-24 | PR #8, post-§3.6 re-run | 0.713 | 169 | **missing (0/4)** | Agent silently skipped Application Design citing Prototyping mode. Rubric 70/71 even as qualitative dropped — first visible case of the two axes disagreeing. |
+| 2026-04-24 | main, fresh run | 0.788 | 254 | missing (0/4) | Same skip pattern, variance happened to push other metrics up. |
+| 2026-04-24 | PR #9, mode override landed | **0.818** | 220 | **yes (4/4)** | Production mode now mandates Application Design via `project-mode.md §2` override (see §3.7). Highest overall to date, above the 0.802 pre-regression baseline. |
+
+Interpretation: the rubric and the evaluator disagreed between the second and third rows — rubric said 70/71 "fine", evaluator said 0.713 "regression." That disagreement is exactly the kind of signal the [`EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md) loop is designed to catch. §3.7 landed because of the disagreement, not because of any rubric number.
 
 ---
 

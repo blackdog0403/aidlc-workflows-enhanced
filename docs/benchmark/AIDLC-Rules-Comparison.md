@@ -429,7 +429,7 @@ Any fair comparison needs a second benchmark axis that covers these capabilities
 
 Proving the Harness Engineering patterns Enhanced adds (§3) requires runtime measurement the regex rubric cannot do. The proposal at [`docs/enhanced/proposals/HARNESS-ENGINEERING-BENCHMARK-AXIS.md`](../enhanced/proposals/HARNESS-ENGINEERING-BENCHMARK-AXIS.md) sketches one mini-experiment per pattern (L1–L5 ladder, Generator/Evaluator, host portability, context budget, boundary-based security, entropy management, cost optimization, project mode), each as a small follow-up PR sized measurement. None are run inside this PR.
 
-Until those axes land, the claim that Enhanced delivers Harness Engineering benefits beyond the current regex rubric rests on design argument + literature citations + [Proposal B §6](../enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md)'s fragility measurement (the one existing quantitative data point).
+Until those axes land, the claim that Enhanced delivers Harness Engineering benefits beyond the current regex rubric rests on design argument + literature citations + [Proposal B §6](../enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md)'s fragility measurement (the one existing quantitative data point).
 
 ---
 
@@ -437,7 +437,7 @@ Until those axes land, the claim that Enhanced delivers Harness Engineering bene
 
 ### 6.1 Proposals landed (2026-04-23)
 
-Three rule-level improvements (A/B/C in [`docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](../enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md)) have been implemented:
+Three rule-level improvements (A/B/C in [`docs/enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](../enhanced/landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md)) have been implemented:
 
 - **Proposal A** — `workspace-detection.md` completion header changed to `=== Workspace Detection Complete ===` (setext banner). Outcome: `detect/Contains completion summary` now passes, raising `detect` from 3/5 to 4/5.
 - **Proposal B** — `build-and-test.md` now has an explicit "Gate Output Contract" section mandating the `Phase 1 / Phase 2 + GO/NO-GO + PASS/FAIL` structure. Outcome: every tested model (Haiku 4.5 / Sonnet 4.6 / Opus 4.7) now scores 5/5 on `gate` in isolation — validated by the 18-run fragility matrix in the Proposal doc §6.

@@ -15,7 +15,7 @@
 
 ## 1. Motivation
 
-The current benchmark at [`docs/benchmark/`](../../benchmark/) is a regex rubric over final stage outputs. It was useful for confirming that Enhanced's design intent lands on the assertions we expected, and that [Proposals A / B / C](BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) improved the metrics they targeted. But the rubric has a hard ceiling: it rewards whether a string pattern shows up in `result.md`, not whether the rule set actually provides the Harness Engineering benefit it claims.
+The current benchmark at [`docs/benchmark/`](../../benchmark/) is a regex rubric over final stage outputs. It was useful for confirming that Enhanced's design intent lands on the assertions we expected, and that [Proposals A / B / C](../landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) improved the metrics they targeted. But the rubric has a hard ceiling: it rewards whether a string pattern shows up in `result.md`, not whether the rule set actually provides the Harness Engineering benefit it claims.
 
 Enhanced adds eight Harness Engineering patterns on top of upstream AI-DLC (see [`AIDLC-Rules-Comparison.md` §3](../../benchmark/AIDLC-Rules-Comparison.md)). One of them — Lopopolo's "anything not in the repository effectively does not exist" — was validated inside this repo via the Proposal B fragility runner ([`docs/benchmark/runners/run_gate_benchmark.py`](../../benchmark/runners/run_gate_benchmark.py)). Haiku 4.5 / Sonnet 4.6 / Opus 4.7 each moved from 2.0 / 5 → 5.0 / 5 on the `gate` stage after the 2-phase Gate Output Contract was encoded in the rule file.
 
@@ -74,7 +74,7 @@ The claim "Enhanced delivers Harness Engineering benefits beyond the current rub
 
 - Design argument (the [`AIDLC-Rules-Comparison.md` §3](../../benchmark/AIDLC-Rules-Comparison.md) table maps each pattern to a published source).
 - Citations to the Anthropic / OpenAI literature that inspired each pattern.
-- The one existing quantitative measurement: [Proposal B §6](BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) (Gate Output Contract fragility run).
+- The one existing quantitative measurement: [Proposal B §6](../landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) (Gate Output Contract fragility run).
 
 That is honest disclosure, not rhetorical win. Each row in §2 represents one step toward replacing design argument with runtime measurement.
 
@@ -82,7 +82,7 @@ That is honest disclosure, not rhetorical win. Each row in §2 represents one st
 
 ## 5. References
 
-- [`BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) — source of the template runner and the one existing measurement (Proposal B).
+- [`landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`](../landed/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md) — source of the template runner and the one existing measurement (Proposal B).
 - [`docs/benchmark/AIDLC-Rules-Comparison.md`](../../benchmark/AIDLC-Rules-Comparison.md) — per-pattern provenance of what Enhanced adds (§3) and what the regex rubric cannot probe (§5.9).
 - [`docs/benchmark/runners/run_gate_benchmark.py`](../../benchmark/runners/run_gate_benchmark.py) — the template implementation.
 - Ryan Lopopolo (OpenAI), [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) (2026-02-11) — "Anything not in the repository effectively does not exist to Codex."
