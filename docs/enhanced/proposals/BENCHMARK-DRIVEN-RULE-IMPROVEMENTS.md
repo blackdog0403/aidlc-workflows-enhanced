@@ -9,20 +9,26 @@
 > synthesis rather than explicit guidance — fragile under weaker
 > models or different context budgets.
 >
-> **Post-landing reality (see §6 for data and §7 for the updated
-> per-skill picture):** A fresh 14-stage measurement after A/B/C
-> landed scored **68/71**. The small dip is not a regression — it
-> reflects a `reverse` assertion that was passing only due to
-> interactive-session verbosity in the pre-runner measurement; the
-> new automated runner produces terser skip output, exposing a third
-> structural gap that was always there. All three remaining failures
-> are direct consequences of host portability + AI-DLC methodology
-> compliance + legitimate Greenfield skip. None are closable without
-> walking back a design commitment.
+> **Post-landing reality (see §6 for the fragility data and §7 for
+> the updated per-skill picture):**
+>
+> - The first automated measurement after A/B/C landed scored
+>   **68/71**. Two unexpected drops (`nfr/tech-stack` and
+>   `reverse/8-artifact-types`) were traced to the Gate Output
+>   Contract's original placement at the top of `build-and-test.md`
+>   indirectly shortening earlier-stage artefacts.
+> - The contract was **relocated inside the same file** to between
+>   Step 8 and Step 9, with an explicit "applies only to Step 9"
+>   scope guard (see §3.6). A re-measurement recovered both
+>   assertions, lifting Enhanced to **70/71 (98.6%)** — two points
+>   above Upstream, one point below Native.
+> - The single remaining failure (`detect/slash-command`) is
+>   Proposal C's explicitly-documented host-portability gap. It is
+>   not closable without breaking portability.
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>)
-**Status:** Implemented (A + B + C landed 2026-04-23)
-**Last updated:** 2026-04-23
+**Status:** Implemented (A + B + C landed 2026-04-23, §3.6 adjustment 2026-04-24)
+**Last updated:** 2026-04-24
 
 ---
 
@@ -207,6 +213,16 @@ subjective/objective boundary and was observed to cost ~2 rubric
 points against upstream variants that did so.
 ```
 
+> **Placement note (added after post-landing measurement — see §3.6):**
+> The final landed placement of this contract is **between Step 8
+> (Update State Tracking) and Step 9 (Present Results to User)**, not
+> at the top of the rule file. The contract body is also prefixed with
+> an explicit "applies only to Step 9; Steps 2–7 unaffected" guard.
+> This scoping was necessary because placing the contract before Step 1
+> caused upstream instruction templates (`build-instructions.md`,
+> `unit-test-instructions.md`, etc.) to be generated more tersely than
+> the templates prescribe.
+
 ### 3.3 Why not just let the synthesis happen
 
 Because implicit contracts are not reproducible contracts. The
@@ -240,6 +256,54 @@ engineering discipline.
    capable models.
 
 This should ideally be validated against two models before merging.
+
+### 3.6 Post-landing adjustment — contract scoped to Step 9
+
+After A/B/C landed in PR #8, a full 14-stage evaluation run via
+`scripts/aidlc-evaluator/` reported that although the `gate` rubric
+assertions were indeed recovered (as expected), **qualitative
+completeness of the build/test instruction files dropped** relative to
+the pre-landing golden:
+
+| Document | completeness (golden vs PR #8) |
+|---|---|
+| `build-and-test/build-instructions.md` | 0.40 — missing dependency lists, pip alternatives, PYTHONPATH, `uv build` step, troubleshooting |
+| `build-and-test/integration-test-instructions.md` | 0.35 — missing per-scenario breakdown, fixtures |
+| `build-and-test/unit-test-instructions.md` | 0.65 — missing test-count breakdown, Windows/asyncio fallback |
+| `build-and-test/build-and-test-summary.md` | 0.65 — missing several reference sections |
+
+Upstream templates for these files were not touched by this fork;
+Steps 2–7 of `build-and-test.md` remain byte-identical to
+`awslabs/aidlc-workflows` v0.1.8. The regression traced to
+**indirect influence of the Gate Output Contract on earlier steps**:
+when the contract sat at the top of the rule file (between Prerequisites
+and Step 1), the agent read it first and let its Phase-1 / Phase-2
+framing implicitly truncate the detail level of Steps 2–7 artefacts
+("gate will summarize anyway, keep this brief").
+
+**Fix applied:**
+
+1. Moved the `## Gate Output Contract` section from the top of
+   `build-and-test.md` to between **Step 8 (Update State Tracking)** and
+   **Step 9 (Present Results to User)**. The agent now reaches the
+   contract only after producing all instruction files.
+2. Prefixed the contract body with an explicit scope guard:
+   *"Applies only to Step 9. Steps 2–7 (generating the individual
+   instruction files …) are unaffected and should remain as detailed
+   and reference-complete as the stage templates prescribe."*
+
+Re-validation:
+
+- `docs/benchmark/runners/run_gate_benchmark.py --models haiku
+  --trials 2` after the move confirms `gate` still scores **5/5** with
+  zero variance — Proposal B's core benefit is retained.
+- Full 14-stage re-measurement via `scripts/aidlc-evaluator/` is the
+  next step to confirm the completeness scores recover.
+
+**Lesson:** rule-level output contracts can indirectly affect stages
+earlier in the same rule file by coloring the agent's attention.
+Scope contracts as narrowly as possible, and make the scope guard
+explicit in the contract body itself.
 
 ---
 
@@ -409,41 +473,46 @@ B is shipped.
 
 ## 7. Post-landing 14-stage measurement
 
-After A + B + C landed, the full 14-stage benchmark was run once on
+After A + B + C landed, the full 14-stage benchmark was run on
 Opus 4.7 via Bedrock using the new runner at
-`docs/benchmark/runners/run_full_benchmark.py`. Headline result:
+`docs/benchmark/runners/run_full_benchmark.py`. Two measurements
+were needed before the headline result stabilized:
 
-**Enhanced 68/71 (95.8%)** — tied with Upstream (68/71), three points
-below Native (71/71).
+| Measurement | Date | Total | Notes |
+|---|---|---|---|
+| First automated run | 2026-04-23 | **68/71** | Lost `nfr/tech-stack` and `reverse/8-artifacts` vs earlier manual runs. Traced to Gate Output Contract placement — see §3.6. |
+| Post-adjustment re-run | 2026-04-24 | **70/71 (98.6%)** | Both assertions recovered after relocating the contract inside `build-and-test.md`. Single remaining loss is `detect/slash-command`. |
+
+Final per-skill picture (post §3.6 adjustment):
 
 | Skill | Δ vs Upstream | Reason |
 |---|---|---|
 | functional | +1 | rule explicitly technology-agnostic |
 | gate | +2 | Proposal B's Gate Output Contract makes 2-phase structure explicit |
 | detect | −1 | host-agnostic prose avoids `/aidlc-*` literal (Proposal C) |
-| nfr | −1 | AI-DLC methodology mandates tech-agnostic NFR output |
-| reverse | −1 | Greenfield → stage skipped → no artifacts to enumerate |
-| 10 other | = | |
+| 11 other | = | Includes `nfr` and `reverse`, which recovered after §3.6. |
 
-**Notable points vs the 69/71 seen before A/B/C:**
+**Notable points:**
 
 1. **Proposal A delivered** its +1 on `detect/Contains completion summary` as predicted.
-2. The `reverse` assertion that was passing pre-A/B/C was passing
-   only because interactive Claude Code sessions produce verbose skip
-   messages that happened to contain an artifact-category word
-   (`architecture`, `technology`, etc.). The automated runner emits
-   terser skip messages, surfacing a latent gap that was always
-   there. 68/71 is the reproducible floor.
-3. A third structural gap — `nfr/Tech stack decisions` — is now
-   visible. Enhanced's `nfr-design.md` mandates technology-agnostic
-   output per AI-DLC methodology; the regex demands "TypeScript" /
-   "Node" literals. Closing this would violate the whitepaper.
+2. **Proposal B delivered** its +2 on `gate/2-phase` and `gate/GO-NO-GO` as predicted (and §6's fragility matrix proves this is reproducible across model tiers).
+3. **§3.6 adjustment recovered an unexpected +2** — the first post-A/B/C measurement lost `nfr/tech-stack` and `reverse/8-artifacts` because the contract was shortening upstream instruction templates. Relocating it fixed both without touching upstream templates.
+4. **70/71 is the current reproducible floor.** Enhanced is +2 over Upstream on the same rubric, with all deltas mapped 1:1 to design commitments.
 
-All three remaining failures map 1:1 to design commitments
-(documented in `common/agent-capabilities.md`, the AI-DLC whitepaper,
-and the Greenfield / Brownfield branching in `core-workflow.md`).
-The benchmark therefore confirms design intent and does not surface
-any closable gap that has not already been closed.
+The single remaining failure (`detect/slash-command`) maps 1:1 to
+Proposal C (documented in `common/agent-capabilities.md §7`). The
+benchmark therefore confirms design intent and does not surface any
+closable gap that has not already been closed.
+
+**How §3.6 was discovered — qualitative evaluator cross-check.** A
+separate quality-level evaluation via `scripts/aidlc-evaluator/`
+(Bedrock-backed, `opus-4-6`) flagged the problem first: while the
+rubric assertions looked acceptable, several `construction/build-and-test/*`
+instruction documents scored 0.35–0.65 on completeness vs the golden
+reference. That led to the §3.6 analysis. The broader workflow —
+measure via rubric, cross-check via evaluator, analyze before
+patching — is written up in
+[`docs/enhanced/EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md).
 
 ---
 

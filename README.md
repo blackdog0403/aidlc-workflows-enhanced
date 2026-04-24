@@ -91,6 +91,7 @@ Depending on what you want to do, jump to:
 | 🧭 See **every file that differs from upstream** at a glance     | **[`docs/enhanced/FORK-CHANGES.md`](docs/enhanced/FORK-CHANGES.md)** — start here                           |
 | 📊 Understand **why** these changes were made (3-party analysis) | [`docs/enhanced/COMPARISON.md`](docs/enhanced/COMPARISON.md)                                                |
 | 🔍 Read **file-by-file rationale** and preserved invariants      | [`docs/enhanced/OPTIMIZATION_NOTES.md`](docs/enhanced/OPTIMIZATION_NOTES.md)                                |
+| 🧪 **Measure my own rule change** before shipping it             | [`docs/enhanced/EVALUATION-PLAYBOOK.md`](docs/enhanced/EVALUATION-PLAYBOOK.md) — the measure→analyze→fix→re-measure loop used in this fork |
 | 📜 Check the **release history**                                 | [`CHANGELOG.md`](CHANGELOG.md)                                                            |
 | 🔄 **Diff against upstream** locally or on GitHub                | [`docs/enhanced/FORK-CHANGES.md` § How to Diff](docs/enhanced/FORK-CHANGES.md#how-to-diff-against-upstream) |
 
@@ -876,7 +877,7 @@ The agent will download the latest release, create the correct config file for y
 | Claude Code Documentation                           | [GitHub](https://github.com/anthropics/claude-code)                                                                           |
 | GitHub Copilot Documentation                        | [Docs](https://docs.github.com/en/copilot)                                                                                    |
 | Working with AI-DLC (interaction patterns and tips) | [docs/WORKING-WITH-AIDLC.md](docs/WORKING-WITH-AIDLC.md)                                                                      |
-| Benchmark — Enhanced vs Upstream (68/71 tied; different assertion shape) | [docs/benchmark/README.md](docs/benchmark/README.md)                                                                          |
+| Benchmark — Enhanced 70/71 vs Upstream 68/71 on the shared regex rubric | [docs/benchmark/README.md](docs/benchmark/README.md)                                                                          |
 | AI-DLC Rules Comparison Report                      | [docs/benchmark/AIDLC-Rules-Comparison.md](docs/benchmark/AIDLC-Rules-Comparison.md)                                          |
 | Contributing Guidelines                             | [CONTRIBUTING.md](CONTRIBUTING.md)                                                                                            |
 | Code of Conduct                                     | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)                                                                                      |

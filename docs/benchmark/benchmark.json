@@ -3,9 +3,9 @@
   "total_skills": 14,
   "aggregate": {
     "enhanced": {
-      "total_passed": 68,
+      "total_passed": 70,
       "total_assertions": 71,
-      "overall_pass_rate": 0.958
+      "overall_pass_rate": 0.986
     },
     "upstream": {
       "total_passed": 68,
@@ -82,9 +82,9 @@
     },
     "reverse": {
       "enhanced": {
-        "passed": 3,
+        "passed": 4,
         "total": 4,
-        "pass_rate": 0.75,
+        "pass_rate": 1.0,
         "details": [
           {
             "text": "[reverse] Output contains no Korean characters",
@@ -98,8 +98,8 @@
           },
           {
             "text": "Produces 8 artifact types",
-            "passed": false,
-            "evidence": "Check failed"
+            "passed": true,
+            "evidence": "Check passed"
           },
           {
             "text": "Mentions brownfield context",
@@ -564,9 +564,9 @@
     },
     "nfr": {
       "enhanced": {
-        "passed": 4,
+        "passed": 5,
         "total": 5,
-        "pass_rate": 0.8,
+        "pass_rate": 1.0,
         "details": [
           {
             "text": "[nfr] Output contains no Korean characters",
@@ -580,8 +580,8 @@
           },
           {
             "text": "Tech stack decisions",
-            "passed": false,
-            "evidence": "Check failed"
+            "passed": true,
+            "evidence": "Check passed"
           },
           {
             "text": "Design patterns",

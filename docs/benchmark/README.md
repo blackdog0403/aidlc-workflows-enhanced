@@ -10,7 +10,7 @@ Exploratory benchmark comparing this repository's **Enhanced (platform-agnostic)
 
 ---
 
-> **TL;DR** — Enhanced scores **68/71 (95.8%)** on this rubric, tied with Upstream (68/71) and three points below Native (71/71). The three gaps are all design-intent (host portability + AI-DLC methodology compliance + legitimate Greenfield skip). See [AIDLC-Rules-Comparison.md](AIDLC-Rules-Comparison.md) §1.0-§1.2 for why the design expected exactly this shape.
+> **TL;DR** — Enhanced scores **70/71 (98.6%)** on this rubric, two points above Upstream (68/71) and one point below Native (71/71). The single remaining gap is a design-intent failure on `detect/slash-command` (host portability — avoiding Claude Code-only `/aidlc-*` literals). See [AIDLC-Rules-Comparison.md](AIDLC-Rules-Comparison.md) §1.0-§1.2 for why the design expected exactly this shape.
 
 ## Test scenario
 
@@ -46,12 +46,12 @@ Regex-based rubric, **no LLM-as-judge**. Each skill has 3–7 assertions coverin
 - **Methodology adherence** — 4-dimension analysis, INVEST criteria, EXECUTE / SKIP decisions, 2-phase gate pipeline, technology-agnostic constraint
 - **Artifact completeness** — expected output sections present
 
-## Results (2026-04-23, Opus 4.7 via Bedrock, post Proposals A/B/C)
+## Results (2026-04-24, Opus 4.7 via Bedrock, post Proposals A/B/C + §3.6 adjustment)
 
 | Approach | Assertions passed | Pass rate |
 |---|---|---|
 | Native (`with_skill`, published) | 71/71 | 100.0% |
-| **Enhanced** | **68/71** | **95.8%** |
+| **Enhanced** | **70/71** | **98.6%** |
 | Upstream (published) | 68/71 | 95.8% |
 
 ### Enhanced vs Upstream per-skill deltas
@@ -61,17 +61,15 @@ Regex-based rubric, **no LLM-as-judge**. Each skill has 3–7 assertions coverin
 | functional | 6/6 | 5/6 | **+1** | `functional-design.md` explicitly mandates technology-agnostic output |
 | gate | 5/5 | 3/5 | **+2** | Proposal B's Gate Output Contract makes 2-phase `GO/NO-GO` + `PASS/FAIL` explicit across all models |
 | detect | 4/5 | 5/5 | **−1** | Host-agnostic prose instead of `/aidlc-*` slash command — documented in Proposal C |
-| nfr | 4/5 | 5/5 | **−1** | NFR rule mandates technology-agnostic output (AI-DLC methodology); rubric requires "TypeScript/Node" literal |
-| reverse | 3/4 | 4/4 | **−1** | Greenfield scenario → stage legitimately skipped → no artifacts to enumerate |
-| 10 other skills | same | same | = | Identical assertion coverage |
+| 11 other skills | same | same | = | Includes `nfr` (5/5) and `reverse` (4/4), which recovered after the §3.6 adjustment (Gate Output Contract relocated from top-of-file to between Step 8 and Step 9 to stop indirectly shortening earlier-stage artefacts) |
 
-### Why the three Enhanced losses are design-intent, not regressions
+### Why the remaining Enhanced loss is design-intent, not a regression
 
-- `detect/slash-command` — `/aidlc-*` is meaningless on Cursor / Cline / Amazon Q. Enhanced uses prose to stay host-agnostic. Closing this gap would break portability.
-- `nfr/tech-stack` — AI-DLC methodology mandates NFR output stay technology-agnostic so the NFR → Infrastructure separation holds. Naming "TypeScript" at the NFR stage would violate the whitepaper.
-- `reverse/8-artifacts` — The scenario is Greenfield; the stage correctly produced a short "skipped" message. Emitting artifact category names for a stage that was not executed would be dishonest output.
+- `detect/slash-command` — `/aidlc-*` is meaningless on Cursor / Cline / Amazon Q. Enhanced uses prose to stay host-agnostic. Closing this gap would break portability. Documented in Proposal C.
 
-See [AIDLC-Rules-Comparison.md §5.5–5.6](AIDLC-Rules-Comparison.md) for the per-assertion decomposition and why each gap cannot be closed without walking back a design commitment.
+The earlier measurement immediately after A+B+C landed (68/71) also failed `nfr/tech-stack` and `reverse/8-artifacts`, but those turned out to be indirect side effects of the Gate Output Contract's original placement — see the case study in [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../enhanced/EVALUATION-PLAYBOOK.md) §3 Example B and the proposal doc's §3.6 for the analysis and fix.
+
+See [AIDLC-Rules-Comparison.md §5.5–5.6](AIDLC-Rules-Comparison.md) for the per-assertion decomposition.
 
 ## Reproducing locally
 
@@ -131,11 +129,11 @@ Output:
 Skill            Enhanced       Upstream       Delta
 ----------------------------------------------------
 detect           4/5 (80%)      5/5 (100%)     -1
-reverse          3/4 (75%)      4/4 (100%)     -1
 ...
+functional       6/6 (100%)     5/6 (83%)      +1
 gate             5/5 (100%)     3/5 (60%)      +2
 ----------------------------------------------------
-Total            68/71 (95.8%)   68/71 (95.8%)
+Total            70/71 (98.6%)   68/71 (95.8%)
 ======================================================================
 ```
 

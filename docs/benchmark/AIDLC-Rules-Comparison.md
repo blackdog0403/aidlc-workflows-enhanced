@@ -9,8 +9,8 @@
 > - **Not a response to Skills-native.** Enhanced did not start from Skills-native and strip Claude Code affordances. It started from the AI-DLC whitepaper and built up a host-agnostic rule surface with an explicit **capability matrix** covering six hosts. That Skills-native and Enhanced share most of the `common/` + `inception/` + `construction/` rule files is a consequence of both converging on the same AI-DLC methodology, not of one deriving from the other.
 > - **The benchmark used for comparison** is the Claude Code-native skills benchmark published at [`anhyobin/aidlc-workflows` — platforms/claude-code](https://github.com/anhyobin/aidlc-workflows/tree/feat/claude-code-native-implementation/platforms/claude-code). It was built to demonstrate the value of packaging AI-DLC as Claude Code Skills (slash commands, subagents, hooks). The question this document asks is: **while keeping AI-DLC's methodology intact and making the Construction-layer harness pluggable, what does the same rubric say?**
 > - Enhanced adds seven rule files that encode Harness Engineering patterns in pure Markdown instead of host primitives: `agent-capabilities.md`, `project-mode.md`, `context-optimization.md`, `automated-feedback-loops.md`, `boundary-based-security.md`, `multi-agent-patterns.md`, `entropy-management.md`, plus a `cost-optimization` extension. These live at the rule layer precisely because not every supported host has Claude Code's Skills/subagents/hooks.
-> - Running the benchmark against Enhanced (Serverless Order Management API, 14 stages × 71 regex assertions, Opus 4.7 full sequential pipeline via Bedrock): **Enhanced 68/71 (95.8%)** — tied with Upstream `awslabs/aidlc-workflows` (68/71) and three points below Skills-native (71/71). The three missing assertions are **all direct consequences of the design intent**: `detect/slash-command` (host-agnostic prose instead of Claude-Code-only `/aidlc-*`), `nfr/tech-stack` (AI-DLC mandates technology-agnostic NFR output), `reverse/8-artifact-types` (Greenfield skipped this stage, so there are no artifacts to enumerate). Closing any of these would require walking back either host portability or AI-DLC methodology.
-> - The benchmark therefore **confirms the design intent** rather than exposing a weakness: Enhanced pays exactly the points the design said it would pay, and gains back two elsewhere (`functional/technology-agnostic`, `gate/2-phase` — the latter now explicit after Proposal B landed). It does **not** score the capabilities where Enhanced is objectively stronger — host portability, entropy management, L1–L5 feedback loops, boundary-based security — because the rubric was built to showcase Claude Code skill formatting, not methodology fidelity.
+> - Running the benchmark against Enhanced (Serverless Order Management API, 14 stages × 71 regex assertions, Opus 4.7 full sequential pipeline via Bedrock, 2026-04-24): **Enhanced 70/71 (98.6%)** — two points above Upstream `awslabs/aidlc-workflows` (68/71) and one point below Skills-native (71/71). The single missing assertion is a direct consequence of the design intent: `detect/slash-command` (host-agnostic prose instead of Claude-Code-only `/aidlc-*`). Closing this gap would require walking back host portability. (Two other assertions — `nfr/tech-stack` and `reverse/8-artifact-types` — failed in the initial post-A/B/C measurement (68/71) but recovered after relocating the Gate Output Contract inside `build-and-test.md` from top-of-file to between Step 8 and Step 9; see §3.6 of the proposal doc.)
+> - The benchmark therefore **confirms the design intent** rather than exposing a weakness: Enhanced pays exactly the point the design said it would pay, and gains back three elsewhere (`functional/technology-agnostic`, `gate/2-phase`, `gate/GO-NO-GO` — the latter two made explicit by Proposal B). It does **not** score the capabilities where Enhanced is objectively stronger — host portability, entropy management, L1–L5 feedback loops, boundary-based security — because the rubric was built to showcase Claude Code skill formatting, not methodology fidelity.
 > - Separately from this rubric, Enhanced also passes the upstream AI-DLC evaluation gate run in CI via `scripts/aidlc-evaluator/` (Bedrock-backed, default config `opus-4-6`). That evaluator is the authoritative quality check for methodology compliance; the regex rubric in this document is a surface-level format check reused for honest cross-variant comparison.
 > - **Framing:** the two repos are **complementary Construction-layer harnesses for the same AI-DLC interface**, not competing rule sets. Skills-native optimizes for Claude Code–specific UX; Enhanced optimizes for host-agnostic rule-layer encoding of Harness Engineering patterns. Which one a team uses is a matter of which Construction host they run on, not which is "better."
 
@@ -42,13 +42,13 @@ The reference benchmark published at [`anhyobin/aidlc-workflows` — platforms/c
 
 That benchmark is the natural yardstick for Enhanced because it exercises the same AI-DLC methodology on the same scenario with the same rubric. Running Enhanced through it does **not** re-ask Anhyobin's question. It asks an adjacent one that Anhyobin's design correctly did not address: *if you keep AI-DLC methodology intact but make the Construction-layer harness pluggable, what does the same rubric say?*
 
-The Enhanced score — **68/71, tied with Upstream** — reads at first glance like "host portability costs three points." A closer look at which three assertions fail tells a different story:
+The Enhanced score — **70/71, two points above Upstream** — reads cleanly, but the single failing assertion still deserves explanation:
 
 - `detect/slash-command` — Enhanced emits prose next-step guidance because `/aidlc-*` is meaningless on non–Claude Code hosts. Closing this gap would break host portability.
-- `nfr/tech-stack` — Enhanced deliberately avoids naming "TypeScript" / "Node" in NFR output because AI-DLC mandates technology-agnostic NFR design. Closing this gap would violate the methodology.
-- `reverse/8-artifact-types` — The scenario is Greenfield, so reverse engineering is legitimately skipped. Closing this gap would require fabricating artifact categories for a stage that correctly produced none.
 
-All three failures are **exactly where the design premise in §1.0 said they would fall**. The benchmark therefore confirms that Enhanced pays the points it was designed to pay. It also gains back two points (`functional/technology-agnostic`, `gate/2-phase` after Proposal B) for the symmetric reason — rule files that explicitly encode what upstream merely implied.
+This failure is **exactly where the design premise in §1.0 said it would fall**. The benchmark therefore confirms that Enhanced pays the point it was designed to pay. It also gains back three points (`functional/technology-agnostic`, `gate/2-phase`, `gate/GO-NO-GO` after Proposal B) for the symmetric reason — rule files that explicitly encode what upstream merely implied.
+
+(Two additional assertions — `nfr/tech-stack` and `reverse/8-artifact-types` — failed in the initial post-A/B/C measurement but recovered after a §3.6 adjustment to the proposal; the analysis is useful as an example of how rule-level changes can indirectly affect unrelated stages, and is written up in [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../enhanced/EVALUATION-PLAYBOOK.md) §3 Example B.)
 
 An honest caveat: this regex rubric cannot measure what Enhanced actually delivers at the interface layer — host portability, L1–L5 verification ladder, boundary-based security tiers, entropy management, capability fallback. Those belong to a second benchmark axis that does not yet exist publicly. For methodology-level quality the authoritative check is the upstream AI-DLC evaluator wired into `scripts/aidlc-evaluator/` (Bedrock-backed, default config `opus-4-6`), which Enhanced passes in CI.
 
@@ -79,7 +79,7 @@ Skills-native puts the central boundaries in the Claude Code platform layer (hoo
 | Claude Code–specific files | 16 SKILL.md + 4 subagents + 6 `.claude/rules/` + settings.json | 0 |
 | Hooks | SessionStart (state), SubagentStop (audit) | None (rule-level equivalents) |
 | Rule layer additions (vs Skills-native) | — | 7 common/phase files + cost-optimization extension |
-| Benchmark (grade.py aggregate) | 71/71 (published) | 68/71 (measured 2026-04-23, Opus 4.7 via Bedrock) |
+| Benchmark (grade.py aggregate) | 71/71 (published) | 70/71 (measured 2026-04-24, Opus 4.7 via Bedrock, post Proposal §3.6 adjustment) |
 
 ---
 
@@ -313,7 +313,7 @@ The rubric file (`grade.py`) and the pinned per-skill scores (`upstream-baseline
 | Variant | Passed | Total | Pass rate | Source |
 |---|---|---|---|---|
 | Native (`with_skill`) | 71 | 71 | 100.0% | Anhyobin published `benchmark.json` |
-| **Enhanced** | **68** | **71** | **95.8%** | `docs/benchmark/benchmark.json` — measured 2026-04-23 on Opus 4.7 via Bedrock, post Proposal A/B/C |
+| **Enhanced** | **70** | **71** | **98.6%** | `docs/benchmark/benchmark.json` — measured 2026-04-24 on Opus 4.7 via Bedrock, post Proposal A/B/C + §3.6 adjustment |
 | Upstream | 68 | 71 | 95.8% | Anhyobin published `benchmark.json` (pinned in `upstream-baseline.json`) |
 | Baseline (`without_skill`) | 58 | 71 | 81.7% | Anhyobin published `benchmark.json` |
 
@@ -333,31 +333,31 @@ The rubric file is behaviorally the original rubric published at `anhyobin/aidlc
 
 ### 5.3 Headline Result
 
-**Enhanced: 68/71 = 95.8%** — tied with Upstream (68/71), three points below Native (71/71). The per-skill picture is in §5.8 below; the per-assertion shape of the three missing points is in §5.5.
+**Enhanced: 70/71 = 98.6%** — two points above Upstream (68/71), one point below Native (71/71). The per-skill picture is in §5.8 below; the per-assertion shape of the single missing point is in §5.5.
 
 ### 5.5 Where Enhanced Differs from Upstream
 
-After Proposal A/B/C landed (see `docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md`), the per-assertion picture is:
+After Proposal A/B/C landed, and after a follow-up adjustment (§3.6 of the proposal — Gate Output Contract relocated inside `build-and-test.md`), the per-assertion picture is:
 
 | Variant | `detect` slash-cmd | `detect` `===` hdr | `functional` tech-agnostic | `nfr` tech-stack | `reverse` 8-artifacts | `gate` 2-phase | `gate` GO/NO-GO |
 |---|---|---|---|---|---|---|---|
 | Native | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Upstream | ✅ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| **Enhanced** | **❌** | **✅** (A) | **✅** | **❌** | **❌** | **✅** (B) | **✅** (B) |
+| **Enhanced** | **❌** | **✅** (A) | **✅** | **✅** | **✅** | **✅** (B) | **✅** (B) |
 
 Enhanced **gains** on `functional/technology-agnostic` (rule explicitly forbids AWS service names) and on `gate/2-phase` + `gate/GO-NO-GO` (Proposal B's Gate Output Contract makes the 2-phase structure explicit so every model emits it, not just Opus with full 14-stage context).
 
-Enhanced **loses** on three assertions, all by design:
+Enhanced **loses** on one assertion, by design:
 
 - `detect/slash-command` — host-agnostic prose avoids `/aidlc-*` strings that would be meaningless on Cursor / Cline / Amazon Q. Documented as intentional in Proposal C (`common/agent-capabilities.md §7`).
-- `nfr/tech-stack` — AI-DLC methodology mandates that NFR output stay technology-agnostic; naming "TypeScript" or "Node" at the NFR stage would collapse the NFR → Infrastructure separation the whitepaper requires.
-- `reverse/8-artifact-types` — the test scenario is Greenfield, so Reverse Engineering correctly skips. A skipped stage has no artifacts to enumerate; emitting artifact category names anyway would be dishonest output.
+
+In the initial post-A/B/C measurement two additional assertions failed — `nfr/tech-stack` and `reverse/8-artifact-types` — both of which recovered after relocating the Gate Output Contract from the top of `build-and-test.md` to between Step 8 and Step 9. The fix is documented in the proposal doc §3.6 and used as a case study in [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../enhanced/EVALUATION-PLAYBOOK.md).
 
 ### 5.6 Interpretation
 
-The three assertions Enhanced loses are not "Claude Code formatting wins we failed to copy." They are the **measurable cost of two explicit design commitments**: host portability (one point) and AI-DLC methodology compliance (two points). Closing any of them would require walking back exactly those commitments.
+The single assertion Enhanced loses is not a "Claude Code formatting win we failed to copy." It is the **measurable cost of host portability** (one point). Closing it would require walking back that commitment.
 
-Equivalently: the benchmark **confirms the design intent**. Every failing assertion maps 1:1 to a design decision that is documented elsewhere in the rule set or the proposals. There are no surprises, no unexplained gaps, and no "we tried but couldn't" cases.
+Equivalently: the benchmark **confirms the design intent**. The one failing assertion maps 1:1 to a design decision that is documented in the rule set and the proposals (Proposal C in particular). There are no surprises, no unexplained gaps, and no "we tried but couldn't" cases.
 
 The +1 gain Enhanced still has over Upstream (`functional/technology-agnostic`) and the +2 gain on `gate/*` it now shares with Native (via Proposal B) come from the same source: rule files that explicitly encode AI-DLC principles Upstream only implies.
 
@@ -367,39 +367,41 @@ The +1 gain Enhanced still has over Upstream (`functional/technology-agnostic`) 
 2. The rubric rewards Claude Code skill-template conventions (setext `===` headers, `/aidlc-*` slash commands, specific section titles). Rule sets that emit semantically equivalent but textually different output are penalized regardless of methodology quality.
 3. For methodology fidelity, use `scripts/aidlc-evaluator/` instead (see §5.9).
 
-### 5.8 Measured Run (2026-04-23, post A/B/C)
+### 5.8 Measured Run (2026-04-24, post A/B/C + §3.6 adjustment)
 
-The measured run uses the new ad-hoc runner at `docs/benchmark/runners/run_full_benchmark.py` — a sequential 14-stage pipeline driving Opus 4.7 via Bedrock, with the `common/*` rules prompt-cached and each stage's prior-stage outputs fed forward as context. Proposal A / B / C are applied to the rule files before the run. Outputs land in `docs/benchmark/results/eval-<skill>/enhanced/outputs/result.md` (gitignored — regenerate locally) and are scored with the unchanged `grade.py` rubric (one flag-composition bug fixed; see §6.1 of the proposal doc).
+The measured run uses the ad-hoc runner at `docs/benchmark/runners/run_full_benchmark.py` — a sequential 14-stage pipeline driving Opus 4.7 via Bedrock, with the `common/*` rules prompt-cached and each stage's prior-stage outputs fed forward as context. Proposal A / B / C are applied to the rule files before the run, including the §3.6 adjustment that moved the Gate Output Contract from top-of-file to between Step 8 and Step 9 of `build-and-test.md`. Outputs land in `docs/benchmark/results/eval-<skill>/enhanced/outputs/result.md` (gitignored — regenerate locally) and are scored with the unchanged `grade.py` rubric (one flag-composition bug fixed; see §6.1 of the proposal doc).
 
-**Headline result: 68/71 = 95.8%** — tied with Upstream (68/71), three points below Native (71/71). The per-skill breakdown:
+**Headline result: 70/71 = 98.6%** — two points above Upstream (68/71), one point below Native (71/71). The per-skill breakdown:
 
 | Skill | Native (published) | Upstream (published) | Enhanced — **measured** | Δ vs Upstream | Note |
 |---|---|---|---|---|---|
 | detect | 5/5 | 5/5 | **4/5** | −1 | A recovered the `===` header; slash-command lost by design |
-| reverse | 4/4 | 4/4 | **3/4** | −1 | Greenfield → stage skipped → no artifacts to enumerate |
+| reverse | 4/4 | 4/4 | 4/4 | = | recovered after §3.6 adjustment (was 3/4 pre-adjustment) |
 | requirements | 7/7 | 7/7 | 7/7 | = | |
 | stories | 5/5 | 5/5 | 5/5 | = | |
 | app-design | 5/5 | 5/5 | 5/5 | = | |
 | units | 5/5 | 5/5 | 5/5 | = | |
 | plan | 5/5 | 5/5 | 5/5 | = | |
 | functional | 6/6 | 5/6 | 6/6 | +1 | rule explicitly technology-agnostic |
-| nfr | 5/5 | 5/5 | **4/5** | −1 | rule mandates tech-agnostic NFR; regex demands "TypeScript/Node" |
+| nfr | 5/5 | 5/5 | 5/5 | = | recovered after §3.6 adjustment (was 4/5 pre-adjustment) |
 | infra | 5/5 | 5/5 | 5/5 | = | |
 | code | 5/5 | 5/5 | 5/5 | = | |
 | gate | 5/5 | 3/5 | 5/5 | +2 | Proposal B (Gate Output Contract) makes 2-phase structure explicit |
 | test | 5/5 | 5/5 | 5/5 | = | |
 | status | 4/4 | 4/4 | 4/4 | = | |
-| **Total** | **71/71** | **68/71** | **68/71** | **=** | |
+| **Total** | **71/71** | **68/71** | **70/71** | **+2** | |
 
 **Interpretation:**
 
-1. **Benchmark confirms design intent.** Every one of the three failing assertions maps 1:1 to a design commitment documented in the rule set or the proposals. There are no unexplained gaps.
-2. **Enhanced's +3 gains are also design-driven.** `functional/technology-agnostic` comes from rule lines that explicitly forbid AWS service names. `gate/2-phase` and `gate/GO-NO-GO` come from the Gate Output Contract that Proposal B added to `build-and-test.md` after measuring that even Opus 4.7 could not synthesize the 2-phase structure in isolation (see Proposal doc §6).
-3. **Tied score, different shape.** Enhanced and Upstream both land on 68/71, but they fail different assertions. Upstream fails `functional/tech-agnostic` + both `gate/*` assertions (methodology gaps). Enhanced fails `detect/slash-command` + `nfr/tech-agnostic` + `reverse/8-artifacts` (portability + methodology wins, mechanical skip cost). The shape of the failures is the actual comparison, not the headline number.
+1. **Benchmark confirms design intent.** The single failing assertion (`detect/slash-command`) maps 1:1 to Proposal C's explicitly documented host-portability commitment. There are no unexplained gaps.
+2. **Enhanced's +3 gains are design-driven.** `functional/technology-agnostic` comes from rule lines that explicitly forbid AWS service names. `gate/2-phase` and `gate/GO-NO-GO` come from the Gate Output Contract that Proposal B added to `build-and-test.md` after measuring that even Opus 4.7 could not synthesize the 2-phase structure in isolation (see Proposal doc §6).
+3. **Measured ≥ Upstream after methodology is made explicit.** Enhanced at 70/71 vs Upstream at 68/71 under the same rubric. The +2 delta comes entirely from rule files making AI-DLC principles explicit where Upstream left them implicit.
 
 **Relation to earlier measurements:**
 
-An earlier measurement (before Proposal A/B/C and before the runner existed) reported 69/71 — taken via manual Claude Code sessions. That number included an incidental +1 on `reverse` (the interactive session produced a more verbose skip message that coincidentally contained an artifact-category word). The new automated runner produces terser skip messages, surfacing the underlying `reverse/8-artifacts` gap that was always present but masked by session verbosity. 68/71 is the reproducible floor.
+- An **interactive Claude Code session** before Proposal A/B/C landed scored 69/71 — that number included an incidental +1 on `reverse` (the verbose conversational UX happened to contain an artifact-category word). The automated runner produces terser skip messages.
+- The **first automated run** after A/B/C landed scored 68/71 — it lost points on `nfr/tech-stack` and `reverse/8-artifacts` because the Gate Output Contract, placed at the top of `build-and-test.md`, was indirectly shortening earlier-stage artefacts. Relocating the contract to between Step 8 and Step 9 (with an explicit scope guard) recovered both points. See the proposal doc §3.6 and [`EVALUATION-PLAYBOOK.md`](../enhanced/EVALUATION-PLAYBOOK.md) §3 Example B for the full analysis.
+- **70/71 is the current reproducible floor** under the automated pipeline.
 
 **Artifacts produced:**
 
@@ -441,39 +443,30 @@ Three rule-level improvements (A/B/C in [`docs/enhanced/proposals/BENCHMARK-DRIV
 - **Proposal B** — `build-and-test.md` now has an explicit "Gate Output Contract" section mandating the `Phase 1 / Phase 2 + GO/NO-GO + PASS/FAIL` structure. Outcome: every tested model (Haiku 4.5 / Sonnet 4.6 / Opus 4.7) now scores 5/5 on `gate` in isolation — validated by the 18-run fragility matrix in the Proposal doc §6.
 - **Proposal C** — `common/agent-capabilities.md §7` now documents that next-step cues like `/aidlc-*` are a host-adapter concern, not a core-rule concern, so future contributors will not "fix" Enhanced's `detect/slash-command` gap by silently degrading UX on non–Claude Code hosts.
 
-### 6.2 Structural gaps that remain
+### 6.2 Structural gap that remains
 
-Enhanced commits to two design principles:
+Enhanced commits to **host portability** as a design principle: the rule set must work on any agent host (Claude Code, Cursor, Cline, Amazon Q, Kiro, GitHub Copilot), not just one.
 
-1. **Host portability** — the rule set must work on any agent host (Claude Code, Cursor, Cline, Amazon Q, Kiro, GitHub Copilot), not just one.
-2. **AI-DLC methodology fidelity** — the core AI-DLC structures (question-file format, audit log, human-approval gates, technology-agnostic NFR design, Greenfield / Brownfield branching) must be preserved as the whitepaper defines them.
+Keeping this principle has a measurable cost: emitting Claude Code slash commands (`/aidlc-requirements`) would pick up a rubric point on `detect/Recommends next step`, but break host portability — Cursor / Cline / Amazon Q users would see meaningless strings.
 
-Keeping both principles has a measurable cost. Two examples:
-
-- Emitting Claude Code slash commands (`/aidlc-requirements`) would pick up a rubric point, but break host portability — Cursor / Cline / Amazon Q users would see meaningless strings.
-- Naming concrete technologies ("TypeScript", "Node") at the NFR stage would pick up a rubric point, but violate AI-DLC's technology-agnostic NFR principle.
-
-Enhanced deliberately omits those outputs. The regex rubric, however, only checks "does this pattern appear in the output?" It cannot tell apart:
+Enhanced deliberately omits that output. The regex rubric, however, only checks "does this pattern appear in the output?" It cannot tell apart:
 
 - **"Didn't try"** — the rule set lacks the capability, so the pattern is missing by accident.
 - **"Tried and correctly chose not to"** — the rule set has the capability but deliberately excluded the output on principle.
 
-Enhanced's three remaining failures are all the second kind:
+Enhanced's single remaining failure is the second kind:
 
 | Failure | Why the pattern is absent | Design principle violated if closed |
 |---|---|---|
 | `detect/Recommends next step` | Enhanced uses prose ("Proceeding to Requirements Analysis") instead of `/aidlc-*` literals | Host portability (documented in Proposal C) |
-| `nfr/Tech stack decisions` | NFR rule explicitly forbids naming technologies at this stage | AI-DLC methodology (tech-agnostic NFR → Infra separation) |
-| `reverse/Produces 8 artifact types` | Greenfield scenario → stage correctly skipped → no artifacts exist | Honest output (a skipped stage cannot legitimately enumerate artifacts) |
 
-**A subtle but important nuance — runtime environment can mask rule-layer behavior.** The Anhyobin benchmark was executed inside Claude Code, and some of these regex patterns can be satisfied either by the *rule file* explicitly encoding the pattern **or** by the *runtime environment* supplying it for free. Examples:
+**A subtle but important nuance — runtime environment can mask rule-layer behavior.** The Anhyobin benchmark was executed inside Claude Code, so some of these regex patterns can be satisfied either by the *rule file* explicitly encoding the pattern **or** by the *runtime environment* supplying it for free. Example:
 
-- `detect/slash-command` — Claude Code renders `/aidlc-*` commands as clickable UI affordances during an interactive session, so a Claude Code run can surface slash-command strings even when the rule file does not prescribe them. A run of the same rule set on Cursor / Cline / Amazon Q would not get that free string.
-- `reverse/8-artifact-types` — an interactive conversational session (Claude Code UX default) tends to produce more verbose, explanatory output where category words like `architecture`, `api`, `component` show up in prose commentary. An automated API run emits tighter artefacts and loses that incidental match. This is exactly why Enhanced's earlier interactive measurement scored 69/71 and the automated runner now scores 68/71.
+- `detect/slash-command` — Claude Code renders `/aidlc-*` commands as clickable UI affordances during an interactive session, so a Claude Code run can surface slash-command strings even when the rule file does not prescribe them. A run of the same rule set on Cursor / Cline / Amazon Q would not get that free string. An automated Bedrock pipeline like `run_full_benchmark.py` also does not get it — which is exactly why Enhanced's automated runs score −1 on this assertion while Upstream's interactive runs scored the point.
 
 Enhanced's rule-layer design deliberately does **not** rely on either source. The rules produce the same output whether the host is Claude Code, Cursor, or a raw Bedrock API call, because host portability is an explicit design goal (§1.0). The rubric cannot observe that property — it only sees whether specific strings ended up in `result.md`, regardless of whether the rule or the environment put them there.
 
-**Bottom line:** the 68/71 score is not a quality shortfall in the rule set. It is a limitation of the rubric — a regex rubric cannot distinguish (a) principled exclusion from missing capability, nor (b) rule-layer output from environment-supplied output. It penalizes Enhanced for both.
+**Bottom line:** the 70/71 score is not the whole story, and neither would 71/71 be. It is a limitation of the rubric — a regex rubric cannot distinguish (a) principled exclusion from missing capability, nor (b) rule-layer output from environment-supplied output. The assertion that remains missing reflects an intentional design commitment, not a quality shortfall.
 
 ---
 
