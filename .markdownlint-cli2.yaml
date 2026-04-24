@@ -39,3 +39,10 @@ ignores:
   # git-cliff postprocessors run per-body so inter-body spacing and trailing
   # whitespace cannot be fully controlled via template alone.
   - "CHANGELOG.md"
+  # Benchmark runner artefacts — raw LLM outputs, not part of repo docs.
+  # Regenerated locally via docs/benchmark/runners/. Gitignored at runtime.
+  - "docs/benchmark/results/**"
+  # Python virtualenv bundled with vendored package READMEs. Gitignored too,
+  # but added here so `npx markdownlint-cli2 "**/*.md"` run locally before
+  # commit does not trip on vendored package READMEs.
+  - "docs/benchmark/runners/.venv/**"

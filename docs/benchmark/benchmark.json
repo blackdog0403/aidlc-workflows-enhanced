@@ -3,9 +3,9 @@
   "total_skills": 14,
   "aggregate": {
     "enhanced": {
-      "total_passed": 69,
+      "total_passed": 70,
       "total_assertions": 71,
-      "overall_pass_rate": 0.972
+      "overall_pass_rate": 0.986
     },
     "upstream": {
       "total_passed": 68,
@@ -16,9 +16,9 @@
   "per_skill": {
     "detect": {
       "enhanced": {
-        "passed": 3,
+        "passed": 4,
         "total": 5,
-        "pass_rate": 0.6,
+        "pass_rate": 0.8,
         "details": [
           {
             "text": "[detect] Output contains no Korean characters",
@@ -42,8 +42,8 @@
           },
           {
             "text": "Contains completion summary",
-            "passed": false,
-            "evidence": "Check failed"
+            "passed": true,
+            "evidence": "Check passed"
           }
         ]
       },

@@ -1,0 +1,4 @@
+# Per-run benchmark outputs — LLM-generated, not reproducible byte-for-byte.
+# Regenerate locally via runners/run_full_benchmark.py or run_gate_benchmark.py.
+results/
+__pycache__/

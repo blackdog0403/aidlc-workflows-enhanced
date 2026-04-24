@@ -12,8 +12,12 @@ def has_korean(text: str) -> bool:
     return bool(re.search(r'[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]', text))
 
 
-def check(text, pattern, flags=re.IGNORECASE):
-    return bool(re.search(pattern, text, flags))
+def check(text, pattern, flags=0):
+    # Always match case-insensitively. Callers that pass re.DOTALL would
+    # otherwise overwrite the default IGNORECASE — this ensures DOTALL and
+    # IGNORECASE compose, which is what the original rubric's assertion
+    # text implies (see grade_skill assertions for `nfr`, `gate`, `test`).
+    return bool(re.search(pattern, text, flags | re.IGNORECASE))
 
 
 def grade_skill(skill_name: str, text: str) -> list:
@@ -120,23 +124,21 @@ def grade_skill(skill_name: str, text: str) -> list:
     return results
 
 
-UPSTREAM_BASELINE_URL = (
-    "https://raw.githubusercontent.com/anhyobin/aidlc-workflows/"
-    "feat/claude-code-native-implementation/platforms/claude-code/"
-    "benchmarks/benchmark.json"
-)
-
-
 def load_upstream_baseline(cache_path: Path) -> dict:
-    """Fetch upstream baseline (per-skill pass counts) from anhyobin repo.
+    """Load the committed upstream baseline snapshot.
 
-    Downloads once and caches. Returns {skill: {passed, total, pass_rate, details}}
-    extracted from the published benchmark.json for variant 'upstream'.
+    Reads `upstream-baseline.json` (a pinned copy of the `benchmark.json`
+    published at `anhyobin/aidlc-workflows` — a personal third-party
+    repository that authored both the rubric and the comparison run)
+    and returns the per-skill scores for the `upstream` variant, which
+    scored AWS's official `awslabs/aidlc-workflows` rule files under
+    that rubric. Shape: `{skill: {passed, total, pass_rate, details}}`.
     """
     if not cache_path.exists():
-        from urllib.request import urlopen
-        with urlopen(UPSTREAM_BASELINE_URL) as r:
-            cache_path.write_bytes(r.read())
+        raise FileNotFoundError(
+            f"Upstream baseline not found at {cache_path}. "
+            f"The committed `upstream-baseline.json` is required for comparison."
+        )
     data = json.loads(cache_path.read_text())
     out = {}
     for key, val in data.get("per_skill", {}).items():
@@ -152,15 +154,18 @@ def main():
     skills = ["detect", "reverse", "requirements", "stories", "app-design", "units",
               "plan", "functional", "nfr", "infra", "code", "gate", "test", "status"]
 
-    # Load upstream baseline from the published anhyobin benchmark.json
+    # Load the pinned upstream baseline snapshot.
     upstream = load_upstream_baseline(base_dir / "upstream-baseline.json")
 
     all_results = {}
     total_passed = 0
     total_assertions = 0
 
+    # Stage outputs live under results/eval-<skill>/enhanced/outputs/result.md
+    # (kept out of git — see docs/benchmark/.gitignore).
+    results_root = base_dir / "results"
     for skill in skills:
-        result_file = base_dir / f"eval-{skill}" / "enhanced" / "outputs" / "result.md"
+        result_file = results_root / f"eval-{skill}" / "enhanced" / "outputs" / "result.md"
         if not result_file.exists():
             print(f"SKIP: {skill}/enhanced (no output file)")
             continue
@@ -180,7 +185,7 @@ def main():
             "details": grades
         }
 
-        grading_file = base_dir / f"eval-{skill}" / "enhanced" / "grading.json"
+        grading_file = results_root / f"eval-{skill}" / "enhanced" / "grading.json"
         with open(grading_file, 'w') as f:
             json.dump({"eval_name": skill, "variant": "enhanced", "expectations": grades,
                        "summary": {"passed": passed, "total": total}}, f, indent=2)

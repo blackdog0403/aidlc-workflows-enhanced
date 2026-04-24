@@ -176,6 +176,16 @@ This file's matrix is a **snapshot**. When a host ships a new capability (e.g., 
 
 ---
 
+## 7. Host-Specific Next-Step Cues
+
+The core rule set emits next-step guidance in prose form (e.g. "Proceeding to Requirements Analysis"). This is intentional: slash commands, `@mention` syntax, and host-specific CLI flags are **not** part of the host-agnostic rule surface.
+
+Hosts that benefit from machine-actionable next-step strings (e.g. Claude Code with `/aidlc-*` slash commands) may wrap the core output with a host-specific adapter that appends the appropriate cue. Adapters live under host-specific distribution paths (e.g. `.claude/skills/aidlc-<stage>/SKILL.md`), never in `aws-aidlc-rule-details/`.
+
+This is a structural consequence of supporting multiple hosts and should not be "fixed" by adding slash-command strings to the core rules.
+
+---
+
 > Author: Kwangyoung Kim (<kwangyou@amazon.com>) + Claude Code
-> Source: [harness-engineering_EN.md](../../../../harness-engineering_EN.md) + [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips) + host-agent documentation as of 2026-04
+> Source: [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips) + host-agent documentation as of 2026-04
 > Last updated: April 2026

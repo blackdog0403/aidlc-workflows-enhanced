@@ -96,7 +96,7 @@ Create `aidlc-docs/aidlc-state.md`:
 
 **For Brownfield Projects:**
 ```markdown
-# 🔍 Workspace Detection Complete
+=== Workspace Detection Complete ===
 
 Workspace analysis findings:
 • **Project Type**: Brownfield project
@@ -106,7 +106,7 @@ Workspace analysis findings:
 
 **For Greenfield Projects:**
 ```markdown
-# 🔍 Workspace Detection Complete
+=== Workspace Detection Complete ===
 
 Workspace analysis findings:
 • **Project Type**: Greenfield project

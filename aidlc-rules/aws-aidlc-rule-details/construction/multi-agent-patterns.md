@@ -309,5 +309,5 @@ This is the one point where the Generator/Evaluator loop re-connects to AI-DLC's
 ---
 
 > Author: Kwangyoung Kim (<kwangyou@amazon.com>) + Claude Code
-> Source: [harness-engineering_EN.md](../../../../harness-engineering_EN.md) + Anthropic Engineering Blogs + [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips)
+> Source: Anthropic Engineering Blogs + [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips)
 > Last updated: April 2026

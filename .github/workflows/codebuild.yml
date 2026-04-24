@@ -6,12 +6,10 @@ on:
     branches:
       - main
     types:
-      - labeled
       - opened
       - ready_for_review
       - reopened
       - synchronize
-      - unlabeled
     paths:
       - 'aidlc-rules/**'
   push:
@@ -39,94 +37,20 @@ concurrency:
 
 env:
   CODEBUILD_PROJECT_NAME: ${{ vars.CODEBUILD_PROJECT_NAME || 'codebuild-project' }}
-  LABEL_REMINDER_MARKER: rules-label-reminder
 
 permissions: {}
 
 jobs:
-  label-reminder:
-    if: >-
-      github.event_name == 'pull_request'
-      && !contains(github.event.pull_request.labels.*.name, 'rules')
-
-    permissions:
-      pull-requests: write
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Warn about missing rules label
-        run: |
-          echo "::warning::This PR changes aidlc-rules/ but does not have the 'rules' label. Add the label to trigger the CodeBuild evaluation pipeline."
-
-      - name: Comment on PR
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          MARKER: ${{ env.LABEL_REMINDER_MARKER }}
-        run: |
-          EXISTING=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" \
-            --jq ".[] | select(.body | contains(\"$MARKER\")) | .id" \
-            | head -1)
-          if [ -n "$EXISTING" ]; then
-            echo "Reminder comment already exists ($EXISTING) — skipping"
-            exit 0
-          fi
-          BODY="<!-- $MARKER -->
-          > **Note:** This PR changes \`aidlc-rules/\` but the \`rules\` label has not been applied.
-          >
-          > A maintainer must add the **rules** label to trigger the CodeBuild evaluation pipeline.
-          > Once labeled, subsequent pushes will re-trigger the build automatically."
-          gh pr comment "$PR_NUMBER" --repo "$REPO" --body "$BODY"
-
-      - name: Fork PR notice
-        if: github.event.pull_request.head.repo.full_name != github.repository
-        run: |
-          echo "::notice::Skipping PR comment — fork PRs have a read-only GITHUB_TOKEN. The warning annotation above is still visible to maintainers."
-
-  label-cleanup:
-    if: >-
-      github.event_name == 'pull_request'
-      && contains(github.event.pull_request.labels.*.name, 'rules')
-      && github.event.pull_request.head.repo.full_name == github.repository
-
-    permissions:
-      issues: write
-      pull-requests: write
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Remove label reminder comment
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          MARKER: ${{ env.LABEL_REMINDER_MARKER }}
-        run: |
-          COMMENT_ID=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" \
-            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"$MARKER\"))) | .id" \
-            | head -1)
-          if [ -z "$COMMENT_ID" ]; then
-            echo "No label-reminder comment found — nothing to clean up"
-            exit 0
-          fi
-          if gh api -X DELETE "repos/$REPO/issues/comments/$COMMENT_ID"; then
-            echo "Removed label-reminder comment ($COMMENT_ID)"
-          else
-            echo "::warning::Failed to delete label-reminder comment ($COMMENT_ID) — it may have been removed already"
-          fi
-
   build:
-    # Fork PRs are skipped because they cannot access the repository secrets
-    # or OIDC credentials needed for AWS CodeBuild.
+    # Triggered automatically on any PR that touches aidlc-rules/** (see the
+    # top-level `on: pull_request.paths` filter). Fork PRs are skipped here
+    # because they cannot access repository secrets or OIDC credentials
+    # needed for AWS CodeBuild — the workflow would just fail. For internal
+    # (same-repo) PRs, no label is required; the build runs on every
+    # rules-touching push.
     if: >-
-      (github.event_name != 'pull_request'
-      || contains(github.event.pull_request.labels.*.name, 'rules'))
-      && (github.event_name != 'pull_request'
-      || github.event.pull_request.head.repo.full_name == github.repository)
+      github.event_name != 'pull_request'
+      || github.event.pull_request.head.repo.full_name == github.repository
     environment: codebuild
 
     permissions:
