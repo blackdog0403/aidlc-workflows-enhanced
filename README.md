@@ -9,7 +9,7 @@ AI-DLC is an intelligent software development workflow that adapts to your needs
 > [!NOTE]
 > **About this fork.** This repository is an **experimental, personal R&D fork** of [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) — it is **not an official AWS release**.
 >
-> **Why it exists (short version).** Comparing upstream AI-DLC and Anthropic's Harness Engineering (HE) side-by-side, the two frameworks turn out to focus on **opposite halves** of AI-native development — AI-DLC on planning and human–AI collaboration, HE on implementation and runtime. That suggested they could work **complementarily** rather than as alternatives. This fork is an attempt to keep AI-DLC's core philosophy intact — **the human decides, the agent executes** — while absorbing HE's runtime patterns, and to shape the result into an **ideal human-in-the-loop structure** where humans intervene on the right decisions and agents run on rails everywhere else. The detailed design is in [Why This Fork Exists](#why-this-fork-exists--design-rationale) below.
+> **Why it exists (short version).** Comparing upstream AI-DLC and Anthropic's Harness Engineering side-by-side, the two frameworks turn out to focus on **opposite halves** of AI-native development — AI-DLC on planning and human–AI collaboration, Harness Engineering on implementation and runtime. That suggested they could work **complementarily** rather than as alternatives. This fork is an attempt to keep AI-DLC's core philosophy intact — **the human decides, the agent executes** — while absorbing Harness Engineering's runtime patterns, and to shape the result into an **ideal human-in-the-loop structure** where humans intervene on the right decisions and agents run on rails everywhere else. The detailed design is in [Why This Fork Exists](#why-this-fork-exists--design-rationale) below.
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ AI-DLC is an intelligent software development workflow that adapts to your needs
 
 ## Why This Fork Exists — Design Rationale
 
-The upstream AI-DLC and Anthropic's Harness Engineering (HE) corpus are **deep in completely opposite areas** of AI-native development: AI-DLC owns Planning and Human-AI Collaboration, HE owns Implementation / Verification / Operations runtime. This fork keeps AI-DLC's decision-quality spine intact while selectively absorbing HE's execution-quality patterns, and adds two layers covered by neither — host portability and project-purpose gate density.
+The upstream AI-DLC and Anthropic's Harness Engineering corpus are **deep in completely opposite areas** of AI-native development: AI-DLC owns Planning and Human-AI Collaboration, Harness Engineering owns Implementation / Verification / Operations runtime. This fork keeps AI-DLC's decision-quality spine intact while selectively absorbing Harness Engineering's execution-quality patterns, and adds two layers covered by neither — host portability and project-purpose gate density.
 
 ### Coverage at a glance
 
@@ -74,6 +74,14 @@ The upstream AI-DLC and Anthropic's Harness Engineering (HE) corpus are **deep i
 - State persistence via `aidlc-state.md`
 - Inception stage structure (Requirements / Stories / Workflow Planning / …) — only *gate enforcement* changes by mode
 
+### Proof roadmap — how we plan to validate the Harness Engineering patterns
+
+This fork adds a set of Harness Engineering patterns (see the table above) on top of AI-DLC. Proving they actually deliver value requires its own measurement axis — ideally one mini-experiment per pattern (L1–L5 ladder, Generator/Evaluator, host portability, context budget, boundary-based security, entropy management, cost optimization, project mode). A concrete sketch of what each experiment looks like is in [`docs/benchmark/AIDLC-Rules-Comparison.md` §5.10](docs/benchmark/AIDLC-Rules-Comparison.md). Each is a good candidate for a follow-up PR.
+
+One pattern — Lopopolo's "anything not in the repository effectively does not exist" — has been quantitatively validated inside this PR: the 9-run fragility measurement for Proposal B (see [proposal §6](docs/enhanced/proposals/BENCHMARK-DRIVEN-RULE-IMPROVEMENTS.md)) showed all three Bedrock model tiers improve from 2.0 / 5 to 5.0 / 5 on the `gate` stage after the 2-phase structure was made explicit in the rule file. The rest still rests on design argument and cited literature until follow-up measurement lands.
+
+> **A note on the existing rubric benchmark in this repo.** [`docs/benchmark/README.md`](docs/benchmark/README.md) reuses a regex rubric authored by the owner of [`anhyobin/aidlc-workflows`](https://github.com/anhyobin/aidlc-workflows/tree/feat/claude-code-native-implementation/platforms/claude-code) — a personal repository that packaged the AWS rule files as Claude Code Skills and published a comparison benchmark. We ran the same rubric against Enhanced purely to see how a host-agnostic rule set fares under a Claude Code–specialized rubric. It is a **reference, not a quality ranking** — it does not measure the Harness Engineering patterns this fork actually adds, and it is not an AWS / Anthropic / independently validated evaluation.
+
 ### Where to look next
 
 Depending on what you want to do, jump to:
@@ -90,7 +98,7 @@ Depending on what you want to do, jump to:
 
 - **Upstream:** [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) (the canonical AI-DLC)
 - **This fork's baseline:** upstream **v0.1.8**
-- **HE corpus cut-off:** Anthropic Engineering & Research blog posts published up to **2026-04-22**
+- **Harness Engineering corpus cut-off:** Anthropic Engineering & Research blog posts published up to **2026-04-22**
 - **Release tag scheme:** `vX.Y.Z` (standard [SemVer](https://semver.org/)). This fork versions independently of upstream — the first release is `v0.1.9`, reusing the next number after upstream's `v0.1.8` baseline without implying any alignment with upstream's future releases. The repository name, README, and CHANGELOG make the fork relationship explicit, so tag collision risk is negligible in practice (this fork publishes its own releases under its own repo).
 - **Syncing from upstream:** see [`docs/enhanced/FORK-CHANGES.md` § How to Diff Against Upstream](docs/enhanced/FORK-CHANGES.md#how-to-diff-against-upstream).
 
@@ -868,7 +876,7 @@ The agent will download the latest release, create the correct config file for y
 | Claude Code Documentation                           | [GitHub](https://github.com/anthropics/claude-code)                                                                           |
 | GitHub Copilot Documentation                        | [Docs](https://docs.github.com/en/copilot)                                                                                    |
 | Working with AI-DLC (interaction patterns and tips) | [docs/WORKING-WITH-AIDLC.md](docs/WORKING-WITH-AIDLC.md)                                                                      |
-| Benchmark — Enhanced vs Upstream (69/71 vs 68/71)   | [docs/benchmark/README.md](docs/benchmark/README.md)                                                                          |
+| Benchmark — Enhanced vs Upstream (68/71 tied; different assertion shape) | [docs/benchmark/README.md](docs/benchmark/README.md)                                                                          |
 | AI-DLC Rules Comparison Report                      | [docs/benchmark/AIDLC-Rules-Comparison.md](docs/benchmark/AIDLC-Rules-Comparison.md)                                          |
 | Contributing Guidelines                             | [CONTRIBUTING.md](CONTRIBUTING.md)                                                                                            |
 | Code of Conduct                                     | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)                                                                                      |

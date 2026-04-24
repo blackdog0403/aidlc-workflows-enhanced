@@ -122,7 +122,7 @@
 | **Verification**           | 🟡 **Partial** — L5 human approval per stage only                                                         | ✅ **Deep\*** — L1–L4 feedback + Generator-Evaluator · *No OS-level sandbox*                                           | ✅ **Deep** — L1–L5 Ladder · Generator-Evaluator · OS-level sandbox · Auto Mode                                 |
 | **Operations**             | ⚪ **Placeholder** — 19-line `operations/operations.md`                                                    | 🟡 **Partial** — Entropy mgmt added (Gardener, AutoDream, Compounding); deployment still absent                       | ✅ **Deep (maintenance)** / ❌ Deployment — Gardener · AutoDream · Progressive Deletability                      |
 | **Human-AI Collaboration** | ✅ **Deep** — Parseable question format · verbatim audit · adaptive depth · soft overconfidence prevention | ✅ **Deep** — AI-DLC + structural Generator-Evaluator (soft + hard dual defense)                                       | ❌ **Absent** — Structural Generator-Evaluator only                                                             |
-| **Host Portability**       | ❌ **Absent** — Implicit single-agent                                                                      | 🆕 **Deep** — Capability matrix · detection protocol · fallback ladder for Kiro / Amazon Q / Cursor / Cline / Copilot | 🟡 **Claude-Code-centric** — OpenAI Codex variant discussed in internal note `harness-engineering_EN.md` §4 |
+| **Host Portability**       | ❌ **Absent** — Implicit single-agent                                                                      | 🆕 **Deep** — Capability matrix · detection protocol · fallback ladder for Kiro / Amazon Q / Cursor / Cline / Copilot | 🟡 **Claude-Code-centric** — OpenAI Codex variant per [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) (Lopopolo, 2026-02-11) |
 | **Project Mode**           | ❌ **Absent** — Every stage approval is the default                                                        | 🆕 **Deep** — Prototyping / Production / Hybrid gate density, user-selected once                                      | ❌ **Absent** — Same L1–L5 pipeline regardless of project type                                                  |
 
 ### Primary Evidence per Domain
@@ -298,18 +298,16 @@ Because these taxonomies are not interchangeable, this section does not score th
 
 1. [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) — reference implementation used in this comparison: **v0.1.8** (30 files)
 2. AI-DLC Optimized (April 2026 revision) — 40 files, ~302KB (AI-DLC + 10 new/rewritten + additional trims)
-3. [AWS AI-DLC Whitepaper](https://prod.d13rzhkk8cj2z0.amplifyapp.com/) (Method Definition Paper)
-4. `AIDLC_Perspective_on_HE_EN.md` — internal working note, not included in this repo
+3. [AWS AI-DLC Whitepaper](https://prod.d13rzhkk8cj2z0.amplifyapp.com/aidlc.pdf) (Method Definition Paper)
 
 ### Harness Engineering
 
-1. `HE_Perspective_on_AIDLC_EN.md` — internal working note, not included in this repo
-2. Anthropic, [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) (2026-03-24)
-3. Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
-4. Anthropic, [Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy) (2026-02)
-5. Anthropic, [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) (2025-06-13)
-6. [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips)
-7. LangChain, [Improving Deep Agents with Harness Engineering](https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering) (2026-02-17)
+1. Anthropic, [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) (2026-03-24)
+2. Anthropic, [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
+3. Anthropic, [Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy) (2026-02)
+4. Anthropic, [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) (2025-06-13)
+5. [Claude Code power user tips](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips)
+6. LangChain, [Improving Deep Agents with Harness Engineering](https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering) (2026-02-17)
 
 ### Maturity Frameworks
 

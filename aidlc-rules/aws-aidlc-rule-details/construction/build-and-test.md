@@ -14,6 +14,38 @@
 
 ---
 
+## Gate Output Contract
+
+When the Build & Test stage runs as a gate (i.e. when a unit is being
+promoted out of Construction), the stage output MUST be structured as
+two explicit phases:
+
+### Phase 1 — Code Review
+
+- Section heading exactly: `## Phase 1: Code Review` (or
+  `## Phase 1 — Code Review`, with the word "Phase 1" at the start).
+- Content: architecture review, code-quality review, security checks
+  (OWASP Top 10, secrets, injection vectors, authentication).
+- Verdict line at the end: `**Verdict: GO**` or `**Verdict: NO-GO**`.
+  The words `GO` and `NO-GO` must both appear in the section even if
+  only one is the chosen verdict (e.g. in a decision rationale).
+
+### Phase 2 — Build & Test
+
+- Section heading exactly: `## Phase 2: Build & Test`.
+- Content: build execution, automated test execution, coverage
+  metrics, integration/contract test results.
+- Verdict line at the end: `**Verdict: PASS**` or `**Verdict: FAIL**`.
+  The words `PASS` and `FAIL` must both appear even if only one is
+  the chosen verdict.
+
+The two-phase structure separates readiness assessment (Phase 1, a
+subjective decision) from quality validation (Phase 2, an
+objective measurement). Collapsing them into a single pass hides the
+subjective/objective boundary.
+
+---
+
 ## Step 1: Analyze Testing Requirements
 
 Analyze the project to determine appropriate testing strategy:
