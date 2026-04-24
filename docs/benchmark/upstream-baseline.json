@@ -1,0 +1,1372 @@
+{
+  "skill_name": "aidlc-skills-full",
+  "scenario": "Serverless Order Management API",
+  "total_skills": 14,
+  "total_runs": 42,
+  "aggregate": {
+    "total_passed": 197,
+    "total_assertions": 213,
+    "overall_pass_rate": 0.925
+  },
+  "per_skill": {
+    "detect/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[detect] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Identifies Greenfield/Brownfield",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Recommends next step",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Contains state file structure",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Contains completion summary",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "detect/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[detect] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Identifies Greenfield/Brownfield",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Recommends next step",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Contains state file structure",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Contains completion summary",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "detect/without_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[detect] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Identifies Greenfield/Brownfield",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Recommends next step",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Contains state file structure",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Contains completion summary",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "reverse/with_skill": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[reverse] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Multi-dimensional discovery",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Produces 8 artifact types",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Mentions brownfield context",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "reverse/upstream": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[reverse] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Multi-dimensional discovery",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Produces 8 artifact types",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Mentions brownfield context",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "reverse/without_skill": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[reverse] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Multi-dimensional discovery",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Produces 8 artifact types",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Mentions brownfield context",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "requirements/with_skill": {
+      "passed": 7,
+      "total": 7,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[requirements] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "4-dimension analysis",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Analysis depth specified",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Questions with [Answer]: tags",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Questions with X) Other option",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Multiple question categories",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Team notification message",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "requirements/upstream": {
+      "passed": 7,
+      "total": 7,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[requirements] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "4-dimension analysis",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Analysis depth specified",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Questions with [Answer]: tags",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Questions with X) Other option",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Multiple question categories",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Team notification message",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "requirements/without_skill": {
+      "passed": 5,
+      "total": 7,
+      "pass_rate": 0.71,
+      "details": [
+        {
+          "text": "[requirements] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "4-dimension analysis",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Analysis depth specified",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Questions with [Answer]: tags",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Questions with X) Other option",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Multiple question categories",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Team notification message",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "stories/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[stories] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Personas defined",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "INVEST criteria mentioned",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Acceptance criteria present",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Story format (As a...I want...)",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "stories/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[stories] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Personas defined",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "INVEST criteria mentioned",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Acceptance criteria present",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Story format (As a...I want...)",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "stories/without_skill": {
+      "passed": 3,
+      "total": 5,
+      "pass_rate": 0.6,
+      "details": [
+        {
+          "text": "[stories] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Personas defined",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "INVEST criteria mentioned",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Acceptance criteria present",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Story format (As a...I want...)",
+          "passed": false,
+          "evidence": "Check failed"
+        }
+      ]
+    },
+    "app-design/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[app-design] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Component definitions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Service definitions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Dependency matrix/diagram",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Question file with options",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "app-design/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[app-design] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Component definitions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Service definitions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Dependency matrix/diagram",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Question file with options",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "app-design/without_skill": {
+      "passed": 4,
+      "total": 5,
+      "pass_rate": 0.8,
+      "details": [
+        {
+          "text": "[app-design] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Component definitions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Service definitions",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Dependency matrix/diagram",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Question file with options",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "units/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[units] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Unit definitions with scope",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Dependency/execution order",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Effort estimates",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Story-to-unit mapping",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "units/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[units] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Unit definitions with scope",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Dependency/execution order",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Effort estimates",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Story-to-unit mapping",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "units/without_skill": {
+      "passed": 4,
+      "total": 5,
+      "pass_rate": 0.8,
+      "details": [
+        {
+          "text": "[units] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Unit definitions with scope",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Dependency/execution order",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Effort estimates",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Story-to-unit mapping",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "plan/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[plan] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "EXECUTE/SKIP decisions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Risk assessment",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Impact analysis",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Workflow visualization",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "plan/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[plan] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "EXECUTE/SKIP decisions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Risk assessment",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Impact analysis",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Workflow visualization",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "plan/without_skill": {
+      "passed": 3,
+      "total": 5,
+      "pass_rate": 0.6,
+      "details": [
+        {
+          "text": "[plan] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "EXECUTE/SKIP decisions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Risk assessment",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Impact analysis",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Workflow visualization",
+          "passed": false,
+          "evidence": "Check failed"
+        }
+      ]
+    },
+    "functional/with_skill": {
+      "passed": 6,
+      "total": 6,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[functional] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Business logic flows",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Domain model/entities",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Validation rules",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Question file present",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Technology-agnostic",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "functional/upstream": {
+      "passed": 5,
+      "total": 6,
+      "pass_rate": 0.83,
+      "details": [
+        {
+          "text": "[functional] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Business logic flows",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Domain model/entities",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Validation rules",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Question file present",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Technology-agnostic",
+          "passed": false,
+          "evidence": "Check failed"
+        }
+      ]
+    },
+    "functional/without_skill": {
+      "passed": 4,
+      "total": 6,
+      "pass_rate": 0.67,
+      "details": [
+        {
+          "text": "[functional] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Business logic flows",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Domain model/entities",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Validation rules",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Question file present",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Technology-agnostic",
+          "passed": false,
+          "evidence": "Check failed"
+        }
+      ]
+    },
+    "nfr/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[nfr] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "NFR categories covered",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Tech stack decisions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Design patterns",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Measurable targets",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "nfr/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[nfr] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "NFR categories covered",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Tech stack decisions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Design patterns",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Measurable targets",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "nfr/without_skill": {
+      "passed": 4,
+      "total": 5,
+      "pass_rate": 0.8,
+      "details": [
+        {
+          "text": "[nfr] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "NFR categories covered",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Tech stack decisions",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Design patterns",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Measurable targets",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "infra/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[infra] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "AWS service mapping",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Configuration details",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Deployment architecture",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Cost considerations",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "infra/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[infra] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "AWS service mapping",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Configuration details",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Deployment architecture",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Cost considerations",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "infra/without_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[infra] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "AWS service mapping",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Configuration details",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Deployment architecture",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Cost considerations",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "code/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[code] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Checkbox-based plan",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Structured sections",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Plan approval gate",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Design artifact references",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "code/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[code] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Checkbox-based plan",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Structured sections",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Plan approval gate",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Design artifact references",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "code/without_skill": {
+      "passed": 4,
+      "total": 5,
+      "pass_rate": 0.8,
+      "details": [
+        {
+          "text": "[code] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Checkbox-based plan",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "Structured sections",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Plan approval gate",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Design artifact references",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "gate/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[gate] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Two-phase pipeline",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "GO/NO-GO verdict",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "PASS/FAIL verdict",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Security checks",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "gate/upstream": {
+      "passed": 3,
+      "total": 5,
+      "pass_rate": 0.6,
+      "details": [
+        {
+          "text": "[gate] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Two-phase pipeline",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "GO/NO-GO verdict",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "PASS/FAIL verdict",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Security checks",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "gate/without_skill": {
+      "passed": 4,
+      "total": 5,
+      "pass_rate": 0.8,
+      "details": [
+        {
+          "text": "[gate] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Two-phase pipeline",
+          "passed": false,
+          "evidence": "Check failed"
+        },
+        {
+          "text": "GO/NO-GO verdict",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "PASS/FAIL verdict",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Security checks",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "test/with_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[test] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Multiple test types",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Build step included",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Coverage metrics",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "PASS/FAIL summary",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "test/upstream": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[test] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Multiple test types",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Build step included",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Coverage metrics",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "PASS/FAIL summary",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "test/without_skill": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[test] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Multiple test types",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Build step included",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Coverage metrics",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "PASS/FAIL summary",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "status/with_skill": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[status] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Dashboard format",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Phase progress shown",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Unit status table",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "status/upstream": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[status] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Dashboard format",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Phase progress shown",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Unit status table",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    },
+    "status/without_skill": {
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0,
+      "details": [
+        {
+          "text": "[status] Output contains no Korean characters",
+          "passed": true,
+          "evidence": "No Korean found"
+        },
+        {
+          "text": "Dashboard format",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Phase progress shown",
+          "passed": true,
+          "evidence": "Check passed"
+        },
+        {
+          "text": "Unit status table",
+          "passed": true,
+          "evidence": "Check passed"
+        }
+      ]
+    }
+  }
+}
