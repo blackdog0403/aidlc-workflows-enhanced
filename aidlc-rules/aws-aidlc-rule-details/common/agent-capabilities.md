@@ -20,7 +20,8 @@ All other rule files that depend on multi-agent, worktree isolation, sandboxing,
 | **Parallel worktree execution** | ✅ `--worktree`, `isolation: worktree` | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **OS-level sandbox** | ✅ `bubblewrap`/`seatbelt` | ⚠️ manual | ⚠️ manual | ⚠️ IAM-scoped | ⚠️ manual | ❌ |
 | **Boundary / Auto mode** | ✅ Auto Mode (FPR 0.4%) | ⚠️ basic allow-lists | ⚠️ basic | ⚠️ basic | ⚠️ basic | ❌ |
-| **Lifecycle hooks** (PreToolUse/PostToolUse/Stop) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Lifecycle hooks — observe/feedback** (run script on event, pipe output to agent) | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| **Lifecycle hooks — block triggering action** (non-zero exit cancels the action) | ✅ (PreToolUse) | ❌ | ❌ | ❌ | ✅ (Pre Tool Use, Prompt Submit) | ❌ |
 | **Auto-memory / cross-session consolidation** | ✅ AutoDream | ❌ | ❌ | ⚠️ partial | ✅ steering | ❌ |
 | **Tool Search / defer_loading** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **File-based rule loading** | ✅ `.claude/` | ✅ `.cursor/rules/` | ✅ `.clinerules/` | ✅ `.amazonq/` | ✅ `.kiro/` | ✅ `.github/` |
@@ -28,7 +29,7 @@ All other rule files that depend on multi-agent, worktree isolation, sandboxing,
 
 Legend: ✅ native support · ⚠️ partial / workaround · ❌ not supported at date of this rule file.
 
-> **Caveat**: Capability support evolves fast. Treat the matrix as "as of 2026-04"; when the host agent advertises a different capability, trust the host.
+> **Caveat**: Capability support evolves fast. Matrix entries are "as of 2026-04" except where noted. Kiro lifecycle-hook entries verified 2026-04-25 against [kiro.dev/docs/hooks/types/](https://kiro.dev/docs/hooks/types/) and [kiro.dev/docs/hooks/actions/](https://kiro.dev/docs/hooks/actions/) (Kiro docs do not expose a version tag; re-check these URLs periodically). When the host agent advertises a different capability, trust the host.
 
 ---
 
