@@ -15,21 +15,21 @@ All other rule files that depend on multi-agent, worktree isolation, sandboxing,
 
 | Capability | Claude Code | Cursor | Cline | Amazon Q Dev | Kiro | GitHub Copilot |
 |---|---|---|---|---|---|---|
-| **Subagent definition files** (single-file role prompts) | ✅ `.claude/agents/` | ⚠️ rules only | ⚠️ rules only | ⚠️ rules only | ✅ steering/agents | ⚠️ instructions only |
-| **Multi-agent orchestration** (agent calls agent) | ✅ `Agent` tool | ❌ | ❌ | ❌ | ❌ (roadmap) | ❌ |
-| **Parallel worktree execution** | ✅ `--worktree`, `isolation: worktree` | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **OS-level sandbox** | ✅ `bubblewrap`/`seatbelt` | ⚠️ manual | ⚠️ manual | ⚠️ IAM-scoped | ⚠️ manual | ❌ |
-| **Boundary / Auto mode** | ✅ Auto Mode (FPR 0.4%) | ⚠️ basic allow-lists | ⚠️ basic | ⚠️ basic | ⚠️ basic | ❌ |
-| **Lifecycle hooks — observe/feedback** (run script on event, pipe output to agent) | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ |
-| **Lifecycle hooks — block triggering action** (non-zero exit cancels the action) | ✅ (PreToolUse) | ❌ | ❌ | ❌ | ✅ (Pre Tool Use, Prompt Submit) | ❌ |
-| **Auto-memory / cross-session consolidation** | ✅ AutoDream | ❌ | ❌ | ⚠️ partial | ✅ steering | ❌ |
-| **Tool Search / defer_loading** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Subagent definition files** (single-file role prompts) | ✅ `.claude/agents/` | ⚠️ rules only | ⚠️ skills + read-only subagents | ⚠️ rules only | ✅ `.kiro/agents/` (CLI) | ✅ `.github/agents/*.agent.md` |
+| **Multi-agent orchestration** (agent calls agent) | ✅ `Agent` tool | ⚠️ `/multitask` (auto-decomposed) | ⚠️ `use_subagents` (read-only, no nesting) | ❌ | ⚠️ subagents (CLI, user-launched) | ✅ `agents` frontmatter + `agent` tool |
+| **Parallel worktree execution** | ✅ `--worktree`, `isolation: worktree` | ✅ Agents Window worktrees | ✅ New Worktree Window | ❌ | ❌ | ⚠️ coding-agent per-task VM only |
+| **OS-level sandbox** | ✅ `bubblewrap`/`seatbelt` | ⚠️ sandboxed terminals | ⚠️ manual | ⚠️ IAM-scoped | ⚠️ manual | ⚠️ preview (macOS/Linux) |
+| **Boundary / Auto mode** | ✅ Auto Mode | ⚠️ allow-lists + sandbox fallback | ⚠️ model `requires_approval` flag | ⚠️ basic | ⚠️ basic | ⚠️ Autopilot (auto-approve all, experimental) |
+| **Lifecycle hooks — observe/feedback** (run script on event, pipe output to agent) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ |
+| **Lifecycle hooks — block triggering action** (non-zero exit cancels the action) | ✅ (exit 2 on PreToolUse + others) | ✅ (exit 2) | ✅ (`cancel: true`) | ❌ | ✅ (Pre Tool Use, Prompt Submit) | ✅ (exit 2 / `permissionDecision: deny`) |
+| **Auto-memory / cross-session consolidation** | ✅ auto memory (`MEMORY.md`) | ✅ Memories | ⚠️ Memory Bank (manual trigger) | ⚠️ partial | ⚠️ user-edited steering | ⚠️ Copilot Memory (preview) |
+| **Tool Search / defer_loading** | ✅ | ❌ | ❌ | ❌ | ✅ MCP on-demand (CLI 2.1) | ❌ |
 | **File-based rule loading** | ✅ `.claude/` | ✅ `.cursor/rules/` | ✅ `.clinerules/` | ✅ `.amazonq/` | ✅ `.kiro/` | ✅ `.github/` |
 | **Structured question files** (AI-DLC pattern) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 Legend: ✅ native support · ⚠️ partial / workaround · ❌ not supported at date of this rule file.
 
-> **Caveat**: Capability support evolves fast. Matrix entries are "as of 2026-04" except where noted. Kiro lifecycle-hook entries verified 2026-04-25 against [kiro.dev/docs/hooks/types/](https://kiro.dev/docs/hooks/types/) and [kiro.dev/docs/hooks/actions/](https://kiro.dev/docs/hooks/actions/) (Kiro docs do not expose a version tag; re-check these URLs periodically). When the host agent advertises a different capability, trust the host.
+> **Caveat**: Capability support evolves fast. Most entries were re-verified 2026-04-25 against host documentation; cells carrying version pins (e.g. "CLI 2.1", "preview") reflect the state of the referenced release. Sources consulted on 2026-04-25: [code.claude.com/docs](https://code.claude.com/docs/) (Claude Code), [cursor.com/changelog](https://cursor.com/changelog) (Cursor 1.0 / 1.7 / 3.2), [docs.cline.bot](https://docs.cline.bot/) (Cline v3.56–v3.81), [kiro.dev/docs](https://kiro.dev/docs/) (Kiro IDE + CLI 2.0/2.1), [code.visualstudio.com/docs/copilot](https://code.visualstudio.com/docs/copilot/) (Copilot, custom-agents docs updated 2026-04-22). **Amazon Q Dev** column values are older ("as of 2026-04") and not re-verified against current docs — this column likely needs restructuring because the Amazon Q Developer CLI has been succeeded by Kiro CLI; the Amazon Q IDE Plugin remains but its current capability surface has not been re-checked. When the host agent advertises a different capability, trust the host.
 
 ---
 
