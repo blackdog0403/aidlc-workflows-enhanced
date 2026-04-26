@@ -91,14 +91,14 @@ AI-DLC is a structured yet flexible software development process that adapts to 
 - 📝 **Documented**: Complete audit trail of all decisions and changes
 - 🎛️ **User Control**: You can request stages be included or excluded
 - 🧭 **Host-Aware**: Detects your IDE / CLI (Claude Code, Kiro IDE, Kiro CLI, Amazon Q IDE, Cursor, Cline, GitHub Copilot) and picks the strongest multi-agent / parallel pattern your host supports — and degrades gracefully when a capability isn't available.
-- 🧪 **Mode-Aware**: For Greenfield projects you pick **Prototyping / Production / Hybrid** once. Prototyping collapses Inception gates and removes per-unit human approvals; Production keeps every gate; Hybrid splits the two. Brownfield defaults to Production.
+- 🧪 **Mode-Aware**: For Greenfield projects you pick **Production / Hybrid / Prototyping** once. Production (default) keeps every gate; Hybrid relaxes Construction gates only; Prototyping collapses most gates and is reserved for throwaway work. Brownfield also defaults to Production.
 
 ## What Happens Next:
 
 1. **I'll analyze your workspace** to understand if this is a new or existing project
 2. **I'll detect your host agent** (Claude Code / Kiro IDE / Kiro CLI / etc.) and record its capability profile so later stages use the right multi-agent pattern
 3. **I'll gather requirements** and ask clarifying questions if needed
-4. **For Greenfield, I'll ask once** whether this project is Prototyping / Production / Hybrid — this decides the gate density
+4. **For Greenfield, I'll ask once** whether this project is Production / Hybrid / Prototyping (default is Production) — this decides the gate density
 5. **I'll create an execution plan** showing which stages I propose to run and why
 6. **You'll review and approve** the plan (or request changes)
 7. **We'll execute the plan** with checkpoints at each major stage

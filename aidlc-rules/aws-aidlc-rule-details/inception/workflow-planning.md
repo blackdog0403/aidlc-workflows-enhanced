@@ -7,7 +7,7 @@
 ## Mode and Capability Awareness
 
 Before generating the plan, read `aidlc-state.md` for:
-- **Project Mode** (Prototyping / Production / Hybrid) — governs how many gates the plan inherits and which per-unit design stages execute by default (see `common/project-mode.md` §5).
+- **Project Mode** (Production / Hybrid / Prototyping) — governs how many gates the plan inherits and which per-unit design stages execute by default (see `common/project-mode.md` §5).
 - **Host Capabilities** — axis values that govern whether the plan can use worktree parallel execution (`worktree`), Generator/Evaluator orchestration (`multi_agent`), hook-based L1 checks (`hooks_observe` + `hooks_block`), or sequential fallbacks (see `common/agent-capabilities.md` §3).
 
 **Surface to user in Step 9** when (a) 5+ independent units are identified and `worktree` is neither `native` nor `per-task-vm` (user is leaving parallelism on the table), or (b) Production mode + `multi_agent: none` (every gate is manual).

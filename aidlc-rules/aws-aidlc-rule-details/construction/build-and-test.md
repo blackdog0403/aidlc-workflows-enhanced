@@ -5,7 +5,7 @@
 ## Capability and Mode Awareness
 
 - Load `common/agent-capabilities.md` — when `hooks_observe` is `native` (and ideally `hooks_block` too), wire test execution to `PostToolUse`-equivalent hooks so L1–L3 runs without a model turn. When both hook axes are `none`, run the tests as an in-prompt step and log the turn cost. See `common/agent-capabilities.md` §3.5.
-- Load `common/project-mode.md` — the **final human gate at the end of this stage is retained in ALL modes** (Prototyping, Production, Hybrid). This is the load-bearing AI-DLC invariant that Harness Engineering's "fix cost < wait cost" logic does **not** override.
+- Load `common/project-mode.md` — the **final human gate at the end of this stage is retained in ALL modes** (Production, Hybrid, Prototyping). This is the load-bearing AI-DLC invariant that Harness Engineering's "fix cost < wait cost" logic does **not** override.
 
 ## Prerequisites
 - Code Generation must be complete for all units

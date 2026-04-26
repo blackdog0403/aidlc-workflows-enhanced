@@ -11,7 +11,7 @@ The AI model intelligently assesses what stages are needed based on:
 Load when relevant — not all at once (see context-optimization.md for loading strategy):
 
 - `common/agent-capabilities.md` — Host agent capability detection + fallback rules (load at workflow start, BEFORE any multi-agent/parallel rule)
-- `common/project-mode.md` — Prototyping vs Production vs Hybrid mode selection (load at workflow start; asked once in Requirements Analysis for Greenfield)
+- `common/project-mode.md` — Production vs Hybrid vs Prototyping mode selection (load at workflow start; asked once in Requirements Analysis for Greenfield)
 - `common/context-optimization.md` — Knowledge Pyramid, Context Budget, Prompt Caching (load at workflow start)
 - `common/automated-feedback-loops.md` — L1-L5 layered verification for Code Generation and Build & Test (load at Construction)
 - `common/boundary-based-security.md` — Boundary-based security replacing per-action approvals (load at Construction)

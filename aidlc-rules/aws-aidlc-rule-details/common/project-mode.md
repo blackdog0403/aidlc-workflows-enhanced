@@ -22,6 +22,8 @@ The two frameworks push in opposite directions here:
 
 **Project Mode picks the appropriate default and lets the user override per stage.**
 
+**Default for Greenfield is Production.** Hybrid and Prototyping are opt-in accelerations that the user or model must justify by meeting the criteria in §3.1. Any code that will be maintained, shared, or run in a real environment gets Production by default; Prototyping is reserved for explicitly throwaway work.
+
 ---
 
 ## 2. Mode-Based Stage Execution — MANDATORY OVERRIDE
@@ -83,13 +85,21 @@ Ask **once**, during **Requirements Analysis Step 5.1** (co-located with extensi
 ```markdown
 ## Project Mode
 
-This is a Greenfield project. Please select the execution mode:
+This is a Greenfield project. Please select the execution mode.
 
-A) **Prototyping** — fast iteration, minimal human gates during Construction, automated L1–L4 feedback loops, Harness Engineering automation enabled. Recommended for: proof-of-concept, solo exploration, research spikes, throwaway demos.
+**Production is the default.** Hybrid and Prototyping skip or compress AI-DLC stages and are only appropriate when the project explicitly meets the criteria below. If the criteria for B or C are not clearly met, pick A.
 
-B) **Production** — full AI-DLC human approval at every design stage, conservative automation, design stages (NFR / Infrastructure) execute by default. Recommended for: customer-facing features, regulated systems, code that will be maintained.
+A) **Production (default, recommended)** — full AI-DLC human approval at every design stage, conservative automation, design stages (NFR / Infrastructure / Application Design) execute by default. This is the right choice for code that will be maintained, shared, run in a real environment, or shown to anyone other than the author.
 
-C) **Hybrid** — Production-grade gates for Inception (Requirements, Stories, Workflow Planning), Prototyping-grade speed for Code Generation within each unit. Recommended for: internal tools, time-boxed MVPs where intent must be right but implementation can iterate.
+B) **Hybrid** — Production-grade gates for Inception (Requirements, Stories, Workflow Planning) **and Application Design**, Prototyping-grade speed for Code Generation within each unit (no per-unit human gate). Pick this ONLY if **all** of the following are true:
+   - (i) the intent and architecture must be right, so Inception runs fully, AND
+   - (ii) there is a real reason to skip per-unit human review in Construction — e.g., tight deadline, solo developer, no reviewer available — not merely a preference for speed.
+
+C) **Prototyping** — fast iteration, minimal human gates, compressed or skipped design stages (including Application Design). Pick this ONLY if **both** are true:
+   - (i) the code will be thrown away after the exercise, AND
+   - (ii) no one else depends on it — solo exploration, not a shared tool.
+
+   A public API, a shared internal tool, a demo that will be shown to a customer, or any code that will be kept — **none** of these qualify as Prototyping. If in doubt, pick A.
 
 X) Other (please describe after [Answer]: tag below)
 
@@ -177,11 +187,12 @@ Branching below reads the `multi_agent` and `worktree` axes from `aidlc-state.md
 | If... | Default Mode |
 |---|---|
 | Brownfield | Production (user can override) |
-| Greenfield, user picks A | Prototyping |
-| Greenfield, user picks B | Production |
-| Greenfield, user picks C | Hybrid |
+| Greenfield, user picks A | **Production (recommended default)** |
+| Greenfield, user picks B | Hybrid |
+| Greenfield, user picks C | Prototyping |
 | Greenfield, user picks X (custom) | Ask follow-up questions and synthesize a mix; record the synthesis |
 | User does not answer | **Production** — safest default |
+| Greenfield, user picks B or C but the project does not clearly meet the B/C criteria in §3.1 | Ask the user to confirm. Do NOT silently downgrade to A — surface the mismatch, quote the specific criterion the project does not meet, and let the user decide to keep B/C or switch to A. |
 
 ---
 

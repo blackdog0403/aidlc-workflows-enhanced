@@ -259,12 +259,12 @@ Applies **regardless of host capabilities** — hosts with `multi_agent: none` s
 | Situation | Recommended Pattern | Requires | Cost |
 |---|---|---|---|
 | Simple change, 1–3 files | Single agent, no Evaluator | any host | $ |
-| Prototyping mode, 3–10 units | Generator + Evaluator | any host (use capability fallback) | $$ |
 | Production mode, 3–10 units | Generator + Evaluator + L5 per-unit human gate | any host | $$$ |
+| Prototyping mode, 3–10 units | Generator + Evaluator | any host (use capability fallback) | $$ |
 | Large project, 10+ independent units | Parallel execution + Evaluator | `worktree: native` or `worktree: per-task-vm` | $$$ |
 | Complex architecture, high-risk | Architect-Implementer + Evaluator + Reasoning Sandwich | `multi_agent: native` preferred; degrades on others | $$$$ |
 
-See `common/project-mode.md` for how Prototyping vs Production vs Hybrid interacts with these pattern choices.
+See `common/project-mode.md` for how Production vs Hybrid vs Prototyping interacts with these pattern choices.
 
 ---
 
