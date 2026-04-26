@@ -31,12 +31,14 @@ Collapsing the two into one status code (typically `400` everywhere) breaks cont
 3. If the generated stack uses a framework whose convention differs from the above, follow the framework's convention and record the choice in `aidlc-docs/aidlc-state.md` under `## API Conventions`. Never invent a new mapping.
 4. Error response bodies must include WHAT went wrong and HOW to fix it (per `construction/code-generation.md` "Agent-Friendly Error Messages").
 5. Every generated HTTP endpoint SHOULD have a contract test asserting the expected status code for at least one schema-validation failure and one domain-error case.
+6. **Domain errors must be raised as typed exceptions that the route layer maps to HTTP codes per the status-code table above.** Route handlers translate exceptions to statuses; they never catch a domain exception and return the error as a successful response body.
 
 ## Anti-Patterns
 
 - Installing a global `RequestValidationError` handler that converts framework-default `422` into `400`.
 - Returning `500` for an expected domain error (e.g., `sqrt(-1)` yielding a server error instead of `400`).
 - Returning `200` with `{"error": "..."}` in the body for any error. Status code must carry the primary signal.
+- Wrapping a domain-error call in `try`/`except` inside the route handler and returning the error as a dict body (e.g., invalid computation such as division by zero). The response then ships with `200 OK` because the framework treats any returned value as success, contradicting the domain-error → `400` rule.
 - Using `404` for "this resource is disabled" when the correct code is `403` (forbidden) or `410` (gone).
 
 ## Related
