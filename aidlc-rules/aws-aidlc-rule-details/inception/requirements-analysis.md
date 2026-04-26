@@ -92,9 +92,9 @@ Analyze whatever the user has provided:
 
 ### Step 5.1: Extension Opt-In Prompts + Project Mode Selection
 
-**Part A — Project Mode (Greenfield only)**: If the project is Greenfield (per `aidlc-state.md` workspace detection), load `common/project-mode.md` and append its **Project Mode Selection** question block (A/B/C/X) to the clarifying questions file created in Step 6. **Skip this for Brownfield** — Brownfield auto-selects Production and must record that in `aidlc-state.md` without asking.
+**Part A — Project Mode (Greenfield only)**: If the project is Greenfield (per `aidlc-state.md` workspace detection), load `common/project-mode.md` and write its **Project Mode Selection** question block (A/B/C/X) to a **separate file** at `aidlc-docs/inception/requirements/project-mode-selection.md`. Do NOT append this block to `requirement-verification-questions.md` — Project Mode is a workflow-setup decision, not a requirements clarification, and mixing the two has been shown to lower requirement-verification-questions.md scores against a requirements-focused golden reference. **Skip this for Brownfield** — Brownfield auto-selects Production and must record that in `aidlc-state.md` without asking.
 
-After receiving the Project Mode answer, write it to `aidlc-state.md` under `## Project Mode` with the decided timestamp and rationale (see `common/project-mode.md` §3.1).
+After receiving the Project Mode answer (from `aidlc-docs/inception/requirements/project-mode-selection.md`), write it to `aidlc-state.md` under `## Project Mode` with the decided timestamp and rationale (see `common/project-mode.md` §3.1).
 
 **Part B — Extensions**: Scan all loaded `*.opt-in.md` files (loaded at workflow start from `extensions/` subdirectories) for an `## Opt-In Prompt` section. For each extension that declares one, include that question in the clarifying questions file. Present each opt-in question in the same language as the user's conversation.
 
