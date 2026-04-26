@@ -105,6 +105,11 @@ If the analysis in step 8 reveals ANY ambiguous answers, you MUST:
   - Communication patterns between components
   - Data flow diagrams
 - Create `aidlc-docs/inception/application-design/application-design.md` that consolidates the multiple design docs created above in a single doc.
+- Confirm `aidlc-docs/inception/plans/application-design-plan.md` was
+  written in Step 5. If the plan file does not exist (Steps 4–9 collapsed
+  because no design questions were needed), create it now using the
+  plan-file format shared across Inception stages (checkboxes `[x]` per
+  artifact produced in this step).
 
 ### 11. Log Approval
 - Log approval prompt with timestamp in `aidlc-docs/audit.md`
