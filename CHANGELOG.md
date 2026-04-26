@@ -6,6 +6,21 @@ All notable changes to this project will be documented in this file.
 > maintained as a personal R&D playground. Version numbers here evolve independently
 > of upstream tags; they are not official AWS releases.
 
+## [Unreleased]
+
+### Changes
+
+- refresh `common/agent-capabilities.md` capability matrix against 2026-04-25 host documentation — most non–Amazon-Q columns show material upgrades (Cursor 1.0/1.7/3.2, Cline v3.56–v3.81, Copilot custom-agents, Kiro hooks)
+- split the single `Amazon Q Dev` / `Kiro` columns into three AWS-family columns — `Amazon Q IDE`, `Kiro IDE`, `Kiro CLI` — to match the post-2026 product fragmentation (the Amazon Q Developer CLI was succeeded by Kiro CLI; IDE Plugin and Kiro IDE remain as distinct products)
+- split the single "Lifecycle hooks" matrix row into two rows — `observe/feedback` and `block triggering action` — because a single boolean cannot represent Kiro's "some hooks can block, others cannot" reality
+- add `kiro-cli` to the host enum in `common/agent-capabilities.md` §2.3 and `inception/workspace-detection.md`, and rename `amazon-q-dev` → `amazon-q-ide` and `kiro` → `kiro-ide`; downstream files updated (breaking change for any external consumer that hardcodes the prior strings)
+- update `construction/multi-agent-patterns.md` §1.B to list Kiro IDE, Kiro CLI, and Amazon Q IDE separately, with per-product specifics for steering files vs `.kiro/agents/*.json`
+- update `common/welcome-message.md`, `docs/enhanced/OPTIMIZATION_NOTES.md`, `docs/enhanced/COMPARISON.md`, and `docs/enhanced/FORK-CHANGES.md` host listings to match the new column split
+
+### Known follow-ups
+
+- Amazon Q IDE Plugin column values are carried forward from the prior "as of 2026-04" snapshot and **have not been re-verified** against current IDE-plugin documentation; re-verification requires empirical plugin testing (not doc reading alone) and is a pending task.
+
 ## [0.1.9] - 2026-04-23
 
 First release of this fork. Extends upstream AI-DLC **v0.1.8** with patterns from

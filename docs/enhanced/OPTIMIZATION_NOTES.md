@@ -6,7 +6,7 @@ Summary of changes introduced in the April 2026 revision and the design invarian
 > **Key Takeaways**
 >
 > - AI-DLC's explicit human-decision gates (L1/L5 in the AI-DLC sense: intent at Inception, approval at Construction, release at Build & Test) are preserved; HE's automated L1–L4 feedback loop runs *inside* them.
-> - A new capability layer (`common/agent-capabilities.md`) detects the host agent (Claude Code / Kiro / Amazon Q / Cursor / Cline / GitHub Copilot) and collapses it into three profiles — `full-multi-agent`, `subagent-only`, `single-agent` — that downstream rules branch on.
+> - A new capability layer (`common/agent-capabilities.md`) detects the host agent (Claude Code / Kiro IDE / Kiro CLI / Amazon Q IDE / Cursor / Cline / GitHub Copilot) and collapses it into three profiles — `full-multi-agent`, `subagent-only`, `single-agent` — that downstream rules branch on.
 > - A new mode layer (`common/project-mode.md`) asks Greenfield projects once — Prototyping / Production / Hybrid — and toggles gate density accordingly. Brownfield auto-selects Production.
 > - Multi-agent, worktree-parallel, and sandbox patterns **degrade gracefully** rather than refusing to run. The invariant preserved across all profiles is **separation of Generator and Evaluator contexts**, not a specific mechanism (Agent tool vs context reset vs fresh session).
 > - The Build & Test final gate and the `audit.md` verbatim rule remain non-negotiable in every mode.
@@ -24,7 +24,7 @@ Summary of changes introduced in the April 2026 revision and the design invarian
 
 ### 1. New `common/agent-capabilities.md`
 
-- Capability matrix for 6 hosts × 10 capabilities.
+- Capability matrix for 7 hosts × 11 capabilities.
 - Detection protocol (path-based + self-report override).
 - Three capability profiles for downstream branching.
 - Fallback rules for multi-agent, worktree, sandboxing, hooks, auto-memory, tool search.
@@ -41,7 +41,7 @@ Summary of changes introduced in the April 2026 revision and the design invarian
 
 - Three implementation paths per pattern:
   - `full-multi-agent` — real `Agent` tool orchestration + worktrees.
-  - `subagent-only` — sequential subagent passes with context reset between roles (Kiro / Amazon Q steering).
+  - `subagent-only` — sequential subagent passes with context reset between roles (Kiro IDE / Kiro CLI / Amazon Q IDE steering or agent files).
   - `single-agent` — sequential passes with `/clear`-style resets + feature-branch isolation (Cursor / Cline / Copilot).
 - Pattern 1 (Generator/Evaluator), Pattern 2 (three-agent Planner/Generator/Evaluator), Pattern 3 (parallel units), Pattern 4 (Architect-Implementer + Reasoning Sandwich).
 - Escalation protocol reconnects to AI-DLC's L5 human-approval spine when L1–L4 + 2 auto-fix rounds fail.

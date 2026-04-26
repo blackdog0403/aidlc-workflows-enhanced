@@ -13,22 +13,23 @@ All other rule files that depend on multi-agent, worktree isolation, sandboxing,
 
 ## 1. Capability Matrix
 
-| Capability | Claude Code | Cursor | Cline | Amazon Q Dev | Kiro | GitHub Copilot |
-|---|---|---|---|---|---|---|
-| **Subagent definition files** (single-file role prompts) | ✅ `.claude/agents/` | ⚠️ rules only | ⚠️ rules only | ⚠️ rules only | ✅ steering/agents | ⚠️ instructions only |
-| **Multi-agent orchestration** (agent calls agent) | ✅ `Agent` tool | ❌ | ❌ | ❌ | ❌ (roadmap) | ❌ |
-| **Parallel worktree execution** | ✅ `--worktree`, `isolation: worktree` | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **OS-level sandbox** | ✅ `bubblewrap`/`seatbelt` | ⚠️ manual | ⚠️ manual | ⚠️ IAM-scoped | ⚠️ manual | ❌ |
-| **Boundary / Auto mode** | ✅ Auto Mode (FPR 0.4%) | ⚠️ basic allow-lists | ⚠️ basic | ⚠️ basic | ⚠️ basic | ❌ |
-| **Lifecycle hooks** (PreToolUse/PostToolUse/Stop) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Auto-memory / cross-session consolidation** | ✅ AutoDream | ❌ | ❌ | ⚠️ partial | ✅ steering | ❌ |
-| **Tool Search / defer_loading** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **File-based rule loading** | ✅ `.claude/` | ✅ `.cursor/rules/` | ✅ `.clinerules/` | ✅ `.amazonq/` | ✅ `.kiro/` | ✅ `.github/` |
-| **Structured question files** (AI-DLC pattern) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Capability | Claude Code | Cursor | Cline | Amazon Q IDE | Kiro IDE | Kiro CLI | GitHub Copilot |
+|---|---|---|---|---|---|---|---|
+| **Subagent definition files** (single-file role prompts) | ✅ `.claude/agents/` | ⚠️ rules only | ⚠️ skills + read-only subagents | ⚠️ rules only | ⚠️ steering only | ✅ `.kiro/agents/*.json` | ✅ `.github/agents/*.agent.md` |
+| **Multi-agent orchestration** (agent calls agent) | ✅ `Agent` tool | ⚠️ `/multitask` (auto-decomposed) | ⚠️ `use_subagents` (read-only, no nesting) | ❌ | ❌ | ⚠️ subagents (user-launched, CLI 2.0/2.1) | ✅ `agents` frontmatter + `agent` tool |
+| **Parallel worktree execution** | ✅ `--worktree`, `isolation: worktree` | ✅ Agents Window worktrees | ✅ New Worktree Window | ❌ | ❌ | ❌ | ⚠️ coding-agent per-task VM only |
+| **OS-level sandbox** | ✅ `bubblewrap`/`seatbelt` | ⚠️ sandboxed terminals | ⚠️ manual | ⚠️ IAM-scoped | ⚠️ manual | ❌ (tool-trust only) | ⚠️ preview (macOS/Linux) |
+| **Boundary / Auto mode** | ✅ Auto Mode | ⚠️ allow-lists + sandbox fallback | ⚠️ model `requires_approval` flag | ⚠️ basic | ⚠️ basic | ⚠️ pre-approved tool lists (per agent) | ⚠️ Autopilot (auto-approve all, experimental) |
+| **Lifecycle hooks — observe/feedback** (run script on event, pipe output to agent) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ (`AgentSpawn`, `UserPromptSubmit`) | ✅ |
+| **Lifecycle hooks — block triggering action** (non-zero exit cancels the action) | ✅ (exit 2 on PreToolUse + others) | ✅ (exit 2) | ✅ (`cancel: true`) | ❌ | ✅ (Pre Tool Use, Prompt Submit) | ✅ (`PreToolUse` exit 2) | ✅ (exit 2 / `permissionDecision: deny`) |
+| **Auto-memory / cross-session consolidation** | ✅ auto memory (`MEMORY.md`) | ✅ Memories | ⚠️ Memory Bank (manual trigger) | ⚠️ partial | ⚠️ user-edited steering | ❌ (manual session resume only) | ⚠️ Copilot Memory (preview) |
+| **Tool Search / defer_loading** | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ MCP on-demand (CLI 2.1) | ❌ |
+| **File-based rule loading** | ✅ `.claude/` | ✅ `.cursor/rules/` | ✅ `.clinerules/` | ✅ `.amazonq/` | ✅ `.kiro/steering/` | ✅ `.kiro/steering/` | ✅ `.github/` |
+| **Structured question files** (AI-DLC pattern) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 Legend: ✅ native support · ⚠️ partial / workaround · ❌ not supported at date of this rule file.
 
-> **Caveat**: Capability support evolves fast. Treat the matrix as "as of 2026-04"; when the host agent advertises a different capability, trust the host.
+> **Caveat**: Capability support evolves fast. Most entries were re-verified 2026-04-25 against host documentation; cells carrying version pins (e.g. "CLI 2.1", "preview") reflect the state of the referenced release. Sources consulted on 2026-04-25: [code.claude.com/docs](https://code.claude.com/docs/) (Claude Code), [cursor.com/changelog](https://cursor.com/changelog) (Cursor 1.0 / 1.7 / 3.2), [docs.cline.bot](https://docs.cline.bot/) (Cline v3.56–v3.81), [kiro.dev/docs/hooks/](https://kiro.dev/docs/hooks/) (Kiro IDE hooks), [kiro.dev/docs/cli/](https://kiro.dev/docs/cli/) (Kiro CLI 2.0/2.1, incl. `/docs/cli/hooks/` and `/docs/cli/custom-agents/`), [code.visualstudio.com/docs/copilot](https://code.visualstudio.com/docs/copilot/) (Copilot, custom-agents docs updated 2026-04-22). **Amazon Q IDE** column values are carried over from the prior "as of 2026-04" snapshot and **have not been re-verified** against current IDE-plugin docs; re-verification requires empirical testing of the plugin, not documentation reading, and is tracked as a known follow-up in `CHANGELOG.md`. When the host agent advertises a different capability, trust the host.
 
 ---
 
@@ -43,16 +44,18 @@ Check in order, record the first match:
 | Rule-details path present | Default host agent |
 |---|---|
 | `.claude/` or `.aidlc-rule-details/` + Claude Code session | **claude-code** |
-| `.kiro/aws-aidlc-rule-details/` | **kiro** |
-| `.amazonq/aws-aidlc-rule-details/` | **amazon-q-dev** |
+| `.kiro/aws-aidlc-rule-details/` | **kiro-ide** or **kiro-cli** — path alone cannot distinguish; use §2.2 self-report or ask the user |
+| `.amazonq/aws-aidlc-rule-details/` | **amazon-q-ide** |
 | `.cursor/rules/` | **cursor** |
 | `.clinerules/` | **cline** |
 | `.github/` (Copilot) | **github-copilot** |
 | `.aidlc/aidlc-rules/aws-aidlc-rule-details/` (generic) | **unknown — ask the user** |
 
+**Note on `.kiro/` ambiguity**: Kiro IDE and Kiro CLI both install rules under `.kiro/`. Path-based detection yields the product family but not the specific product. Prefer self-report (Step 2.2) — CLI system prompts identify themselves as Kiro CLI, IDE sessions as Kiro IDE. If self-report is silent, ask the user.
+
 ### Step 2.2 — Self-report override
 
-If the model has direct knowledge of the host (e.g., the system prompt identifies itself as Claude Code / Kiro), that self-report **overrides path detection**.
+If the model has direct knowledge of the host (e.g., the system prompt identifies itself as Claude Code / Kiro IDE / Kiro CLI), that self-report **overrides path detection**.
 
 ### Step 2.3 — Record to state
 
@@ -60,7 +63,7 @@ Write to `aidlc-docs/aidlc-state.md`:
 
 ```markdown
 ## Host Agent
-- **Detected Host**: [claude-code | cursor | cline | amazon-q-dev | kiro | github-copilot | unknown]
+- **Detected Host**: [claude-code | cursor | cline | amazon-q-ide | kiro-ide | kiro-cli | github-copilot | unknown]
 - **Detection Method**: [self-report | path-based | user-confirmed]
 - **Capability Profile**: [full-multi-agent | subagent-only | single-agent]
 - **Decided At**: [ISO timestamp]
@@ -73,7 +76,7 @@ Collapse the matrix into three profiles for downstream rules to branch on:
 | Profile | Host Agents | What it unlocks |
 |---|---|---|
 | `full-multi-agent` | claude-code | Generator/Evaluator via `Agent` tool, worktree parallel units, lifecycle hooks, Auto Mode |
-| `subagent-only` | kiro, amazon-q-dev (with steering/agent files) | Specialized prompt roles via subagent files, but sequential only — no agent-calls-agent |
+| `subagent-only` | kiro-ide, kiro-cli, amazon-q-ide (with steering/agent files) | Specialized prompt roles via subagent/steering files; kiro-cli can launch user-initiated subagents but not agent-calls-agent. Kiro-cli edge: has native hooks + Tool Search that closer-profile hosts lack |
 | `single-agent` | cursor, cline, github-copilot | One agent executes end-to-end; patterns emulated via context resets, not parallelism |
 
 If the host is **unknown**, default to `single-agent` and ask the user.

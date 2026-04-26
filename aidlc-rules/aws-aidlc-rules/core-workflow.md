@@ -28,8 +28,8 @@ Load when relevant — not all at once (see context-optimization.md for loading 
 **CRITICAL**: When performing any phase, you MUST read and use relevant content from rule detail files. Check these paths in order and use the first one that exists, regardless of which IDE or setup method was used:
 - `.aidlc/aidlc-rules/aws-aidlc-rule-details/` (typical with AI-assisted setup)
 - `.aidlc-rule-details/` (typical with Cursor, Cline, Claude Code, GitHub Copilot)
-- `.kiro/aws-aidlc-rule-details/` (typical with Kiro IDE and CLI)
-- `.amazonq/aws-aidlc-rule-details/` (typical with Amazon Q Developer)
+- `.kiro/aws-aidlc-rule-details/` (shared by Kiro IDE and Kiro CLI; self-report or user confirmation disambiguates — see `common/agent-capabilities.md` §2.1)
+- `.amazonq/aws-aidlc-rule-details/` (Amazon Q Developer IDE Plugin; the legacy Amazon Q Developer CLI has been succeeded by Kiro CLI)
 
 All subsequent rule detail file references (e.g., `common/process-overview.md`, `inception/workspace-detection.md`) are relative to whichever rule details directory was resolved above.
 

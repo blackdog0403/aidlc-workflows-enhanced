@@ -5,7 +5,7 @@
 ## Step 0: Detect Host Agent
 
 Before anything else, execute the detection protocol from `common/agent-capabilities.md` §2:
-1. Path-based detection of the host (claude-code / kiro / amazon-q-dev / cursor / cline / github-copilot / unknown)
+1. Path-based detection of the host (claude-code / kiro-ide / kiro-cli / amazon-q-ide / cursor / cline / github-copilot / unknown). Note: `.kiro/` is shared by kiro-ide and kiro-cli — prefer self-report to disambiguate.
 2. Self-report override if the model knows its own host
 3. Collapse to a capability profile: `full-multi-agent` | `subagent-only` | `single-agent`
 4. Write `## Host Agent` block to `aidlc-state.md` (see §2.3 of agent-capabilities.md)
@@ -65,7 +65,7 @@ Create `aidlc-docs/aidlc-state.md`:
 - **Current Stage**: INCEPTION - Workspace Detection
 
 ## Host Agent
-- **Detected Host**: [claude-code | cursor | cline | amazon-q-dev | kiro | github-copilot | unknown]
+- **Detected Host**: [claude-code | cursor | cline | amazon-q-ide | kiro-ide | kiro-cli | github-copilot | unknown]
 - **Detection Method**: [self-report | path-based | user-confirmed]
 - **Capability Profile**: [full-multi-agent | subagent-only | single-agent]
 - **Decided At**: [ISO timestamp]
