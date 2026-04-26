@@ -40,6 +40,7 @@ Applied to code generation:
 - **Agent-Friendly Error Messages**: Generated error messages must include WHAT went wrong + HOW to fix it
 - **Poka-yoke design**: Use absolute paths (not relative), required params (not optional), and strict types
 - **Namespacing**: Namespace tools/functions clearly to define boundaries in functionality
+- **HTTP status codes for REST/RPC endpoints**: follow `common/http-error-conventions.md` — preserve the framework's default for schema-validation errors (e.g., FastAPI + Pydantic `422`) and reserve `400` for domain-level errors only. Do not install handlers that downgrade `422` to `400`.
 
 ### Context Reset Between Units
 
