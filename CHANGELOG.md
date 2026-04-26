@@ -16,10 +16,14 @@ All notable changes to this project will be documented in this file.
 - add `kiro-cli` to the host enum in `common/agent-capabilities.md` §2.3 and `inception/workspace-detection.md`, and rename `amazon-q-dev` → `amazon-q-ide` and `kiro` → `kiro-ide`; downstream files updated (breaking change for any external consumer that hardcodes the prior strings)
 - update `construction/multi-agent-patterns.md` §1.B to list Kiro IDE, Kiro CLI, and Amazon Q IDE separately, with per-product specifics for steering files vs `.kiro/agents/*.json`
 - update `common/welcome-message.md`, `docs/enhanced/OPTIMIZATION_NOTES.md`, `docs/enhanced/COMPARISON.md`, and `docs/enhanced/FORK-CHANGES.md` host listings to match the new column split
+- **capability axes refactor**: introduce per-axis capability values in `common/agent-capabilities.md` §1 matrix. Each row now carries an **Axis** column (e.g. `multi_agent`, `hooks_block`, `worktree`) and each cell a short axis-value label (`native`, `user-launched`, `none`, etc.). §2.3 state schema gains a `## Host Capabilities` block; §2.5 documents the matrix → axis-value lookup. §3 fallback tables rewritten to branch on axis values instead of the three-band profile, fixing several incorrect branches (hooks were previously gated to `full-multi-agent` only; Tool Search missed Kiro CLI; worktree missed Cursor/Cline/Copilot).
+- **Amazon Q IDE empirical verification**: column re-verified on 2026-04-25 against VS Code (1.52–1.110) and JetBrains changelogs. Corrections landed: `sandbox` was "⚠️ IAM-scoped" → now `none` (IAM governs service calls, not filesystem/shell); `auto_memory` annotated as `semi` with Memory Bank specifics (manual generate, auto reload); `rule_files` path tightened from `.amazonq/` to `.amazonq/rules/`.
+- migrate six downstream rule files from `Capability Profile` (3-band) to axis-value branches: `construction/multi-agent-patterns.md`, `construction/code-generation.md`, `construction/build-and-test.md`, `common/automated-feedback-loops.md`, `common/project-mode.md`, `inception/workflow-planning.md`. Behavior-neutral on hosts where the profile and axis values agreed; corrects branches on Cursor/Cline/Copilot where the profile label was historically wrong.
+- `Capability Profile` field kept in `aidlc-state.md` as a legacy compatibility bridge (§2.4 marked Deprecated). Removal deferred until no external consumer reads it.
 
 ### Known follow-ups
 
-- Amazon Q IDE Plugin column values are carried forward from the prior "as of 2026-04" snapshot and **have not been re-verified** against current IDE-plugin documentation; re-verification requires empirical plugin testing (not doc reading alone) and is a pending task.
+- Remove the legacy `Capability Profile` state field once all external consumers have migrated to `## Host Capabilities` axis values.
 
 ## [0.1.9] - 2026-04-23
 

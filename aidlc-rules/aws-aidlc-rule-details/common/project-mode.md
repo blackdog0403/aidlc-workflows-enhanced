@@ -44,7 +44,7 @@ This section is a **mandatory override rule**, not a reference table. Agents MUS
 | Units Generation | Conditional | **EXECUTE (ALWAYS)** | **EXECUTE (ALWAYS)** |
 | NFR Requirements / NFR Design / Infrastructure Design | Conditional (SKIP by default) | **EXECUTE (ALWAYS) per unit** | Conditional per unit (Prototyping-style) |
 | Code Generation feedback levels | L1–L4 automated + Auto Mode (if host supports); no human gate per unit | L1–L3 automated + L4 AI review + **L5 human gate per unit (ALWAYS)** | L1–L4 automated; no per-unit human gate |
-| Generator/Evaluator multi-agent | Enabled if host supports | Enabled if host supports; **ALWAYS for `full-multi-agent` hosts** | Enabled if host supports |
+| Generator/Evaluator multi-agent | Enabled if host supports | Enabled if host supports; **ALWAYS when `multi_agent: native` or `user-launched`** | Enabled if host supports |
 | Boundary-Based Security (Construction) | Full — Tier 1+2 auto-approved, Tier 3 prompted | Full — same, plus pre-approved commands list published upfront | Same as Prototyping |
 | Build and Test final gate | **EXECUTE (ALWAYS)** — non-negotiable human gate | **EXECUTE (ALWAYS)** | **EXECUTE (ALWAYS)** |
 | Operations (Gardener / Health Report) | Optional post-hoc | **EXECUTE (ALWAYS)** after every Construction cycle | **EXECUTE (ALWAYS)** |
@@ -120,17 +120,19 @@ The user can still override to Prototyping or Hybrid with an explicit request �
 
 ---
 
-## 4. Mode × Host Profile Interaction
+## 4. Mode × Host Capabilities Interaction
 
-Mode and host-agent capability profile are **orthogonal** — see `common/agent-capabilities.md`. The effective automation level is `min(mode_cap, host_cap)`.
+Mode and host-agent capabilities are **orthogonal** — see `common/agent-capabilities.md`. The effective automation level on each axis is `min(mode_cap, host_cap)`.
 
-| Mode | Host = `full-multi-agent` | Host = `subagent-only` | Host = `single-agent` |
+Branching below reads the `multi_agent` and `worktree` axes from `aidlc-state.md` under `## Host Capabilities`. Evaluator shape depends on `multi_agent`; unit parallelism depends on `worktree`.
+
+| Mode | `multi_agent: native` + `worktree: native` | `multi_agent: user-launched` or `worktree: per-task-vm` | `multi_agent: none` and `worktree: none` |
 |---|---|---|---|
-| **Prototyping** | L1–L4 auto + Auto Mode + multi-agent Generator/Evaluator + worktree parallel units | L1–L4 auto + subagent-based sequential Evaluator + feature-branch isolation | L1–L4 auto + context-reset sequential Evaluator + feature-branch isolation |
-| **Production** | L1–L3 auto + L4 AI review + **L5 per-unit human gate** + multi-agent Evaluator | L1–L3 auto + L4 AI review (sequential subagent) + L5 per-unit human gate | L1–L3 auto + L4 AI review (context-reset pass) + L5 per-unit human gate |
-| **Hybrid** | Production-style Inception gates + Prototyping-style Construction (L1–L4 auto, no per-unit gate, multi-agent Evaluator) | Same shape, sequential | Same shape, sequential |
+| **Prototyping** | L1–L4 auto + Auto Mode + multi-agent Generator/Evaluator + worktree parallel units | L1–L4 auto + subagent-based sequential (or per-task-VM parallel) Evaluator + feature-branch isolation where worktree is absent | L1–L4 auto + context-reset sequential Evaluator + feature-branch isolation |
+| **Production** | L1–L3 auto + L4 AI review + **L5 per-unit human gate** + multi-agent Evaluator | L1–L3 auto + L4 AI review (sequential subagent or per-task VM) + L5 per-unit human gate | L1–L3 auto + L4 AI review (context-reset pass) + L5 per-unit human gate |
+| **Hybrid** | Production-style Inception gates + Prototyping-style Construction (L1–L4 auto, no per-unit gate, multi-agent Evaluator) | Same shape, sequential or per-task VM | Same shape, sequential |
 
-**Practical implication**: A Prototyping project on Kiro does NOT get Claude Code's worktree parallelism. It does get the L1–L4 automated feedback loop and the skipped per-unit human gate — the two biggest wins.
+**Practical implication**: A Prototyping project on Kiro IDE does NOT get Claude Code's worktree parallelism (Kiro IDE has `worktree: none`). It does get the L1–L4 automated feedback loop and the skipped per-unit human gate — the two biggest wins.
 
 ---
 
