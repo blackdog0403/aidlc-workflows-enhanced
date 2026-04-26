@@ -230,10 +230,12 @@ If performance doesn't meet requirements:
 Based on project requirements, generate additional test instruction files:
 
 ### Contract Tests (For Microservices)
+**Load `common/http-error-conventions.md`** before writing contract-test assertions so schema-validation cases assert the framework-default status (FastAPI + Pydantic `422`, Spring `@Valid` `400`, Express + express-validator `422`) and domain-error cases assert `400`. Never assert `200` for validation failures.
+
 Create `aidlc-docs/construction/build-and-test/contract-test-instructions.md`:
 - API contract validation between services
 - Consumer-driven contract testing
-- Schema validation
+- Schema validation (use framework-default status — see `common/http-error-conventions.md` §Status Code Mapping)
 
 ### Security Tests
 Create `aidlc-docs/construction/build-and-test/security-test-instructions.md`:
