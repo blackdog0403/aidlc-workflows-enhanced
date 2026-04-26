@@ -11,7 +11,7 @@
 > - This document is a **3-party qualitative comparison** of **AI-DLC**, **AI-DLC Optimized (April 2026 revision)**, and **Harness Engineering (HE)** across the full scope of AI-native software development.
 > - **AI-DLC and HE are deep in completely opposite areas** — AI-DLC owns Planning & Human-AI Collaboration, HE owns Implementation / Verification / Operations runtime, and each is essentially blank where the other is deep.
 > - **AI-DLC Optimized absorbs strengths from both sides** — it adds Construction-time feedback loops, multi-agent patterns, context engineering, cost optimization, and entropy management, while retaining AI-DLC's Inception and Human-AI Collaboration depth.
-> - **New in the April 2026 revision**: a **Host Capability Layer** that detects the IDE/CLI (Claude Code / Kiro / Amazon Q / Cursor / Cline / Copilot) and degrades multi-agent/parallel patterns gracefully; and a **Project Mode Layer** (Prototyping / Production / Hybrid) that lets the user pick gate density once for Greenfield projects.
+> - **New in the April 2026 revision**: a **Host Capability Layer** that detects the IDE/CLI (Claude Code / Kiro IDE / Kiro CLI / Amazon Q IDE / Cursor / Cline / Copilot) and degrades multi-agent/parallel patterns gracefully; and a **Project Mode Layer** (Prototyping / Production / Hybrid) that lets the user pick gate density once for Greenfield projects.
 > - **Remaining gap** is OS-level infrastructure (true bubblewrap/seatbelt sandboxing, 2-layer prompt injection defense) and deployment automation — areas that require platform engineering beyond rule files.
 > - **No numeric scores appear in this document.** Coverage is reported qualitatively from direct reading of the source artefacts. There is no public rubric from Anthropic, AWS, or a neutral third party against which to quantify "X/25 coverage" of an AI-native SDLC framework, so numeric aggregation would be author synthesis rather than measurement.
 
@@ -122,7 +122,7 @@
 | **Verification**           | 🟡 **Partial** — L5 human approval per stage only                                                         | ✅ **Deep\*** — L1–L4 feedback + Generator-Evaluator · *No OS-level sandbox*                                           | ✅ **Deep** — L1–L5 Ladder · Generator-Evaluator · OS-level sandbox · Auto Mode                                 |
 | **Operations**             | ⚪ **Placeholder** — 19-line `operations/operations.md`                                                    | 🟡 **Partial** — Entropy mgmt added (Gardener, AutoDream, Compounding); deployment still absent                       | ✅ **Deep (maintenance)** / ❌ Deployment — Gardener · AutoDream · Progressive Deletability                      |
 | **Human-AI Collaboration** | ✅ **Deep** — Parseable question format · verbatim audit · adaptive depth · soft overconfidence prevention | ✅ **Deep** — AI-DLC + structural Generator-Evaluator (soft + hard dual defense)                                       | ❌ **Absent** — Structural Generator-Evaluator only                                                             |
-| **Host Portability**       | ❌ **Absent** — Implicit single-agent                                                                      | 🆕 **Deep** — Capability matrix · detection protocol · fallback ladder for Kiro / Amazon Q / Cursor / Cline / Copilot | 🟡 **Claude-Code-centric** — OpenAI Codex variant per [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) (Lopopolo, 2026-02-11) |
+| **Host Portability**       | ❌ **Absent** — Implicit single-agent                                                                      | 🆕 **Deep** — Capability matrix · detection protocol · fallback ladder for Kiro IDE / Kiro CLI / Amazon Q IDE / Cursor / Cline / Copilot | 🟡 **Claude-Code-centric** — OpenAI Codex variant per [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) (Lopopolo, 2026-02-11) |
 | **Project Mode**           | ❌ **Absent** — Every stage approval is the default                                                        | 🆕 **Deep** — Prototyping / Production / Hybrid gate density, user-selected once                                      | ❌ **Absent** — Same L1–L5 pipeline regardless of project type                                                  |
 
 ### Primary Evidence per Domain
@@ -184,7 +184,7 @@
 | **Brownfield Auto-Analysis** (Reverse Engineering)                             | ✅      | ✅         | ❌                      |
 | **Overconfidence Prevention (Soft)** (question-generation philosophy)          | ✅      | ✅         | ❌                      |
 | **🆕 Project Mode Selection** (Prototyping / Production / Hybrid)              | ❌      | ✅         | ❌                      |
-| **🆕 Host Capability Adaptation** (Kiro / Amazon Q / Cursor / Cline / Copilot) | ❌      | ✅         | ⚠️ Claude-Code–centric |
+| **🆕 Host Capability Adaptation** (Kiro IDE / Kiro CLI / Amazon Q IDE / Cursor / Cline / Copilot) | ❌      | ✅         | ⚠️ Claude-Code–centric |
 
 > [!NOTE]
 > HE does not address these 10 domains. Focused on agent autonomy on a single host platform, **it neglects human-AI interaction design and cross-host portability**.
@@ -240,11 +240,11 @@ Because these taxonomies are not interchangeable, this section does not score th
 | **Reasoning Sandwich (max-high-max, +12.6pp)**                                 | ❌      | ✅ `multi-agent-patterns.md` Pattern 4       | ✅ LangChain TerminalBench 2.0 (2026-02)      |
 | **AGENTS.md Security Vulnerability**                                           | ❌      | ✅ `boundary-based-security.md`              | ❌ Outside HE scope                           |
 | **SWE-bench Pro** (Verified replacement)                                       | ❌      | Reflected in reference docs                 | ✅ PDF mentions Verified deprecation          |
-| **🆕 Host Capability Adaptation** (Kiro / Amazon Q / Cursor / Cline / Copilot) | ❌      | ✅ `agent-capabilities.md`                   | ❌ Claude-Code–only                           |
+| **🆕 Host Capability Adaptation** (Kiro IDE / Kiro CLI / Amazon Q IDE / Cursor / Cline / Copilot) | ❌      | ✅ `agent-capabilities.md`                   | ❌ Claude-Code–only                           |
 | **🆕 Project Mode** (Prototyping / Production / Hybrid)                        | ❌      | ✅ `project-mode.md`                         | ❌                                            |
 
 > [!NOTE]
-> HE includes the entire Anthropic official blog knowledge system. Auto Mode, Tool Search, Programmatic Tool Calling, Worktree, AutoDream, 3-Agent Architecture, Reasoning Sandwich all originate from Anthropic engineering blogs and are therefore considered part of HE. However, HE does **not** address cross-host portability (Kiro/Cursor/etc.) or project-purpose-aware gate density — those are Optimized-only contributions.
+> HE includes the entire Anthropic official blog knowledge system. Auto Mode, Tool Search, Programmatic Tool Calling, Worktree, AutoDream, 3-Agent Architecture, Reasoning Sandwich all originate from Anthropic engineering blogs and are therefore considered part of HE. However, HE does **not** address cross-host portability (Kiro IDE / Kiro CLI / Cursor / etc.) or project-purpose-aware gate density — those are Optimized-only contributions.
 
 ---
 

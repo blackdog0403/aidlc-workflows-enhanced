@@ -7,7 +7,7 @@ This rule describes **three implementation paths** depending on the host agent's
 | Profile | Implementation Path |
 |---|---|
 | `full-multi-agent` (e.g., Claude Code) | Primary — real agent-to-agent orchestration via Agent tool + worktrees |
-| `subagent-only` (e.g., Kiro with agent/steering files, Amazon Q with profiles) | Sequential subagents with explicit context reset between roles |
+| `subagent-only` (e.g., Kiro IDE steering, Kiro CLI `.kiro/agents/*.json`, Amazon Q IDE profiles) | Sequential subagents with explicit context reset between roles |
 | `single-agent` (e.g., Cursor, Cline, Copilot) | Sequential passes in one agent with context reset emulation |
 
 **None of these paths refuse to proceed.** Degrade gracefully. The load-bearing invariant is **separation of Generator and Evaluator contexts**, not the specific mechanism that achieves it.
@@ -87,7 +87,7 @@ Interaction:
 5. If clean → proceed to next unit.
 6. If unresolved after 2 rounds → escalate to human (L5).
 
-### 1.B Path for `subagent-only` hosts (Kiro, Amazon Q)
+### 1.B Path for `subagent-only` hosts (Kiro IDE, Kiro CLI, Amazon Q IDE)
 
 One agent session, **two sequential passes with forced context reset**. The subagent definition file is used to switch roles, not to orchestrate parallelism.
 
@@ -99,7 +99,9 @@ Interaction:
 5. If issues → load generator profile again, fix, loop (max 2 rounds).
 6. If unresolved → escalate to human.
 
-**Kiro specifics**: create two `.kiro/steering/` files — one per role — and switch active steering between passes. Or use `.kiro/agents/` if the user's Kiro version supports agent files.
+**Kiro IDE specifics**: create two `.kiro/steering/` files — one per role — and switch active steering between passes. Kiro IDE does not have an agents directory; steering is the only mechanism.
+
+**Kiro CLI specifics**: create two `.kiro/agents/*.json` files (per `kiro.dev/docs/cli/custom-agents/`) — one per role — and launch the evaluator agent by name for the second pass. Kiro CLI can also run PreToolUse hooks to enforce the context reset if desired.
 
 ### 1.C Path for `single-agent` hosts (Cursor, Cline, Copilot)
 
