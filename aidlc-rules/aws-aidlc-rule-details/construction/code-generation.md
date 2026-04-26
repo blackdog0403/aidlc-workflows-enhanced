@@ -11,7 +11,7 @@ This stage generates code for each unit of work through two integrated parts:
 
 ### Host Capability Required
 
-This stage uses Generator/Evaluator multi-agent patterns. **Load `common/agent-capabilities.md` and branch behavior on the recorded `Capability Profile`.** Also load `common/project-mode.md` and branch on the recorded `Project Mode`. See `construction/multi-agent-patterns.md` for per-profile implementation paths.
+This stage uses Generator/Evaluator multi-agent patterns. **Load `common/agent-capabilities.md` and branch behavior on the recorded `## Host Capabilities` axis values (`multi_agent` primarily; `hooks_block` and `worktree` for Pattern 3).** Also load `common/project-mode.md` and branch on the recorded `Project Mode`. See `construction/multi-agent-patterns.md` for per-axis implementation paths.
 
 ### Evaluator-Optimizer Pattern (from Anthropic)
 
@@ -22,7 +22,7 @@ Code Generation follows Anthropic's **Evaluator-Optimizer workflow**: the contex
 
 **Application**: After Part 2 (Generation) creates code, run an evaluation pass:
 1. **L1–L3 deterministic checks first** (per `common/automated-feedback-loops.md`): linter, type checker, tests — zero cost, instant feedback
-2. **L4 AI evaluation** in a fresh context (separate agent on `full-multi-agent` hosts; context reset on `subagent-only` / `single-agent` hosts)
+2. **L4 AI evaluation** in a fresh context (separate agent when `multi_agent: native`; role switch with explicit context reset when `multi_agent: user-launched`; `/clear` + role-inlined pass when `multi_agent: none`)
 3. **Auto-fix loop**: iterate max 2 rounds — if L4 still fails, escalate to human (L5)
 4. **L5 human gate applies per Project Mode**:
    - **Production** → per-unit human approval always required after L1–L4 pass

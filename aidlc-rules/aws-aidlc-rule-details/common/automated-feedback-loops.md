@@ -68,7 +68,7 @@ Verification applies differently per domain:
 - [ ] Architecture compliance: does implementation match design docs?
 - [ ] Consistency: naming conventions, patterns, style across units
 
-**Implementation**: If using multi-agent setup, delegate to a dedicated reviewer agent. If single-agent, create a separate review pass with fresh context.
+**Implementation**: When `multi_agent: native`, delegate to a dedicated reviewer agent via the host's agent-calls-agent mechanism. When `multi_agent: user-launched`, switch to a reviewer subagent/steering/custom-agent file with explicit context reset. When `multi_agent: none`, create a separate review pass with fresh context (`/clear` or equivalent). See `common/agent-capabilities.md` §3.1.
 
 > "Tuning an independent evaluator to be skeptical is far more tractable than making a generator self-critical."
 > (Tuning an independent evaluator to be skeptical is far easier than making a generator self-critical.)

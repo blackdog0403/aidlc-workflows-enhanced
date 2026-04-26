@@ -2,22 +2,16 @@
 
 ## Host Capability Required
 
-This rule describes **three implementation paths** depending on the host agent's capability profile. Read `common/agent-capabilities.md` first and branch based on the detected profile recorded in `aidlc-docs/aidlc-state.md` under `## Host Agent`.
-
-| Profile | Implementation Path |
-|---|---|
-| `full-multi-agent` (e.g., Claude Code) | Primary — real agent-to-agent orchestration via Agent tool + worktrees |
-| `subagent-only` (e.g., Kiro IDE steering, Kiro CLI `.kiro/agents/*.json`, Amazon Q IDE profiles) | Sequential subagents with explicit context reset between roles |
-| `single-agent` (e.g., Cursor, Cline, Copilot) | Sequential passes in one agent with context reset emulation |
+- **Reads axis**: `multi_agent` for Generator/Evaluator separation and Pattern 2; `worktree` for Pattern 3 parallel execution. Values come from `aidlc-docs/aidlc-state.md` under `## Host Capabilities`.
+- **When `multi_agent` is `native`**: agent-calls-agent orchestration (Claude Code `Agent` tool, Copilot `agent` tool).
+- **When `multi_agent` is `user-launched`**: user-initiated subagents (Kiro CLI `.kiro/agents/*.json`, Cursor `/multitask`, Cline `use_subagents`) with explicit context reset between roles.
+- **When `multi_agent` is `none`**: single agent with forced context reset (`/clear` or equivalent) between Generator and Evaluator passes.
+- **When `worktree` is `native`**: parallel worktree execution (Claude Code, Cursor Agents Window, Cline New Worktree Window).
+- **When `worktree` is `per-task-vm`**: coding-agent per-task ephemeral VMs (GitHub Copilot coding-agent).
+- **When `worktree` is `none`**: sequential feature-branch loop.
+- See `common/agent-capabilities.md` §3.1, §3.2, §3.3 for the full strategy tables.
 
 **None of these paths refuse to proceed.** Degrade gracefully. The load-bearing invariant is **separation of Generator and Evaluator contexts**, not the specific mechanism that achieves it.
-
-## Host Capability Required — Quick Reference
-
-- **Primary (full-multi-agent)**: Agent tool orchestration, worktree parallel execution, subagent definition files
-- **Fallback (subagent-only)**: Sequential subagents with per-role context reset, feature-branch isolation
-- **Fallback (single-agent)**: Sequential passes with `/clear`-style context reset, feature-branch isolation
-- See `common/agent-capabilities.md` §3.1 and §3.2 for the full fallback table.
 
 ---
 
@@ -48,7 +42,7 @@ Anthropic's harness design research identified **self-evaluation bias** as a cor
 >
 > — Anthropic, [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps) (2026-03-24)
 
-### 1.A Path for `full-multi-agent` hosts (Claude Code)
+### 1.A When `multi_agent` is `native` (e.g., Claude Code, GitHub Copilot)
 
 Two distinct agents, separate contexts, real orchestration.
 
@@ -87,7 +81,7 @@ Interaction:
 5. If clean → proceed to next unit.
 6. If unresolved after 2 rounds → escalate to human (L5).
 
-### 1.B Path for `subagent-only` hosts (Kiro IDE, Kiro CLI, Amazon Q IDE)
+### 1.B When `multi_agent` is `user-launched` (e.g., Kiro CLI, Cursor, Cline)
 
 One agent session, **two sequential passes with forced context reset**. The subagent definition file is used to switch roles, not to orchestrate parallelism.
 
@@ -103,7 +97,7 @@ Interaction:
 
 **Kiro CLI specifics**: create two `.kiro/agents/*.json` files (per `kiro.dev/docs/cli/custom-agents/`) — one per role — and launch the evaluator agent by name for the second pass. Kiro CLI can also run PreToolUse hooks to enforce the context reset if desired.
 
-### 1.C Path for `single-agent` hosts (Cursor, Cline, Copilot)
+### 1.C When `multi_agent` is `none` (e.g., Amazon Q IDE, Kiro IDE)
 
 One agent, two passes, context reset is the only isolation mechanism.
 
@@ -148,13 +142,13 @@ Planner → Generator ⟷ Evaluator
 
 ### Capability branching
 
-Use the `agent-capabilities.md` §3.1 fallback table. In `single-agent` mode, the Planner role is the `/effort max` pass at Inception; Generator is `/effort high` during Construction Part 2; Evaluator is a separate `/effort max` pass with cleared context. This is the Reasoning Sandwich (see §4).
+Use the `agent-capabilities.md` §3.2 strategy table. When `multi_agent` is `none`, the Planner role is the `/effort max` pass at Inception; Generator is `/effort high` during Construction Part 2; Evaluator is a separate `/effort max` pass with cleared context. This is the Reasoning Sandwich (see §4).
 
 ---
 
 ## Pattern 3: Parallel Unit Execution
 
-### 3.A Path for `full-multi-agent` hosts
+### 3.A When `worktree` is `native` (e.g., Claude Code, Cursor, Cline)
 
 Claude Code has **native worktree support**:
 
@@ -201,7 +195,11 @@ Units Generation identifies:
 - Integration tests run after all parallel units complete.
 - Human review of integration points.
 
-### 3.B Path for `subagent-only` / `single-agent` hosts
+### 3.B When `worktree` is `per-task-vm` (e.g., GitHub Copilot coding-agent)
+
+Dispatch each unit as its own coding-agent task. Each task runs on a remote ephemeral VM on its own branch, so N units can be dispatched in parallel. The agent integrates via PRs rather than local git worktrees.
+
+### 3.C When `worktree` is `none` (e.g., Amazon Q IDE, Kiro IDE, Kiro CLI)
 
 **No parallelism** — execute the per-unit loop sequentially. Isolate each unit on its own **feature branch**:
 
@@ -224,7 +222,7 @@ Merge all feature branches at Build and Test time. Log in `aidlc-state.md`:
 - **Branches**: aidlc/unit-a, aidlc/unit-b, aidlc/unit-c
 ```
 
-The user should know they are leaving performance on the table by not using a `full-multi-agent` host for a large project. Surface this in the Workflow Planning recommendations when there are 5+ independent units.
+The user should know they are leaving performance on the table by not using a `worktree: native` or `worktree: per-task-vm` host for a large project. Surface this in the Workflow Planning recommendations when there are 5+ independent units.
 
 ---
 
@@ -252,7 +250,7 @@ Different reasoning intensity at different stages produces a measured quality li
 >
 > — Ref: [LangChain TerminalBench 2.0](https://www.langchain.com/blog/improving-deep-agents-with-harness-engineering)
 
-Applies **regardless of host profile** — single-agent hosts still benefit from switching `/effort` tiers per phase.
+Applies **regardless of host capabilities** — hosts with `multi_agent: none` still benefit from switching `/effort` tiers per phase.
 
 ---
 
@@ -263,8 +261,8 @@ Applies **regardless of host profile** — single-agent hosts still benefit from
 | Simple change, 1–3 files | Single agent, no Evaluator | any host | $ |
 | Prototyping mode, 3–10 units | Generator + Evaluator | any host (use capability fallback) | $$ |
 | Production mode, 3–10 units | Generator + Evaluator + L5 per-unit human gate | any host | $$$ |
-| Large project, 10+ independent units | Parallel execution + Evaluator | `full-multi-agent` host | $$$ |
-| Complex architecture, high-risk | Architect-Implementer + Evaluator + Reasoning Sandwich | `full-multi-agent` preferred; degrades on others | $$$$ |
+| Large project, 10+ independent units | Parallel execution + Evaluator | `worktree: native` or `worktree: per-task-vm` | $$$ |
+| Complex architecture, high-risk | Architect-Implementer + Evaluator + Reasoning Sandwich | `multi_agent: native` preferred; degrades on others | $$$$ |
 
 See `common/project-mode.md` for how Prototyping vs Production vs Hybrid interacts with these pattern choices.
 
@@ -274,7 +272,8 @@ See `common/project-mode.md` for how Prototyping vs Production vs Hybrid interac
 
 ```markdown
 ## Agent Configuration
-- **Host Agent Profile**: [full-multi-agent | subagent-only | single-agent]
+- **multi_agent axis**: [native | user-launched | none] (from `## Host Capabilities`)
+- **worktree axis**: [native | per-task-vm | none] (from `## Host Capabilities`)
 - **Pattern**: [Single | Generator-Evaluator | Planner-Generator-Evaluator | Parallel | Architect-Implementer]
 - **Generator Role**: [Model / subagent file / inline]
 - **Evaluator Role**: [Model / subagent file / inline]
