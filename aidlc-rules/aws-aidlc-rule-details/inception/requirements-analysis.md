@@ -111,9 +111,11 @@ After receiving answers:
 2. **Deferred Rule Loading**: For each extension the user opted IN, load the full rules file now. The rules file is derived by naming convention: strip `.opt-in.md` from the opt-in filename and append `.md` (e.g., `security-baseline.opt-in.md` → `security-baseline.md`). For extensions the user opted OUT, do NOT load the full rules file.
 
 ### Step 6: Generate Clarifying Questions (PROACTIVE APPROACH)
+   - **Load `common/question-format-guide.md`** and read the Question Quality Bar (specifically the Content subsection and the "Anti-patterns in content" list) before drafting any question. Every question MUST pass the three criteria there: **grounded** in a specific clause of the vision/tech-env, **decision-changing** (two reasonable implementations would diverge by answer), and **scoped to Requirements Analysis** (not operational infrastructure).
    - **ALWAYS** create `aidlc-docs/inception/requirements/requirement-verification-questions.md` unless requirements are exceptionally clear and complete
-   - Ask questions about ANY missing, unclear, or ambiguous areas
-   - Focus on functional requirements, non-functional requirements, user scenarios, and business context
+   - Ask questions only about topics the **vision or tech-env document actually mentions or depends on**. Do NOT ask template infrastructure questions (CORS, logging format, API versioning, cost, DR strategy, development-process model, etc.) unless those documents name them. The AI-DLC Project Mode question (Prototyping/Production/Hybrid) is a separate matter handled at Step 5.1 per `common/project-mode.md`, not a verification question here.
+   - Before drafting each question, cite the exact clause of the vision/tech-env the question is clarifying. If you cannot cite it, the question is off-topic — drop it.
+   - Focus on functional requirements, non-functional requirements, user scenarios, and business context **as they appear in the input artifacts**.
    - Request user to fill in all [Answer]: tags directly in the questions document
    - If presenting multiple-choice options for answers:
      - Label the options as A, B, C, D etc.
