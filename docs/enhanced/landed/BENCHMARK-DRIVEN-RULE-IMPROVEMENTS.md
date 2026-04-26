@@ -2,11 +2,12 @@
 
 > Three rule-level improvements surfaced by the Enhanced vs Upstream benchmark run (see `docs/benchmark/AIDLC-Rules-Comparison.md`). At draft time Enhanced scored 69/71 on the shared 71-assertion rubric, two points behind the Claude Code skill-native variant (71/71); both visible gaps lived in the `detect` skill. A third observation concerned the `gate` skill, which was passing only via model synthesis rather than explicit guidance — fragile under weaker models or different context budgets.
 >
-> **Post-landing reality (see §6 for the fragility data and §7 for the updated per-skill picture):**
+> **Post-landing reality (see §6 for the fragility data, §7 for the updated per-skill picture, and §3.6 through §3.10 for the chronological series of post-A/B/C follow-ups):**
 >
 > - The first automated measurement after A/B/C landed scored **68/71**. Two unexpected drops (`nfr/tech-stack` and `reverse/8-artifact-types`) were traced to the Gate Output Contract's original placement at the top of `build-and-test.md` indirectly shortening earlier-stage artefacts.
 > - The contract was **relocated inside the same file** to between Step 8 and Step 9, with an explicit "applies only to Step 9" scope guard (see §3.6). A re-measurement recovered both assertions, lifting Enhanced to **70/71 (98.6%)** — two points above Upstream, one point below Native.
-> - The single remaining failure (`detect/slash-command`) is the Slash-Command Host-Adapter Note's explicitly-documented host-portability gap. It is not closable without breaking portability.
+> - Five additional follow-up PRs have since landed on top of the A/B/C baseline, each targeting a specific axis the qualitative evaluator flagged (rubric alone does not capture these): Project Mode as a mandatory override (§3.7, PR #9, qualitative 0.818), Production as default Greenfield mode (§3.8, PR #16), domain-error 400 rule restoring Contract 88/88 (§3.9, PR #18, Inception all-time high 0.8749), and Project Mode question separated to its own file (§3.10, PR #20, measured **n=5** to establish distribution).
+> - The single remaining rubric failure (`detect/slash-command`) is the Slash-Command Host-Adapter Note's explicitly-documented host-portability gap. It is not closable without breaking portability. Residual quality gaps (Construction phase −0.119 from golden; verification-Q variance CV 20% on n=5; `application-design-plan.md` 0/6 persistent miss) are scoped as named base-hygiene targets, not rubric regressions.
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>)
 **Status:** Implemented (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note landed 2026-04-23; §3.6 adjustment 2026-04-24; §3.7 Project Mode mandatory override landed 2026-04-24; §3.8 Production as default Greenfield mode landed 2026-04-26; §3.9 Step 5 domain-error 400 rule landed 2026-04-26; §3.10 Step 6 Project Mode question separated to own file landed 2026-04-26)
@@ -496,12 +497,14 @@ Post-landing, two follow-up adjustments (§3.6 contract scoping, §3.7 Project M
 After all three (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note) landed, the full 14-stage benchmark was run on
 Opus 4.7 via Bedrock using the new runner at
 `docs/benchmark/runners/run_full_benchmark.py`. Two measurements
-were needed before the headline result stabilized:
+were needed before the rubric-axis headline stabilized:
 
 | Measurement | Date | Total | Notes |
 |---|---|---|---|
 | First automated run | 2026-04-23 | **68/71** | Lost `nfr/tech-stack` and `reverse/8-artifacts` vs earlier manual runs. Traced to Gate Output Contract placement — see §3.6. |
 | Post-adjustment re-run | 2026-04-24 | **70/71 (98.6%)** | Both assertions recovered after relocating the contract inside `build-and-test.md`. Single remaining loss is `detect/slash-command`. |
+
+The rubric axis has stayed at 70/71 since 2026-04-24 across all subsequent PRs — none of the §3.7–§3.10 follow-ups were targeted at the rubric, and none shifted it. The follow-ups act on the **qualitative axis** (per-document intent/design/completeness vs a golden reference), which the CodeBuild evaluator exposes independently of the rubric. §7.1 below tracks that axis over time; §3.7–§3.10 are the per-PR observations that drove each entry.
 
 Final per-skill picture (post §3.6 adjustment):
 
@@ -525,30 +528,55 @@ The single remaining failure (`detect/slash-command`) maps 1:1 to the Slash-Comm
 
 ### 7.1 Qualitative-axis measurement timeline (via `scripts/aidlc-evaluator/`)
 
-The evaluator tracks a different signal than the 71-assertion rubric: per-document intent / design / completeness scoring against a golden reference. Progression across the same commits:
+The evaluator tracks a different signal than the 71-assertion rubric: per-document intent / design / completeness scoring against a golden reference. Progression across the same commits. The **golden** snapshot (executor Opus 4-6 / simulator Sonnet 4-5, promoted 2026-02-24) is included as the reference line: overall 0.8544, Inception 0.8788, Construction 0.83, Contract 88/88.
 
-| Date | Run | Qualitative overall | Unit tests | application-design docs present | Notes |
-|---|---|---|---|---|---|
-| 2026-04-23 | PR #8, first automated | 0.802 | 169 | yes (4/4) | Rubric 68/71 (before §3.6). Treated as the baseline. |
-| 2026-04-24 | PR #8, post-§3.6 re-run | 0.713 | 169 | **missing (0/4)** | Agent silently skipped Application Design citing Prototyping mode. Rubric 70/71 even as qualitative dropped — first visible case of the two axes disagreeing. |
-| 2026-04-24 | main, fresh run | 0.788 | 254 | missing (0/4) | Same skip pattern, variance happened to push other metrics up. |
-| 2026-04-24 | PR #9, mode override landed | **0.818** | 220 | **yes (4/4)** | Production mode now mandates Application Design via `project-mode.md §2` override (see §3.7). Highest overall to date, above the 0.802 pre-regression baseline. |
+| Date | Run | Qualitative overall | Inception | Construction | Contract | Unit tests | App-Design docs present | Notes |
+|---|---|---|---|---|---|---|---|---|
+| — | **Golden reference** | **0.8544** | **0.8788** | **0.8300** | **88/88** | **180** | **5/5** | Snapshot; baseline for all deltas below. |
+| 2026-04-23 | PR #8 first automated | 0.802 | — | — | 88/88 | 169 | 4/4 | Rubric 68/71 (before §3.6). Treated as pre-series baseline. |
+| 2026-04-24 | PR #8 post-§3.6 re-run | 0.713 | — | — | 88/88 | 169 | **0/4** | Agent silently skipped Application Design citing Prototyping mode. Rubric 70/71 even as qualitative dropped — first visible case of the two axes disagreeing. |
+| 2026-04-24 | main fresh run | 0.788 | — | — | 88/88 | 254 | 0/4 | Same skip pattern, variance happened to push other metrics up. |
+| 2026-04-24 | PR #9 mode override landed | 0.818 | — | — | 88/88 | 220 | 4/4 | Production mode mandates Application Design via `project-mode.md §2` override (see §3.7). |
+| ~2026-04-25 | PR #14 (Step 1) | — | — | — | **88/88** | — | — | `common/http-error-conventions.md` introduced. First time Contract 88/88 achieved in this fork. Driving signal for §3.9 observation chain. |
+| ~2026-04-25 | PR #15 (Step 2) | — | — | — | 88/88 | — | — | Content Quality rules added to `question-format-guide.md`. verification-Q rose 0.45 → 0.65 on `requirement-verification-questions.md` specifically (peak for the series). |
+| 2026-04-26 | PR #16 (Step 3) | 0.7864 | 0.8460 | 0.7268 | **86/88** | 220 | 3/5 | Production as default Greenfield mode. 10-run Prototyping streak broken. Contract regressed on `divide by zero` / `modulo by zero`. See §3.8. |
+| 2026-04-26 | PR #18 (Step 5) | 0.7804 | **0.8749** | 0.686 | **88/88** | 157 | **5/5** | Domain-error 400 rule + Load directive extension. Contract restored. Inception all-time high. See §3.9. |
+| 2026-04-26 | PR #20 (Step 6) run 1 | 0.7506 | 0.8051 | 0.696 | 88/88 | 109 | 5/5 | Project Mode question separated to own file. Original pull_request trigger — the verification-Q 0.38 lower-tail run. |
+| 2026-04-26 | PR #20 run 2 | 0.8025 | 0.8714 | 0.7336 | 88/88 | 183 | 5/5 | 1st re-trigger. verification-Q 0.56. |
+| 2026-04-26 | PR #20 run 3 | 0.7736 | 0.8611 | 0.686 | 88/88 | 126 | 5/5 | 2nd re-trigger. verification-Q 0.65 (PR #15 peak equivalent). |
+| 2026-04-26 | PR #20 run 4 | 0.7722 | 0.8584 | 0.686 | 88/88 | 112 | 3/5 | 3rd re-trigger. verification-Q 0.60, but component-methods.md + services.md both skipped. |
+| 2026-04-26 | PR #20 run 5 | 0.8004 | 0.848 | **0.7528** | 88/88 | 197 | 5/5 | 4th re-trigger. verification-Q 0.48. Highest Construction in PR #20 series. |
+| 2026-04-26 | **PR #20 n=5 summary** | mean **0.779** / median 0.7736 | mean **0.849** / median 0.8584 | mean **0.711** / median 0.686 | **88/88 × 5** | mean 145 / range 109–197 | 5/5 × 4, 3/5 × 1 | See §3.10 for full distribution analysis. verification-Q distribution = [0.38, 0.56, 0.65, 0.60, 0.48], mean 0.534, median 0.56, trimmed mean 0.547. |
 
-Interpretation: the rubric and the evaluator disagreed between the second and third rows — rubric said 70/71 "fine", evaluator said 0.713 "regression." That disagreement is exactly the kind of signal the [`EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md) loop is designed to catch. §3.7 landed because of the disagreement, not because of any rubric number.
+Interpretation. Two disagreements between axes have driven §3.7-§3.10 landings: first, rubric 70/71 vs evaluator 0.713 between rows 2 and 3 (drove §3.7); second, the verification-Q file-placement penalty that single-run measurement intermittently hid (drove §3.8 Observation 4 correction, then §3.10). Both illustrate the [`EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md) loop's core claim: neither axis alone is sufficient; the PRs that landed each landed because a cross-check surfaced something single-axis review had missed.
+
+The PR #20 row also highlights the n=1 vs n=5 problem: the single pull_request-triggered run (0.7506 overall, 0.38 verification-Q) was at the lower-tail of the distribution, and a single-run gate would have read it as "Step 6 failed." The re-measurement (rows 10-13) revealed a mean 0.78 / median 0.77 distribution indistinguishable from PR #18's baseline. This is the empirical case for `proposals/EVALUATOR-REDESIGN.md` (k-sample aggregation, outlier-robust statistics like median and trimmed mean), still Draft — see §3.10 Observation 7.
 
 ---
 
 ## 8. Out of scope
 
 - Re-running the full 14-stage benchmark on a weaker model is the
-  right follow-up work but is not part of these proposals. It is the
-  gating data for the Gate Output Contract (already collected in §6 for the `gate`
-  stage specifically).
+  right follow-up work but was not part of the original A/B/C proposals.
+  Gating data for the Gate Output Contract specifically has been collected
+  in §6 across Haiku/Sonnet/Opus; a weaker-model run of the **full** 14 stages
+  is still pending and should be a separate track.
 - Extending the rubric itself (beyond the upstream
   [`awslabs/aidlc-workflows`](https://github.com/awslabs/aidlc-workflows)
   rubric pinned at `docs/benchmark/grade.py`) would change the
   comparison contract with upstream and should be a separate
   discussion.
+- Implementing the k-sample distribution-based gate described in
+  [`proposals/EVALUATOR-REDESIGN.md`](../proposals/EVALUATOR-REDESIGN.md)
+  is out of scope for this document — but see §3.10 Observation 7: PR #20's
+  n=5 measurement is now a concrete empirical input the redesign should
+  absorb, and the trimmed-mean aggregation variant is a natural
+  addition to the proposal's §3.3 rule table.
+- Addressing the Construction phase −0.119 qualitative gap vs golden
+  (`construction/build-and-test/*` instruction completeness at 0.35–0.74
+  against golden 0.83) is a base-hygiene target spanning multiple PRs,
+  not a single landed item. Tracked as future work; no step in the current
+  series targets it directly.
 
 ---
 
@@ -558,6 +586,10 @@ Interpretation: the rubric and the evaluator disagreed between the second and th
 - Full rule comparison: `docs/benchmark/AIDLC-Rules-Comparison.md`
 - Fragility-test runner: `docs/benchmark/runners/run_gate_benchmark.py`
 - Full-benchmark runner: `docs/benchmark/runners/run_full_benchmark.py`
+- Evaluator framework (qualitative axis): `scripts/aidlc-evaluator/` (driven per-PR via `.github/workflows/codebuild.yml` on `aidlc-rules/**` path filter)
+- Golden reference: `scripts/aidlc-evaluator/test_cases/sci-calc/golden.yaml` (executor Opus 4-6 / simulator Sonnet 4-5, promoted 2026-02-24) and `scripts/aidlc-evaluator/test_cases/sci-calc/golden-aidlc-docs/`
+- Evaluator redesign proposal: [`docs/enhanced/proposals/EVALUATOR-REDESIGN.md`](../proposals/EVALUATOR-REDESIGN.md) (Draft) — k-sample parallel + distribution-based gate. §3.10 Observation 7 provides the first concrete empirical case for this redesign
+- Evaluation playbook (rubric × evaluator cross-check loop): [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md)
 - Upstream baseline: [`awslabs/aidlc-workflows`](https://github.com/awslabs/aidlc-workflows) (pinned as `docs/benchmark/upstream-baseline.json`)
 - Claude Code–native comparison variant: [`anhyobin/aidlc-workflows` — platforms/claude-code](https://github.com/anhyobin/aidlc-workflows/tree/feat/claude-code-native-implementation/platforms/claude-code)
 - Harness Engineering pattern — "Anything not in the repository
