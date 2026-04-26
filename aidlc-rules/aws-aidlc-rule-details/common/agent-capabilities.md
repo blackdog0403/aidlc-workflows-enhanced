@@ -131,76 +131,116 @@ If a cell shows only a symbol (✅/⚠️/❌) with no axis token, use the defau
 
 ---
 
-## 3. Fallback Rules (Feature-by-Feature)
+## 3. Fallback Rules (Axis-Value Based)
 
-When a downstream rule file requires a capability the host doesn't have, apply these fallbacks. **Never refuse to proceed** — degrade to the next-best pattern.
+Each subsection below is a pattern. For each pattern, look up the relevant axis value from `aidlc-state.md` under `## Host Capabilities` (populated from §1 matrix per §2.5) and execute the matching strategy.
 
-### 3.1 Multi-Agent Orchestration
+**Universal principle**: **Never refuse to proceed.** Every pattern has a path that works even when the relevant axis is `none` — it just costs more model turns or runs sequentially instead of in parallel.
 
-| Required by | `full-multi-agent` | `subagent-only` | `single-agent` |
-|---|---|---|---|
-| Generator/Evaluator (Code Generation) | Two distinct agents, separate contexts; Evaluator invoked via Agent tool | One agent, two sequential passes in **fresh contexts** (context reset between passes); Evaluator pass uses a separate subagent definition file if one exists | One agent, two sequential passes with context reset; Evaluator prompt is inlined from `construction/multi-agent-patterns.md` |
-| Planner / Generator / Evaluator (Anthropic 3-agent) | Three agents, chained via Agent tool | Three sequential passes, each with its own subagent file + context reset | Three sequential passes in one agent; explicit between-pass reset via `/clear` or equivalent |
-| Parallel unit execution | `--worktree` or `isolation: worktree` per unit, N worktrees in parallel | **Sequential** per-unit loop (no parallelism); log this as a known limitation | **Sequential** per-unit loop |
+### 3.1 Generator/Evaluator Separation
 
-**Universal fallback rule**: the *separation of concerns* between Generator and Evaluator must be preserved even in `single-agent` mode — via a **context reset** between passes. Never let the generator "review its own work" in the same context.
+**Invariant**: Generator and Evaluator must run in different contexts. This is non-negotiable regardless of axis value; what varies is *how* the separation is achieved.
 
-### 3.2 Worktree Isolation
+Reads axis: **`multi_agent`**.
 
-| Host profile | Strategy |
+| `multi_agent` | Strategy |
 |---|---|
-| `full-multi-agent` | Use `claude --worktree <unit-name>` or subagent `isolation: worktree`. Merge via git after all parallel units pass L3. |
-| `subagent-only` / `single-agent` | Emulate isolation via **feature branches**: `git checkout -b aidlc/<unit-name>` before each unit, commit at unit completion, merge after Build and Test. No parallelism. |
+| `native` | Two distinct agents in separate contexts. Invoke Evaluator via the host's agent-calls-agent mechanism (Claude Code Agent tool, Copilot `agent` tool). |
+| `user-launched` | One session, two sequential passes with explicit context reset between them. Use a subagent / steering / custom-agent file per role (Generator role, Evaluator role). Switch the active role between passes. |
+| `none` | One agent, two sequential passes. Between passes, perform an explicit context reset (`/clear` or equivalent). Evaluator prompt is inlined from `construction/multi-agent-patterns.md`. |
 
-### 3.3 Sandboxing & Boundary-Based Security
+### 3.2 Three-Agent Planner / Generator / Evaluator
 
-See `common/boundary-based-security.md`. Branching summary:
+Reads axis: **`multi_agent`**.
 
-| Host profile | Boundary enforcement |
+| `multi_agent` | Strategy |
 |---|---|
-| `full-multi-agent` with Auto Mode | Use Auto Mode classifier for real-time boundary evaluation. Tier 1+2 auto-approved; Tier 3 raises approval prompt. |
-| `full-multi-agent` without Auto Mode | Pre-declare pre-approved commands in `aidlc-state.md`; host confirms Tier 3. |
-| `subagent-only` / `single-agent` | Rely on host's built-in permission prompts; publish a **Pre-Approved Commands** list at Construction start and ask the user to whitelist once. Every non-whitelisted Tier 3 action still prompts. |
+| `native` | Three agents chained via agent-calls-agent. Each agent has its own context. |
+| `user-launched` | Three sequential passes, each with its own subagent/steering/custom-agent file and explicit context reset. |
+| `none` | Three sequential passes in one agent; explicit `/clear` (or equivalent) between passes. Role prompts inlined. |
 
-### 3.4 Lifecycle Hooks (PreToolUse / PostToolUse / Stop)
+### 3.3 Parallel Unit Execution (Worktree)
 
-| Host profile | Strategy |
+Reads axis: **`worktree`**.
+
+| `worktree` | Strategy |
 |---|---|
-| `full-multi-agent` | Wire L1 (per-file) checks to `PostToolUse` (on Write/Edit) so every file write triggers syntax + forbidden-pattern scans without a model turn. |
-| `subagent-only` / `single-agent` | L1 checks run as an **in-prompt post-step** after each file write (one model turn cost). Log the turn cost — this is the price of not having hooks. |
+| `native` | Use the host's worktree mechanism (Claude Code `--worktree` or `isolation: worktree`; Cursor Agents Window worktrees; Cline New Worktree Window). N units run in parallel; merge via git after all units pass L3. |
+| `per-task-vm` | Host spins per-task ephemeral VMs (Copilot coding-agent). Use this when the task can be described as a self-contained PR brief. N tasks can be dispatched in parallel but each lives in its own remote VM, not a local worktree. |
+| `none` | Emulate isolation via **feature branches**: `git checkout -b aidlc/<unit-name>` before each unit, commit at unit completion, merge after Build and Test. **Sequential only — no parallelism.** Log the serialization as a known limitation. |
 
-### 3.5 Auto-Memory / Cross-Session Consolidation
+### 3.4 Sandboxing & Boundary-Based Security
 
-| Host profile | Strategy |
+See `common/boundary-based-security.md` for the full security discussion. Branching summary here reads two axes: **`sandbox`** for process isolation, **`boundary`** for the approval classifier.
+
+`sandbox` decides how process-level isolation is enforced:
+
+| `sandbox` | Strategy |
 |---|---|
-| `full-multi-agent` (AutoDream) + `subagent-only` (Kiro steering) | Let the host's native memory system carry learned patterns across sessions; the Gardener Agent proposes rule-file updates. |
-| `single-agent` | Persist cross-session learning to `aidlc-docs/operations/harness-learnings.md`; reload at workflow start as context. |
+| `os-level` | Host provides OS sandbox (bubblewrap on Linux, seatbelt on macOS). Trust the sandbox for file-system scoping; focus approval logic on net-new external calls. |
+| `approval-prompt` | No sandbox. Every non-whitelisted Tier 3 action raises an approval prompt. Publish a **Pre-Approved Commands** list at Construction start and ask the user to whitelist once; everything else prompts. |
+| `none` | Same as `approval-prompt` for practical purposes — treat the absence of a sandbox as a hard constraint. Never assume isolation. |
 
-### 3.6 Tool Search / Defer-Loading
+`boundary` decides how approvals are classified:
 
-| Host profile | Strategy |
+| `boundary` | Strategy |
 |---|---|
-| `full-multi-agent` | Use native Tool Search: rules loaded on-demand per stage. |
-| `subagent-only` / `single-agent` | Use AI-DLC's existing `*.opt-in.md` convention + staged loading from `common/context-optimization.md` as the equivalent mechanism. |
+| `classifier` | Use the host's classifier (Claude Code Auto Mode) to auto-approve Tier 1+2 and prompt only on Tier 3. Log the classifier's false-positive/false-negative rates if the host publishes them. |
+| `allow-list` | Pre-declare pre-approved commands in `aidlc-state.md` under `## Pre-Approved Commands`. Host confirms Tier 3 via its built-in permission prompts. |
+| `none` | Every action prompts. This is the safe default; no auto-approval. |
+
+### 3.5 Lifecycle Hooks
+
+Reads two axes: **`hooks_block`** for enforcement, **`hooks_observe`** for feedback/logging. They can be both `native`, one `native` and one `none`, or both `none`.
+
+L1 (per-file) checks:
+
+| `hooks_observe` | `hooks_block` | Strategy |
+|---|---|---|
+| `native` | `native` | Wire L1 checks to a `PostToolUse`-equivalent hook so every file write triggers syntax + forbidden-pattern scans without a model turn. Configure the hook to **block** on critical violations (non-zero exit). This is the lowest-cost, highest-enforcement path. |
+| `native` | `none` | Wire L1 checks to the observe-only hook. Violations surface in the agent's context but cannot cancel the triggering action — the agent must recognize and self-correct. |
+| `none` | `none` | No hooks available. Run L1 checks as an **in-prompt post-step** after each file write (one extra model turn per write). Log the turn cost — this is the price of not having hooks. |
+
+### 3.6 Auto-Memory / Cross-Session Consolidation
+
+Reads axis: **`auto_memory`**.
+
+| `auto_memory` | Strategy |
+|---|---|
+| `autonomous` | Host writes cross-session memory automatically (Claude Code `MEMORY.md`, Cursor Memories). Let the host's native system carry learned patterns across sessions; the Gardener Agent proposes rule-file updates based on recent memory entries. |
+| `semi` | Host loads a memory file automatically but only writes it when the user triggers it (Amazon Q Memory Bank generate button, Kiro steering refine, Cline Memory Bank initialize). At Construction end, **prompt the user** to trigger the host's memory-update action; document what they did in `aidlc-docs/operations/harness-learnings.md`. |
+| `none` | Persist cross-session learning to `aidlc-docs/operations/harness-learnings.md` manually. Reload at workflow start as context. |
+
+### 3.7 Tool Search / Deferred Loading
+
+Reads axis: **`tool_search`**.
+
+| `tool_search` | Strategy |
+|---|---|
+| `native` | Use the host's Tool Search. Rules are loaded on-demand per stage. The host handles schema lazy-loading for MCP tools (Kiro CLI 2.1) or extension tools (Claude Code). |
+| `none` | Use AI-DLC's existing `*.opt-in.md` convention and staged loading from `common/context-optimization.md`. The agent loads only the opt-in stubs at workflow start and pulls full rule files when the relevant stage opts in. |
 
 ---
 
 ## 4. How Downstream Rules Must Reference This File
 
-Any rule file describing a multi-agent / parallel / hooked pattern **must**:
+Any rule file describing a multi-agent / parallel / hooked / memory / tool-search pattern **must**:
 
-1. Open with a short "Host capability required" note.
-2. Reference this file: `See common/agent-capabilities.md §3.N for fallback.`
-3. Provide the `full-multi-agent` path as the primary recipe and the `single-agent` path as the fallback recipe.
-4. **Never** hardcode `claude --worktree` or Agent-tool calls without a capability check.
+1. Open with a "Reads axis" note that names the one or two axes whose value it branches on (e.g. `Reads axis: multi_agent`).
+2. Reference this file: `See common/agent-capabilities.md §3.N for the full strategy table.`
+3. Provide a strategy for **every** axis value in the vocabulary (`native`, `user-launched`, `none`, etc.) — not just the best-case one. Use the tables in §3 as the authoritative mapping.
+4. **Never** hardcode `claude --worktree` or Agent-tool calls without checking the relevant axis first.
+5. Look up axis values from `aidlc-state.md` under `## Host Capabilities`. Do not branch on `Detected Host` name or the legacy `Capability Profile` field — the former couples the rule to a specific product and the latter is deprecated.
 
 ### Template
 
 ```markdown
 ## Host Capability Required
-- **Primary (full-multi-agent)**: [what the pattern expects]
-- **Fallback (subagent-only / single-agent)**: [the degraded path]
-- See `common/agent-capabilities.md` §3.[subsection] for the full fallback table.
+- **Reads axis**: `[axis-name]` (from `aidlc-state.md` → `## Host Capabilities`)
+- **When `[axis-name]` is `native`**: [primary recipe]
+- **When `[axis-name]` is `[intermediate-value]`**: [partial recipe, if the axis has an intermediate value]
+- **When `[axis-name]` is `none`**: [fallback recipe, must still work]
+- See `common/agent-capabilities.md` §3.[subsection] for the full strategy table.
 ```
 
 ---
