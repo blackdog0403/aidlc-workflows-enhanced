@@ -6,11 +6,11 @@
 >
 > - The first automated measurement after A/B/C landed scored **68/71**. Two unexpected drops (`nfr/tech-stack` and `reverse/8-artifact-types`) were traced to the Gate Output Contract's original placement at the top of `build-and-test.md` indirectly shortening earlier-stage artefacts.
 > - The contract was **relocated inside the same file** to between Step 8 and Step 9, with an explicit "applies only to Step 9" scope guard (see §3.6). A re-measurement recovered both assertions, lifting Enhanced to **70/71 (98.6%)** — two points above Upstream, one point below Native.
-> - The single remaining failure (`detect/slash-command`) is Proposal C's explicitly-documented host-portability gap. It is not closable without breaking portability.
+> - The single remaining failure (`detect/slash-command`) is the Slash-Command Host-Adapter Note's explicitly-documented host-portability gap. It is not closable without breaking portability.
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>)
-**Status:** Implemented (A + B + C landed 2026-04-23; §3.6 adjustment 2026-04-24; §3.7 Project Mode mandatory override landed 2026-04-24)
-**Last updated:** 2026-04-24
+**Status:** Implemented (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note landed 2026-04-23; §3.6 adjustment 2026-04-24; §3.7 Project Mode mandatory override landed 2026-04-24; §3.8 Production as default Greenfield mode landed 2026-04-26)
+**Last updated:** 2026-04-26
 
 ---
 
@@ -31,17 +31,15 @@ cost-to-ship and expected benefit.
 
 | # | Proposal | Cost | Benefit | Risk |
 | --- | --- | --- | --- | --- |
-| A | Swap `workspace-detection.md` completion header to setext `===` | 2 lines | +1 assertion on `detect` (3/5 → 4/5) | None |
-| B | Make `build-and-test.md` 2-phase gate explicit | ~32 lines | Locks in the `gate` 5/5 result across all three model tiers (Haiku/Sonnet/Opus) — measured in §6 | +32 lines of context |
-| C | Document slash-command next-step as a host-adapter concern | ~10 lines | Defensive — prevents future contributors from "fixing" it by adding Claude Code-specific phrasing to the host-agnostic core | None |
+| 1 | Setext Completion Header — swap `workspace-detection.md` completion header to setext `===` | 2 lines | +1 assertion on `detect` (3/5 → 4/5) | None |
+| 2 | Gate Output Contract — make `build-and-test.md` 2-phase gate explicit | ~32 lines | Locks in the `gate` 5/5 result across all three model tiers (Haiku/Sonnet/Opus) — measured in §6 | +32 lines of context |
+| 3 | Slash-Command Host-Adapter Note — document slash-command next-step as a host-adapter concern | ~10 lines | Defensive — prevents future contributors from "fixing" it by adding Claude Code-specific phrasing to the host-agnostic core | None |
 
-Proposal A is a no-brainer. B is a hardening change that should land
-once we have two or three independent measured runs confirming the
-synthesis is model-fragile. C is documentation.
+The Setext Completion Header change is a no-brainer. The Gate Output Contract is a hardening change that should land once we have two or three independent measured runs confirming the synthesis is model-fragile. The Slash-Command Host-Adapter Note is documentation.
 
 ---
 
-## 2. Proposal A — Setext completion header in `workspace-detection.md`
+## 2. Setext Completion Header in `workspace-detection.md`
 
 ### 2.1 The failing assertion
 
@@ -109,8 +107,8 @@ in the change binds the rule to any specific agent.
 
 ### 2.4 Expected impact
 
-- `detect` goes 3/5 → 4/5 — **confirmed by the 14-stage post-A/B/C run (§7)**
-- The remaining `detect` failure (`Recommends next step` / slash-command) is non-closable by design and documented in Proposal C.
+- `detect` goes 3/5 → 4/5 — **confirmed by the 14-stage post-landing run (§7)**
+- The remaining `detect` failure (`Recommends next step` / slash-command) is non-closable by design and documented in the Slash-Command Host-Adapter Note (§4).
 
 ### 2.5 Verification
 
@@ -125,7 +123,7 @@ After the edit:
 
 ---
 
-## 3. Proposal B — Make `build-and-test.md` 2-phase gate explicit
+## 3. Gate Output Contract — Make `build-and-test.md` 2-phase gate explicit
 
 ### 3.1 Current fragile behavior
 
@@ -233,7 +231,7 @@ This should ideally be validated against two models before merging.
 
 ### 3.6 Post-landing adjustment — contract scoped to Step 9
 
-After A/B/C landed in PR #8, a full 14-stage evaluation run via `scripts/aidlc-evaluator/` reported that although the `gate` rubric assertions were indeed recovered (as expected), **qualitative completeness of the build/test instruction files dropped** relative to the pre-landing golden:
+After the three landed together in PR #8 (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note), a full 14-stage evaluation run via `scripts/aidlc-evaluator/` reported that although the `gate` rubric assertions were indeed recovered (as expected), **qualitative completeness of the build/test instruction files dropped** relative to the pre-landing golden:
 
 | Document | completeness (golden vs PR #8) |
 |---|---|
@@ -251,7 +249,7 @@ Upstream templates for these files were not touched by this fork; Steps 2–7 of
 
 Re-validation:
 
-- `docs/benchmark/runners/run_gate_benchmark.py --models haiku --trials 2` after the move confirms `gate` still scores **5/5** with zero variance — Proposal B's core benefit is retained.
+- `docs/benchmark/runners/run_gate_benchmark.py --models haiku --trials 2` after the move confirms `gate` still scores **5/5** with zero variance — the Gate Output Contract's core benefit is retained.
 - Full 14-stage re-measurement via `scripts/aidlc-evaluator/` is the next step to confirm the completeness scores recover.
 
 **Lesson:** rule-level output contracts can indirectly affect stages earlier in the same rule file by coloring the agent's attention. Scope contracts as narrowly as possible, and make the scope guard explicit in the contract body itself.
@@ -275,9 +273,27 @@ The silent skip collapsed four `inception/application-design/*` documents from t
 
 **Lesson:** stage-intrinsic SKIP conditions and user-declared quality bars are in different conceptual layers. The former describe "is this stage's work trivially unnecessary for the current change?"; the latter declare "I want every AI-DLC stage run regardless of the above." Silent precedence between them must not exist. Make the higher-layer rule explicit ("MANDATORY OVERRIDE") and route it through a pointer in the lower-layer rule so agents cannot miss it.
 
+### 3.8 Post-landing observations — Production as default Greenfield mode (PR #16)
+
+PR #16 made Production the default Greenfield Mode and added strict opt-in criteria for Hybrid/Prototyping in `common/project-mode.md §3.1`. The evaluator run (CodeBuild 24948991165, 2026-04-26) produced qualitative overall **0.7864** (+0.016 vs the PR #15-B main baseline 0.7702), Inception **0.8460** all-time high, unit tests 220. Mode selected by the simulator was **Hybrid**, not Production; Application Design executed (3/5 documents matched). Contract regressed 88/88 → 86/88 and verification-Q regressed 0.65 → 0.61. Six observations frame how later steps should be designed.
+
+**Observation 1 — 10-run Prototyping streak broken.** Before PR #16, ten consecutive evaluator runs on sci-calc selected Prototyping. After PR #16's strict §3.1 opt-in criteria, the run came back Hybrid. This is structural evidence that the rule change shifted simulator selection, not a single-run coincidence. "Prototyping ratio = 0 across N runs" is now the health signal for §3.1, not qualitative overall alone.
+
+**Observation 2 — Hybrid selected, not Production. §3.1 default anchor is rule-prose priming, not a deterministic gate.** The anchor influenced the simulator but did not deterministically flip mode selection. What rescued the outcome was the structural safety net in `project-mode.md §2.2`, which mandates Application Design = EXECUTE under Hybrid as well — so the stage ran regardless of which mode the simulator chose.
+
+**Observation 3 — sci-calc is a legitimate Hybrid case per golden structural match.** The golden `execution-plan.md` for sci-calc marks Application Design = EXECUTE and Construction (Functional / NFR / Infra) = SKIP, which is structurally isomorphic to the Hybrid §2.2 matrix row. The golden phrases its rationale in stage-intrinsic terms ("no personas", "fully specified in vision") rather than by declaring a Mode, but the resulting plan is Hybrid-shaped. The simulator's Hybrid choice therefore matches the golden, and §3.1 wording should **not** be strengthened further until benchmarks diversify; otherwise Production would be forced onto genuinely Hybrid-shaped workloads, dragging L5 gate overhead into stages the golden deliberately skips.
+
+**Observation 4 — cross-file bleed is the hidden cost of rule-writing.** verification-Q dropped 0.65 → 0.61 (−0.04) between Step 2 and Step 3. The likely mechanism is that new mode-selection language in `project-mode.md` leaked into verification-question generation by widening the simulator's prior over what "a good project-framing question" looks like. At −0.04 per step this is not catastrophic, but accumulating bleed across many steps compounds. The mitigation is a fast-repair policy: after any rule-writing PR, immediately measure adjacent-stage qualitative scores and repair before the next rule change lands.
+
+**Observation 5 — Application Design EXECUTE is not Application Design quality.** The stage ran (3/5 documents matched), but Contract regressed 88/88 → 86/88 on `divide by zero` and `modulo by zero` (both returned HTTP 200 instead of 400). Whether a stage runs at all (ON/OFF) is governed by the Mode × Stage matrix; the content the stage produces is governed by its own rule files plus whatever cross-file primers reach into it. Fixing mode selection does not fix stage content quality — those are distinct work items.
+
+**Observation 6 — enforcement-layer meta-note.** This fix is at the **rule-prose layer** (what agents read in markdown files), not at the **host-hook layer** (deterministic checks executed outside the agent). Two direct empirical data points now exist that the rule-prose layer is non-deterministic under this simulator: (a) §3.1's default anchor did not force Production — the simulator reached Hybrid anyway, and (b) cross-file bleed in Observation 4 shows that adding text to one rule file increases entropy in sibling files' outputs. Future host-hook primitives (host-hook-triggered verification, machine-verifiable output gates) should inherit these data points as prior: rule-prose changes will land correctly most of the time but not always, and any material quality target needs a host-hook check to back it.
+
+**Lesson:** two enforcement layers are now empirically distinguishable. The rule-prose layer is probabilistic — §3.1's anchor influenced the simulator but did not deterministically flip it, and any edit carries cross-file bleed risk. The host-hook layer (deterministic external checks) is not yet used by this fork and would be the natural home for any "must hit Contract 88/88 before merge" invariant. The next steps focus on restoring scalars (Contract 88/88, verif-Q 0.65+) before more rule-prose lands, so the signal-to-noise ratio of subsequent measurements stays readable.
+
 ---
 
-## 4. Proposal C — Document the slash-command next-step escape hatch
+## 4. Slash-Command Host-Adapter Note — Document the next-step escape hatch
 
 ### 4.1 The assertion Enhanced cannot pass
 
@@ -343,27 +359,27 @@ sufficient.
 
 ## 5. Bundling strategy
 
-- **Proposal A alone** → a single-commit change, mechanical, safe
+- **Setext Completion Header alone** → a single-commit change, mechanical, safe
   to merge on observation. Publish as a point release.
-- **Proposal A + B** → land together if the harness team agrees that
+- **Setext Completion Header + Gate Output Contract** → land together if the harness team agrees that
   a weaker-model run showed the synthesis is fragile. Requires the
   two-model validation described in §3.5.
-- **Proposal C** → land whenever §A lands, as the two pair naturally:
-  A closes the closable gap, C explains why the remaining gap is
+- **Slash-Command Host-Adapter Note** → land whenever the Setext Completion Header lands, as the two pair naturally:
+  the header closes the closable gap, the adapter note explains why the remaining gap is
   intentional.
 
-Recommendation: land A + C together in a small PR. Defer B until a
+Recommendation: land the Setext Completion Header and the Slash-Command Host-Adapter Note together in a small PR. Defer the Gate Output Contract until a
 second measured run (ideally on a different model tier) is available
 to quantify the fragility risk.
 
 **Resolution (2026-04-23):** the three-model, nine-trial run described
-in §6 below produced the fragility data this plan required for B.
-**A + B + C all landed together** in the same commit as this proposal's
+in §6 below produced the fragility data this plan required for the Gate Output Contract.
+**All three (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note) landed together** in the same commit as this proposal's
 status flip.
 
 ---
 
-## 6. Measured fragility data for Proposal B
+## 6. Measured fragility data for the Gate Output Contract
 
 Run on 2026-04-23 via the benchmark runner at
 `docs/benchmark/runners/run_gate_benchmark.py` — 3 models × 2 rule
@@ -433,7 +449,7 @@ contract.
 
 ### 6.4 Conclusion
 
-The data exceed the §3.5 acceptance bar for Proposal B: every tested model improves by **exactly 3.0 points pre → post**, every post-B trial scores a full **5 / 5**, variance is zero, and the disk implementation replicates the runtime simulation exactly. B is shipped.
+The data exceed the §3.5 acceptance bar for the Gate Output Contract: every tested model improves by **exactly 3.0 points pre → post**, every post-contract trial scores a full **5 / 5**, variance is zero, and the disk implementation replicates the runtime simulation exactly. The Gate Output Contract is shipped.
 
 Post-landing, two follow-up adjustments (§3.6 contract scoping, §3.7 Project Mode as mandatory override) further strengthened the evidence — see §7 and §7.1 for the combined rubric + qualitative timeline.
 
@@ -441,7 +457,7 @@ Post-landing, two follow-up adjustments (§3.6 contract scoping, §3.7 Project M
 
 ## 7. Post-landing 14-stage measurement
 
-After A + B + C landed, the full 14-stage benchmark was run on
+After all three (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note) landed, the full 14-stage benchmark was run on
 Opus 4.7 via Bedrock using the new runner at
 `docs/benchmark/runners/run_full_benchmark.py`. Two measurements
 were needed before the headline result stabilized:
@@ -456,18 +472,18 @@ Final per-skill picture (post §3.6 adjustment):
 | Skill | Δ vs Upstream | Reason |
 |---|---|---|
 | functional | +1 | rule explicitly technology-agnostic |
-| gate | +2 | Proposal B's Gate Output Contract makes 2-phase structure explicit |
-| detect | −1 | host-agnostic prose avoids `/aidlc-*` literal (Proposal C) |
+| gate | +2 | Gate Output Contract makes 2-phase structure explicit |
+| detect | −1 | host-agnostic prose avoids `/aidlc-*` literal (Slash-Command Host-Adapter Note) |
 | 11 other | = | Includes `nfr` and `reverse`, which recovered after §3.6. |
 
 **Notable points:**
 
-1. **Proposal A delivered** its +1 on `detect/Contains completion summary` as predicted.
-2. **Proposal B delivered** its +2 on `gate/2-phase` and `gate/GO-NO-GO` as predicted (and §6's fragility matrix proves this is reproducible across model tiers).
-3. **§3.6 adjustment recovered an unexpected +2** — the first post-A/B/C measurement lost `nfr/tech-stack` and `reverse/8-artifacts` because the contract was shortening upstream instruction templates. Relocating it fixed both without touching upstream templates.
+1. **The Setext Completion Header delivered** its +1 on `detect/Contains completion summary` as predicted.
+2. **The Gate Output Contract delivered** its +2 on `gate/2-phase` and `gate/GO-NO-GO` as predicted (and §6's fragility matrix proves this is reproducible across model tiers).
+3. **§3.6 adjustment recovered an unexpected +2** — the first post-landing measurement lost `nfr/tech-stack` and `reverse/8-artifacts` because the contract was shortening upstream instruction templates. Relocating it fixed both without touching upstream templates.
 4. **70/71 is the current reproducible floor.** Enhanced is +2 over Upstream on the same rubric, with all deltas mapped 1:1 to design commitments.
 
-The single remaining failure (`detect/slash-command`) maps 1:1 to Proposal C (documented in `common/agent-capabilities.md §7`). The benchmark therefore confirms design intent and does not surface any closable gap that has not already been closed.
+The single remaining failure (`detect/slash-command`) maps 1:1 to the Slash-Command Host-Adapter Note (documented in `common/agent-capabilities.md §7`). The benchmark therefore confirms design intent and does not surface any closable gap that has not already been closed.
 
 **How §3.6 was discovered — qualitative evaluator cross-check.** A separate quality-level evaluation via `scripts/aidlc-evaluator/` (Bedrock-backed, `opus-4-6`) flagged the problem first: while the rubric assertions looked acceptable, several `construction/build-and-test/*` instruction documents scored 0.35–0.65 on completeness vs the golden reference. That led to the §3.6 analysis. The broader workflow — measure via rubric, cross-check via evaluator, analyze before patching — is written up in [`docs/enhanced/EVALUATION-PLAYBOOK.md`](../EVALUATION-PLAYBOOK.md).
 
@@ -490,7 +506,7 @@ Interpretation: the rubric and the evaluator disagreed between the second and th
 
 - Re-running the full 14-stage benchmark on a weaker model is the
   right follow-up work but is not part of these proposals. It is the
-  gating data for Proposal B (already collected in §6 for the `gate`
+  gating data for the Gate Output Contract (already collected in §6 for the `gate`
   stage specifically).
 - Extending the rubric itself (beyond the upstream
   [`awslabs/aidlc-workflows`](https://github.com/awslabs/aidlc-workflows)
