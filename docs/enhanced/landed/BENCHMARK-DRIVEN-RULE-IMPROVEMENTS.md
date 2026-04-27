@@ -10,8 +10,8 @@
 > - The single remaining rubric failure (`detect/slash-command`) is the Slash-Command Host-Adapter Note's explicitly-documented host-portability gap. It is not closable without breaking portability. Residual quality gaps (Construction phase −0.119 from golden; verification-Q variance CV 20% on n=5; `application-design-plan.md` 0/6 persistent miss) are scoped as named base-hygiene targets, not rubric regressions.
 
 **Author:** Kwangyoung Kim (<kwangyou@amazon.com>)
-**Status:** Implemented (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note landed 2026-04-23; §3.6 adjustment 2026-04-24; §3.7 Project Mode mandatory override landed 2026-04-24; §3.8 Production as default Greenfield mode landed 2026-04-26; §3.9 Step 5 domain-error 400 rule landed 2026-04-26; §3.10 Step 6 Project Mode question separated to own file landed 2026-04-26)
-**Last updated:** 2026-04-26
+**Status:** Implemented (Setext Completion Header + Gate Output Contract + Slash-Command Host-Adapter Note landed 2026-04-23; §3.6 adjustment 2026-04-24; §3.7 Project Mode mandatory override landed 2026-04-24; §3.8 Production as default Greenfield mode landed 2026-04-26; §3.9 Step 5 domain-error 400 rule landed 2026-04-26; §3.10 Step 6 Project Mode question separated to own file landed 2026-04-26; §3.11 Step 7 Application Design plan fallback landed 2026-04-27, measured n=10)
+**Last updated:** 2026-04-27
 
 ---
 
@@ -327,6 +327,59 @@ PR #20 changed `inception/requirements-analysis.md` Step 5.1 Part A so the Proje
 **Observation 7 — n=5 measurement itself is the load-bearing methodology signal.** The same commit with the same rule text produced verdicts ranging from "Step 6 failed" (if you trust run 1's 0.38) to "Step 6 matched PR #15's verification-Q peak" (if you trust run 3's 0.65). Neither single-run read is correct; the distribution is the truth. This is direct empirical backing for `proposals/EVALUATOR-REDESIGN.md`'s k=5 parallel + distribution-based gate proposal (which is currently Draft/not implemented). A single-run evaluator would have either blocked a legitimate rule fix or waved through a regression, depending on which trigger fired first — neither is acceptable. The redesign's `contract_pass_rate` median and `qualitative_overall` mean±std aggregations would both have accepted PR #20 cleanly; the trimmed-mean variant on qualitative_overall is a natural extension the redesign should absorb.
 
 **Lesson:** PR #20 delivers its structural goal (Mode question physically separated) on 5/5 runs and preserves Contract 88/88 on 5/5 runs. The residual noise on verification-Q is not a PR #20 effect — it is a pre-existing variance that single-run measurement masked. Two follow-ups carry forward. First, Step 7 targets `application-design-plan.md` (Observation 6) as the only remaining 0/n persistent gap with a clear rule anchor. Second, the evaluator redesign proposal gains a concrete data point — PR #20's n=5 distribution — that single-trigger gates are systematically unreliable for stochastic metrics, and k-sample aggregation with outlier-robust statistics (median, trimmed mean) is the minimum viable read.
+
+### 3.11 Post-landing observations — Application Design plan fallback at Step 10 (PR #22, n=10 measurement)
+
+PR #22 added a one-bullet fallback at Step 10 of `inception/application-design.md` ensuring `aidlc-docs/inception/plans/application-design-plan.md` is always written, even when Steps 4–9 (Q&A flow) collapse because no design questions are needed. Following §3.10 Observation 7's methodology, the rule was measured on the same commit **n=10 times** via `gh workflow run` re-triggers against the `fix/application-design-plan-fallback` branch — first 5 runs (n=5) and then extended to 10 for distribution confirmation. The n=5 snapshot undersampled the variance that n=10 revealed; the n=10 findings supersede the n=5 snapshot and are the load-bearing empirical datum for this section. Seven observations.
+
+**Observation 1 — Step 7's primary target delivered deterministically.** `application-design-plan.md` was produced in **10/10 runs** (previously 0/7 across PR #16, PR #18, PR #20 × 5). Mean quality score 0.850 (range 0.74–0.94; stdev 0.081). The file is no longer a persistent 0/n gap. The n=5 mean (0.858) and n=10 mean (0.850) agree within 0.01 — Step 7's structural effect on this file is stable across both sample sizes.
+
+**Observation 2 — Contract 88/88 held on 6/10 runs; four runs showed Contract issues in three distinct failure modes.** The distribution:
+
+| Result | Runs | Count |
+|---|---|---|
+| 88/88 (all pass) | r1 · r3 · r4 · r5 · r7 · r8 | 6/10 |
+| 77/88 (domain-error regression) | r2 · r6 | 2/10 |
+| N/A (contract tests not executed) | r9 | 1/10 |
+| 87/88 (isolated 422→500) | r10 | 1/10 |
+
+The n=5 view saw 4/5 Contract pass and one 77/88 regression, which read as a single-run outlier. The n=10 view shows 4/10 runs with Contract issues — a rate that cannot be dismissed as noise. The n=5 → n=10 expansion doubled the observed Contract failure rate (20% → 40%); this is direct empirical support for §3.10 Observation 7's claim that single-trigger gates and even n=5 undersample structural signals.
+
+**Observation 3 — context max × Contract correlation (dominant finding).** Each run's `context_max` (peak context-window tokens) correlates strongly with Contract outcome:
+
+| Run | context max | Contract | Interpretation |
+|---|---|---|---|
+| r1 | 136K | 88/88 | Pass |
+| r2 | 152K | **77/88** | domain-error regression (divide/modulo by zero → HTTP 200) |
+| r3 | 130K | 88/88 | Pass |
+| r4 | 127K | 88/88 | Pass |
+| r5 | 147K | 88/88 | Pass |
+| r6 | 157K | **77/88** | domain-error regression (divide/modulo by zero → HTTP 200) |
+| r7 | 128K | 88/88 | Pass |
+| r8 | 140K | 88/88 | Pass |
+| r9 | 184K | **N/A** | Construction instruction docs abbreviated; contract tests never executed |
+| r10 | 128K | **87/88** | isolated `add missing field` returned 500 instead of 422 |
+
+At ≤147K context, Contract was 88/88 in 6 out of 7 runs (only r10 failed — discussed in Observation 6). At ≥150K context, Contract failed in 3 out of 3 runs (r2, r6, r9). The ≤147K vs ≥150K split is clean — no 88/88 run exceeded 147K, no ≥150K run reached 88/88 in this sample.
+
+**Observation 4 — context-budget-pressure hypothesis (H1) explains the 150K+ failures.** The 3/3 failures above 150K are consistent with the hypothesis that Step 7's Inception enrichment (the new fallback bullet plus the agent producing the fuller `application-design-plan.md` and four sibling files) pushes the total context budget into a regime where Step 5's `common/http-error-conventions.md` Rule 6 loses effective weight during Construction-phase code generation. The two 77/88 regressions (r2, r6) are on the exact assertions Step 5 was introduced to fix (`divide by zero → 400`, `modulo by zero → 400`) — consistent with "rule present but not salient enough under pressure" rather than "rule missing." The N/A in r9 at 184K is a stronger version of the same mode: the agent abbreviates the Construction pipeline enough that `build-instructions.md`, `integration-test-instructions.md`, and `unit-test-instructions.md` are not produced, and contract tests are not executed at all. Reinforcing Rule 6 inside Construction-phase rules (`construction/build-and-test.md` and/or `construction/code-generation.md`) is the scoped repair for H1.
+
+**Observation 5 — Inception quality is at golden parity; Construction gap is the persistent pre-existing gap.** Inception mean **0.866** against golden 0.879 — a −0.013 delta, essentially at parity and a new high for this series. Construction mean **0.724** against golden 0.830 — a −0.106 delta, unchanged by Step 7. Step 7 did not widen the Construction gap in runs where Construction executed fully (r1-r8, r10 averaged 0.707 on Construction, consistent with PR #20's 0.711). The gap is the same base-hygiene target §3.10 Observation 5 flagged; it is not a Step 7 effect. Claiming "Inception nearly matches golden" is now an empirically supported statement, not an aspiration.
+
+**Observation 6 — alternative hypothesis consideration (H3: content-driven pattern contamination).** H1 (context-budget pressure) accounts for r2, r6, r9 but does not explain r10. r10's context max was 128K — well within the "safe" ≤147K range — yet Contract was 87/88 with a distinct failure mode (`add missing field` returned 500 instead of 422, an unhandled exception rather than a domain-error-as-200 regression). Two readings are possible: (a) stochastic single-run noise unrelated to Step 7; (b) a content-driven effect where Step 7's richer `application-design-plan.md` inadvertently primes a coding pattern that conflicts with Pydantic 422 validation handling in the specific route Step 5 did not scope. Neither reading can be distinguished from n=10 alone, because `context_max` is the only context-pressure signal currently recorded per run. Future measurements should record **per-assertion failure type** alongside `context_max` so H1 (context-driven rule decay) and H3 (content-driven pattern contamination) can be separated. Step 8's efficacy should be measured against **both** hypotheses, not just H1 — a Construction-phase reinforcement that fixes the 150K+ regressions but leaves the 128K/422→500 pattern in place would falsify a pure-H1 reading.
+
+**Observation 7 — n=5 vs n=10 stability comparison: variance roughly doubles across multiple metrics.** Standard deviations computed from the same samples:
+
+| Metric | n=5 stdev | n=10 stdev | Change |
+|---|---|---|---|
+| verification-Q | 0.041 | 0.068 | +66% |
+| Overall qualitative | 0.015 | 0.031 | +107% |
+| Construction mean | 0.030 | 0.055 | +83% |
+| Inception mean | 0.021 | 0.021 | ≈0 |
+
+Inception stayed stable — Step 7's target stage is the least noisy axis — but the other three metrics roughly doubled their measured variance when sample size doubled. This is not a Step 7 artefact; it is the structural signal §3.10 Observation 7 warned about, now confirmed on a second PR with a second independent dataset. Any gate built on single-run or n=5 snapshots will alias this variance into false verdicts. The `proposals/EVALUATOR-REDESIGN.md` argument for k=10 and trimmed-mean aggregation is now supported by two measured datasets (PR #20 n=5 → PR #22 n=10), not one.
+
+**Lesson:** Step 7's structural goal is achieved deterministically — `application-design-plan.md` goes from 0/7 to 10/10 with mean quality 0.850. The secondary finding — Contract failures correlating with context_max, with one anomalous 128K failure (r10) — introduces a new measurement axis (context pressure) and two competing hypotheses (H1 context-driven, H3 content-driven) that the current evaluator schema cannot distinguish. Three follow-ups carry forward, in order. First, the evaluator redesign needs a per-run `context_max` field and a per-assertion failure-type field so H1 vs H3 can be tested empirically, not just hypothesized — without this, any Step 8 reinforcement will be measured against an ambiguous baseline. Second, Step 8 reinforces `common/http-error-conventions.md` Rule 6 at Construction stage entry (either in `construction/code-generation.md` Load directive or `construction/build-and-test.md` Prerequisites) so the rule remains salient at 150K+ context; the measurement must show whether the fix closes H1 alone or H1 and H3 together. Third, Step 10 optionally mandates the "Checklist + rationale" structure observed in 7/10 of the plan-file outputs — those 7 scored 0.891 mean versus 0.753 mean for the 3 "Checklist only" outputs, a gap wide enough that prescribing the richer structure in the rule body would plausibly raise the mean above 0.9.
 
 ---
 
